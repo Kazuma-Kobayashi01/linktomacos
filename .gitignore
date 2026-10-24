@@ -1,0 +1,7 @@
+.DS_Store
+# macOS
+macos/build/
+macos/Packages/.spm/
+**/.build/
+**/.swiftpm/
+xcuserdata/

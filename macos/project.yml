@@ -1,0 +1,42 @@
+name: LinkToMacOS
+options:
+  bundleIdPrefix: com.linktomacos
+  deploymentTarget:
+    macOS: "15.0"
+  createIntermediateGroups: true
+packages:
+  LinkCore:
+    path: Packages/LinkCore
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    # 免费账号阶段：本地签名运行（Sign to Run Locally）
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGN_STYLE: Manual
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: NO
+targets:
+  LinkToMacOS:
+    type: application
+    platform: macOS
+    sources:
+      - LinkToMacOS
+    dependencies:
+      - package: LinkCore
+    info:
+      path: LinkToMacOS/Info.plist
+      properties:
+        CFBundleDisplayName: LinkToMacOS
+        LSUIElement: true
+        LSApplicationCategoryType: public.app-category.utilities
+        NSLocalNetworkUsageDescription: 用于在局域网内发现并连接你的 Android 手机。
+        NSBonjourServices:
+          - _linktomacos._tcp
+        NSBluetoothAlwaysUsageDescription: 用于通过蓝牙在电脑上接打手机电话。
+        NSMicrophoneUsageDescription: 用于在电脑上接打手机电话时采集声音。
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.linktomacos.mac
+        ENABLE_APP_SANDBOX: NO

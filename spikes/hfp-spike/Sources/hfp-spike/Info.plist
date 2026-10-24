@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleIdentifier</key>
+    <string>com.linktomacos.hfp-spike</string>
+    <key>CFBundleName</key>
+    <string>hfp-spike</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>验证 Mac 能否作为免提设备接打手机电话。</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>验证通话时能否使用 Mac 的麦克风。</string>
+</dict>
+</plist>
