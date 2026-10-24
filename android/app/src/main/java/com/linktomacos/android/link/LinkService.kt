@@ -169,11 +169,19 @@ class LinkService : Service() {
                     session.close()
                 }
             }
+            val notificationJob = launch(Dispatchers.IO) {
+                try {
+                    NotificationBridge.events.collect { session.send(it) }
+                } catch (e: IOException) {
+                    session.close()
+                }
+            }
             val reader = async(Dispatchers.IO) { readLoop(session) }
             try {
                 SessionEnd.Closed(reader.await(), wasConnected = true)
             } finally {
                 statusJob.cancel()
+                notificationJob.cancel()
             }
         } catch (e: IOException) {
             SessionEnd.Closed(e.message ?: "连接中断", wasConnected = false)

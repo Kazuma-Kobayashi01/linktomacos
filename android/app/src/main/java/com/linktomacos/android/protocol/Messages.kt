@@ -51,6 +51,23 @@ data class DeviceStatus(
 @Serializable
 data class Goodbye(val reason: String = "") : LinkMessage
 
+/** 手机上弹出的一条通知。[key] 在手机端唯一，同一条通知更新时不变。 */
+@Serializable
+data class PhoneNotification(
+    val key: String,
+    val packageName: String,
+    val appName: String,
+    val title: String,
+    val text: String,
+    val subText: String? = null,
+    val timestamp: Long,
+    /** 应用图标，PNG 的 base64。 */
+    val iconPng: String? = null,
+) : LinkMessage
+
+@Serializable
+data class NotificationRemoved(val key: String) : LinkMessage
+
 /** 本端版本不认识的消息类型，忽略即可。 */
 data class Unknown(val type: String) : LinkMessage
 
@@ -68,6 +85,8 @@ object MessageCodec {
             is Pong -> "pong" to json.encodeToJsonElement(message)
             is DeviceStatus -> "deviceStatus" to json.encodeToJsonElement(message)
             is Goodbye -> "goodbye" to json.encodeToJsonElement(message)
+            is PhoneNotification -> "notification" to json.encodeToJsonElement(message)
+            is NotificationRemoved -> "notificationRemoved" to json.encodeToJsonElement(message)
             is Unknown -> error("cannot send unknown message ${message.type}")
         }
         return JsonObject(mapOf("type" to JsonPrimitive(type)) + body.jsonObject).toString()
@@ -82,6 +101,8 @@ object MessageCodec {
             "pong" -> json.decodeFromJsonElement<Pong>(obj)
             "deviceStatus" -> json.decodeFromJsonElement<DeviceStatus>(obj)
             "goodbye" -> json.decodeFromJsonElement<Goodbye>(obj)
+            "notification" -> json.decodeFromJsonElement<PhoneNotification>(obj)
+            "notificationRemoved" -> json.decodeFromJsonElement<NotificationRemoved>(obj)
             else -> Unknown(type ?: "")
         }
     }

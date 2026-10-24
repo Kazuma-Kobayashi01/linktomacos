@@ -8,19 +8,23 @@
 
 /* Begin PBXBuildFile section */
 		65CE3F6DAD21AC4C04F75870 /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8921C7061B6EAD1EA8964A0F /* PairingView.swift */; };
+		7FFCDB75A8A5EB7E7E99EE36 /* NotificationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88CE2CA5F29B1DAEEFD0CD1 /* NotificationPresenter.swift */; };
 		959CE4EBE7D4E715CDEB868B /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D4EAFA984DEE9ACA3DD303 /* MenuView.swift */; };
 		96967D2F860540FDBC5B1B8C /* LinkToMacOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FE64467621FBACC20CC343 /* LinkToMacOSApp.swift */; };
 		A1EC946C25F585B470E36107 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A79E5307B246AA4C9044A12 /* AppModel.swift */; };
+		A21D417D625892A08C19A597 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 238E1140EBFBFF6E1D739FC9 /* Assets.xcassets */; };
 		EAE59B3721E2E23FA9168209 /* LinkCore in Frameworks */ = {isa = PBXBuildFile; productRef = D4694ECA312A86FA63627D66 /* LinkCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		17E1BBD393B231FBF5D148C3 /* LinkToMacOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LinkToMacOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A79E5307B246AA4C9044A12 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		238E1140EBFBFF6E1D739FC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8921C7061B6EAD1EA8964A0F /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
 		8E350553F9EDCEC9BE7E1D71 /* LinkCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LinkCore; path = Packages/LinkCore; sourceTree = SOURCE_ROOT; };
 		B0D4EAFA984DEE9ACA3DD303 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		E556CC239883C6CAD9EE7EE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E88CE2CA5F29B1DAEEFD0CD1 /* NotificationPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPresenter.swift; sourceTree = "<group>"; };
 		F4FE64467621FBACC20CC343 /* LinkToMacOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkToMacOSApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -40,9 +44,11 @@
 			isa = PBXGroup;
 			children = (
 				1A79E5307B246AA4C9044A12 /* AppModel.swift */,
+				238E1140EBFBFF6E1D739FC9 /* Assets.xcassets */,
 				E556CC239883C6CAD9EE7EE6 /* Info.plist */,
 				F4FE64467621FBACC20CC343 /* LinkToMacOSApp.swift */,
 				B0D4EAFA984DEE9ACA3DD303 /* MenuView.swift */,
+				E88CE2CA5F29B1DAEEFD0CD1 /* NotificationPresenter.swift */,
 				8921C7061B6EAD1EA8964A0F /* PairingView.swift */,
 			);
 			path = LinkToMacOS;
@@ -81,6 +87,7 @@
 			buildConfigurationList = C207108E300EA33033987490 /* Build configuration list for PBXNativeTarget "LinkToMacOS" */;
 			buildPhases = (
 				B911248A26E2E8F3C780C000 /* Sources */,
+				FA0B61101CF9748C2126F8B1 /* Resources */,
 				52E82287E6756A06C24BDD34 /* Frameworks */,
 			);
 			buildRules = (
@@ -132,6 +139,17 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		FA0B61101CF9748C2126F8B1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A21D417D625892A08C19A597 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		B911248A26E2E8F3C780C000 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -140,6 +158,7 @@
 				A1EC946C25F585B470E36107 /* AppModel.swift in Sources */,
 				96967D2F860540FDBC5B1B8C /* LinkToMacOSApp.swift in Sources */,
 				959CE4EBE7D4E715CDEB868B /* MenuView.swift in Sources */,
+				7FFCDB75A8A5EB7E7E99EE36 /* NotificationPresenter.swift in Sources */,
 				65CE3F6DAD21AC4C04F75870 /* PairingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

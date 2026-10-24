@@ -27,6 +27,7 @@ final class AppModel {
     private(set) var pairing: (payload: PairingPayload, expires: Date)?
     private(set) var lastRejection: String?
 
+    private let notifications = NotificationPresenter()
     private var server: LinkServer?
     private var pairingStore: PairingStore?
     private var identity: LinkIdentity?
@@ -46,6 +47,7 @@ final class AppModel {
         activity = ProcessInfo.processInfo.beginActivity(
             options: [.userInitiatedAllowingIdleSystemSleep], reason: "Keep phone link alive")
         observeSleep()
+        notifications.requestAuthorization()
         Task { await startServer() }
     }
 
@@ -78,11 +80,17 @@ final class AppModel {
             }
         case .message(let deviceId, .deviceStatus(let status)):
             connected[deviceId]?.status = status
+        case .message(let deviceId, .notification(let notification)):
+            notifications.post(notification, from: connected[deviceId]?.device.name ?? "手机")
+        case .message(_, .notificationRemoved(let removed)):
+            notifications.remove(key: removed.key)
         case .message(let deviceId, let message):
             log.debug("unhandled \(message.typeName) from \(deviceId)")
         case .disconnected(let deviceId, let reason):
             log.info("\(deviceId) disconnected: \(reason)")
             connected[deviceId] = nil
+            // 手机离线后，Mac 上残留的手机通知已无法与手机同步，一并清掉
+            if connected.isEmpty { notifications.removeAll() }
         case .rejected(let reason):
             lastRejection = reason
         }

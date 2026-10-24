@@ -20,6 +20,21 @@ import Testing
         }
     }
 
+    @Test func decodesAndroidNotification() throws {
+        let json = """
+            {"type":"notification","key":"0|com.x|1|null|10","packageName":"com.x","appName":"X","title":"标题",
+             "text":"内容","subText":null,"timestamp":1,"iconPng":null}
+            """
+        guard case .notification(let n) = try JSONDecoder().decode(LinkMessage.self, from: Data(json.utf8)) else {
+            Issue.record("not notification"); return
+        }
+        #expect(n.title == "标题" && n.subText == nil)
+        let removed = try JSONDecoder().decode(LinkMessage.self, from: Data(#"{"type":"notificationRemoved","key":"k"}"#.utf8))
+        #expect(removed == .notificationRemoved(.init(key: "k")))
+        let data = try JSONEncoder().encode(LinkMessage.notification(n))
+        #expect(try JSONDecoder().decode(LinkMessage.self, from: data) == .notification(n))
+    }
+
     @Test func decodesAndroidHello() throws {
         let json = """
             {"type":"hello","protocolVersion":1,"deviceId":"abc","deviceName":"S23U","model":"SM-S9180",

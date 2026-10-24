@@ -35,6 +35,7 @@ import com.linktomacos.android.link.LinkState
 fun HomeScreen(
     state: LinkState,
     paired: PairedMac?,
+    notificationAccess: Boolean,
     onScan: () -> Unit,
     onPairLink: (String) -> Boolean,
     onUnpair: () -> Unit,
@@ -57,6 +58,7 @@ fun HomeScreen(
                 OutlinedButton(onClick = onUnpair) { Text("取消配对") }
             }
         }
+        NotificationAccessCard(notificationAccess)
         KeepAliveCard()
     }
     if (showPaste) PasteDialog(onDismiss = { showPaste = false }, onSubmit = onPairLink)
@@ -75,6 +77,25 @@ private fun StatusCard(state: LinkState) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(title, style = MaterialTheme.typography.titleLarge)
             Text(detail, style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+}
+
+@Composable
+private fun NotificationAccessCard(enabled: Boolean) {
+    val context = LocalContext.current
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("通知转发", style = MaterialTheme.typography.titleMedium)
+            Text(
+                if (enabled) "已开启：手机上的新通知会显示在 Mac 上" else "需要开启“通知使用权”，才能把手机通知转发到 Mac",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            if (!enabled) {
+                OutlinedButton(onClick = {
+                    context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+                }) { Text("去开启") }
+            }
         }
     }
 }

@@ -17,6 +17,8 @@ class ProtocolTest {
             HelloAck(accepted = true, macName = "Mac"),
             Ping(1), Pong(2), Goodbye("quit"),
             DeviceStatus(80, true, 3, "5G", "CMHK", true, 512, 100, 1),
+            PhoneNotification("k", "com.x", "X", "标题", "内容", null, 1, "AAAA"),
+            NotificationRemoved("k"),
         )
         val bytes = ByteArrayOutputStream()
         DataOutputStream(bytes).use { out -> messages.forEach { Frames.write(out, it) } }

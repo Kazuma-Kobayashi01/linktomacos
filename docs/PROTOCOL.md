@@ -25,6 +25,8 @@ linktomacos://pair?v=1&n=<Mac 名称>&h=<ip1,ip2>&p=<port>&fp=<sha256 十六进�
 | `helloAck` | Mac → 手机 | `accepted` `macName` `reason?` |
 | `ping` / `pong` | 双向 | `t`（毫秒时间戳） |
 | `deviceStatus` | 手机 → Mac | `batteryLevel` `charging` `signalLevel?`(0-4) `networkType?` `carrier?` `wifiConnected` `storageTotal` `storageFree` `timestamp` |
+| `notification` | 手机 → Mac | `key` `packageName` `appName` `title` `text` `subText?` `timestamp` `iconPng?`（base64） |
+| `notificationRemoved` | 手机 → Mac | `key` |
 | `goodbye` | 双向 | `reason`（`quit` / `sleep` / `unpaired` …） |
 
 ## 心跳

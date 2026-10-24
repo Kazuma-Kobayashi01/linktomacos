@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.linktomacos.android.link.LinkService
 import com.linktomacos.android.link.LinkStatus
+import com.linktomacos.android.link.PhoneNotificationListener
 import com.linktomacos.android.protocol.PairingPayload
 import com.linktomacos.android.ui.HomeScreen
 import com.linktomacos.android.ui.QrScanner
@@ -49,8 +50,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private var listenerEnabled by mutableStateOf(false)
+
     override fun onResume() {
         super.onResume()
+        listenerEnabled = PhoneNotificationListener.isEnabled(this)
         if (store.paired.value != null) LinkService.start(this)
     }
 
@@ -97,6 +101,7 @@ class MainActivity : ComponentActivity() {
                 HomeScreen(
                     state = state,
                     paired = paired,
+                    notificationAccess = listenerEnabled,
                     onScan = { cameraPermission.launch(Manifest.permission.CAMERA) },
                     onPairLink = ::pair,
                     onUnpair = {

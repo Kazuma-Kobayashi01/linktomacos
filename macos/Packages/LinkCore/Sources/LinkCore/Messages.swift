@@ -37,6 +37,23 @@ public struct DeviceStatus: Codable, Equatable, Sendable {
     public var timestamp: Int64
 }
 
+/// 手机上弹出的一条通知。`key` 在手机端唯一，同一条通知更新时 key 不变。
+public struct PhoneNotification: Codable, Equatable, Sendable {
+    public var key: String
+    public var packageName: String
+    public var appName: String
+    public var title: String
+    public var text: String
+    public var subText: String?
+    public var timestamp: Int64
+    /// 应用图标，PNG 的 base64。
+    public var iconPng: String?
+}
+
+public struct NotificationRemoved: Codable, Equatable, Sendable {
+    public var key: String
+}
+
 /// 链路上的一条消息。JSON 中以 `type` 字段区分类型，其余字段平铺在同一层。
 public enum LinkMessage: Equatable, Sendable {
     case hello(Hello)
@@ -45,6 +62,8 @@ public enum LinkMessage: Equatable, Sendable {
     case pong(t: Int64)
     case deviceStatus(DeviceStatus)
     case goodbye(reason: String)
+    case notification(PhoneNotification)
+    case notificationRemoved(NotificationRemoved)
     /// 本端版本不认识的消息类型，忽略即可，保证向前兼容。
     case unknown(type: String)
 }
@@ -63,6 +82,8 @@ extension LinkMessage: Codable {
         case "pong": self = .pong(t: try fields.decode(Int64.self, forKey: .t))
         case "deviceStatus": self = .deviceStatus(try DeviceStatus(from: decoder))
         case "goodbye": self = .goodbye(reason: try fields.decodeIfPresent(String.self, forKey: .reason) ?? "")
+        case "notification": self = .notification(try PhoneNotification(from: decoder))
+        case "notificationRemoved": self = .notificationRemoved(try NotificationRemoved(from: decoder))
         default: self = .unknown(type: type)
         }
     }
@@ -77,6 +98,8 @@ extension LinkMessage: Codable {
         case .ping(let t), .pong(let t): try fields.encode(t, forKey: .t)
         case .deviceStatus(let v): try v.encode(to: encoder)
         case .goodbye(let reason): try fields.encode(reason, forKey: .reason)
+        case .notification(let v): try v.encode(to: encoder)
+        case .notificationRemoved(let v): try v.encode(to: encoder)
         case .unknown: break
         }
     }
@@ -89,6 +112,8 @@ extension LinkMessage: Codable {
         case .pong: "pong"
         case .deviceStatus: "deviceStatus"
         case .goodbye: "goodbye"
+        case .notification: "notification"
+        case .notificationRemoved: "notificationRemoved"
         case .unknown(let type): type
         }
     }
