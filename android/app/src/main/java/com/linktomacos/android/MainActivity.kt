@@ -1,7 +1,9 @@
 package com.linktomacos.android
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Environment
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -57,11 +59,15 @@ class MainActivity : ComponentActivity() {
     private val settings by lazy { (application as LinkApp).settings }
     private var listenerEnabled by mutableStateOf(false)
     private var dndAccess by mutableStateOf(false)
+    private var mediaAccess by mutableStateOf(false)
+    private var allFilesAccess by mutableStateOf(false)
 
     override fun onResume() {
         super.onResume()
         listenerEnabled = PhoneNotificationListener.isEnabled(this)
         dndAccess = DndController.hasAccess(this)
+        allFilesAccess = Environment.isExternalStorageManager()
+        mediaAccess = checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
         if (store.paired.value != null) LinkService.start(this)
     }
 
@@ -87,6 +93,9 @@ class MainActivity : ComponentActivity() {
         val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {}
         LaunchedEffect(Unit) {
             notificationPermission.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.READ_PHONE_STATE))
+        }
+        val mediaPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            mediaAccess = checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
         }
         val cameraPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) scanning = true
@@ -130,7 +139,16 @@ class MainActivity : ComponentActivity() {
                         dndAccess = dndAccess,
                         dndActive = dndActive,
                         dndError = dndError,
+                        mediaAccess = mediaAccess,
+                        allFilesAccess = allFilesAccess,
                     ),
+                    onGrantMedia = {
+                        mediaPermission.launch(arrayOf(
+                            Manifest.permission.READ_MEDIA_IMAGES,
+                            Manifest.permission.READ_MEDIA_VIDEO,
+                            Manifest.permission.ACCESS_MEDIA_LOCATION,
+                        ))
+                    },
                     onManageApps = { pickingApps = true },
                     onDndOnConnectChange = settings::setDndOnConnect,
                     onRingCallsChange = settings::setRingCalls,

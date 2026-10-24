@@ -7,8 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1AFDCBC16EFF98958165DB0E /* PhotoViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9B2AA38B48A4F0E39B461B /* PhotoViewer.swift */; };
+		29747915284789C2968ED6FE /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345D2C85657B1E9D8BE72CCD /* ExportService.swift */; };
+		3DC167DFDCF86D89BEEFACA7 /* MediaListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4C3ACE6D79D7C454BB6FE1 /* MediaListModel.swift */; };
+		49E29FEFB7AE3E244695C0F4 /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91B14E80BE438C1A18CF0E7 /* FilesView.swift */; };
+		5541DD8C0025767EC9E7EF28 /* ShortcutMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A89571C8DE26E7C36927056 /* ShortcutMonitor.swift */; };
 		65CE3F6DAD21AC4C04F75870 /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8921C7061B6EAD1EA8964A0F /* PairingView.swift */; };
+		700CE447C1E22D6291057E42 /* PhoneLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958F12EEA72978ECCAEF8947 /* PhoneLibrary.swift */; };
+		7103CBA32DDC97F86E93E0DC /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE57E9CEDEDA4EFD9AF9157 /* MainWindow.swift */; };
 		7FFCDB75A8A5EB7E7E99EE36 /* NotificationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88CE2CA5F29B1DAEEFD0CD1 /* NotificationPresenter.swift */; };
+		93B6F4ABD9FE7787E57EC69D /* PhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534209D9416859E7EA4D09C9 /* PhotosView.swift */; };
 		959CE4EBE7D4E715CDEB868B /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D4EAFA984DEE9ACA3DD303 /* MenuView.swift */; };
 		96967D2F860540FDBC5B1B8C /* LinkToMacOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FE64467621FBACC20CC343 /* LinkToMacOSApp.swift */; };
 		A1EC946C25F585B470E36107 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A79E5307B246AA4C9044A12 /* AppModel.swift */; };
@@ -17,11 +25,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0B4C3ACE6D79D7C454BB6FE1 /* MediaListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaListModel.swift; sourceTree = "<group>"; };
 		17E1BBD393B231FBF5D148C3 /* LinkToMacOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LinkToMacOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A79E5307B246AA4C9044A12 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		238E1140EBFBFF6E1D739FC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		345D2C85657B1E9D8BE72CCD /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
+		3CE57E9CEDEDA4EFD9AF9157 /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
+		534209D9416859E7EA4D09C9 /* PhotosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosView.swift; sourceTree = "<group>"; };
+		5C9B2AA38B48A4F0E39B461B /* PhotoViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewer.swift; sourceTree = "<group>"; };
 		8921C7061B6EAD1EA8964A0F /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
 		8E350553F9EDCEC9BE7E1D71 /* LinkCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LinkCore; path = Packages/LinkCore; sourceTree = SOURCE_ROOT; };
+		958F12EEA72978ECCAEF8947 /* PhoneLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneLibrary.swift; sourceTree = "<group>"; };
+		9A89571C8DE26E7C36927056 /* ShortcutMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutMonitor.swift; sourceTree = "<group>"; };
+		A91B14E80BE438C1A18CF0E7 /* FilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesView.swift; sourceTree = "<group>"; };
 		B0D4EAFA984DEE9ACA3DD303 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		E556CC239883C6CAD9EE7EE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E88CE2CA5F29B1DAEEFD0CD1 /* NotificationPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPresenter.swift; sourceTree = "<group>"; };
@@ -50,8 +66,32 @@
 				B0D4EAFA984DEE9ACA3DD303 /* MenuView.swift */,
 				E88CE2CA5F29B1DAEEFD0CD1 /* NotificationPresenter.swift */,
 				8921C7061B6EAD1EA8964A0F /* PairingView.swift */,
+				312334F0E8F99638BB44DFAA /* Library */,
+				6CB38A9046BB18D83579FED9 /* Views */,
 			);
 			path = LinkToMacOS;
+			sourceTree = "<group>";
+		};
+		312334F0E8F99638BB44DFAA /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				345D2C85657B1E9D8BE72CCD /* ExportService.swift */,
+				0B4C3ACE6D79D7C454BB6FE1 /* MediaListModel.swift */,
+				958F12EEA72978ECCAEF8947 /* PhoneLibrary.swift */,
+			);
+			path = Library;
+			sourceTree = "<group>";
+		};
+		6CB38A9046BB18D83579FED9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A91B14E80BE438C1A18CF0E7 /* FilesView.swift */,
+				3CE57E9CEDEDA4EFD9AF9157 /* MainWindow.swift */,
+				534209D9416859E7EA4D09C9 /* PhotosView.swift */,
+				5C9B2AA38B48A4F0E39B461B /* PhotoViewer.swift */,
+				9A89571C8DE26E7C36927056 /* ShortcutMonitor.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		91039389B9DAD091CF0FA7E2 /* Products */ = {
@@ -156,10 +196,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1EC946C25F585B470E36107 /* AppModel.swift in Sources */,
+				29747915284789C2968ED6FE /* ExportService.swift in Sources */,
+				49E29FEFB7AE3E244695C0F4 /* FilesView.swift in Sources */,
 				96967D2F860540FDBC5B1B8C /* LinkToMacOSApp.swift in Sources */,
+				7103CBA32DDC97F86E93E0DC /* MainWindow.swift in Sources */,
+				3DC167DFDCF86D89BEEFACA7 /* MediaListModel.swift in Sources */,
 				959CE4EBE7D4E715CDEB868B /* MenuView.swift in Sources */,
 				7FFCDB75A8A5EB7E7E99EE36 /* NotificationPresenter.swift in Sources */,
 				65CE3F6DAD21AC4C04F75870 /* PairingView.swift in Sources */,
+				700CE447C1E22D6291057E42 /* PhoneLibrary.swift in Sources */,
+				1AFDCBC16EFF98958165DB0E /* PhotoViewer.swift in Sources */,
+				93B6F4ABD9FE7787E57EC69D /* PhotosView.swift in Sources */,
+				5541DD8C0025767EC9E7EF28 /* ShortcutMonitor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

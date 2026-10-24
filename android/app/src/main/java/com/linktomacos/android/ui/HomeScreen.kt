@@ -42,6 +42,8 @@ data class SettingsUiState(
     val dndAccess: Boolean,
     val dndActive: Boolean,
     val dndError: String?,
+    val mediaAccess: Boolean,
+    val allFilesAccess: Boolean,
 )
 
 @Composable
@@ -50,6 +52,7 @@ fun HomeScreen(
     paired: PairedMac?,
     settings: SettingsUiState,
     onManageApps: () -> Unit,
+    onGrantMedia: () -> Unit,
     onDndOnConnectChange: (Boolean) -> Unit,
     onRingCallsChange: (Boolean) -> Unit,
     onScan: () -> Unit,
@@ -76,6 +79,7 @@ fun HomeScreen(
         }
         NotificationAccessCard(settings.notificationAccess, settings.allowedCount, onManageApps)
         DndCard(settings, onDndOnConnectChange, onRingCallsChange)
+        FilesAccessCard(settings.mediaAccess, settings.allFilesAccess, onGrantMedia)
         KeepAliveCard()
     }
     if (showPaste) PasteDialog(onDismiss = { showPaste = false }, onSubmit = onPairLink)
@@ -147,6 +151,38 @@ private fun DndCard(settings: SettingsUiState, onDndOnConnectChange: (Boolean) -
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun FilesAccessCard(mediaAccess: Boolean, allFilesAccess: Boolean, onGrantMedia: () -> Unit) {
+    val context = LocalContext.current
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("相册与文件", style = MaterialTheme.typography.titleMedium)
+            Text("在 Mac 上浏览手机的相册和文件，需要下面两项授权", style = MaterialTheme.typography.bodySmall)
+            AccessRow("相册读取（需选“允许全部”）", mediaAccess, onGrantMedia)
+            AccessRow("所有文件访问", allFilesAccess) {
+                val packageUri = "package:${context.packageName}".toUri()
+                runCatching { context.startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, packageUri)) }
+                    .onFailure { context.startActivity(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)) }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AccessRow(title: String, granted: Boolean, onGrant: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                if (granted) "已授权" else "未授权",
+                style = MaterialTheme.typography.bodySmall,
+                color = if (granted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+            )
+        }
+        if (!granted) OutlinedButton(onClick = onGrant) { Text("去授权") }
     }
 }
 

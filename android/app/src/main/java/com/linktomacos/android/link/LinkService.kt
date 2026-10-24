@@ -26,6 +26,8 @@ import com.linktomacos.android.protocol.HelloAck
 import com.linktomacos.android.protocol.LinkMessage
 import com.linktomacos.android.protocol.Ping
 import com.linktomacos.android.protocol.Pong
+import com.linktomacos.android.protocol.Request
+import com.linktomacos.android.remote.RemoteApi
 import com.linktomacos.android.security.Identity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -201,12 +203,14 @@ class LinkService : Service() {
                     session.close()
                 }
             }
-            val reader = async(Dispatchers.IO) { readLoop(session) }
+            val remote = RemoteApi(this@LinkService, this, session::send)
+            val reader = async(Dispatchers.IO) { readLoop(session, remote) }
             try {
                 SessionEnd.Closed(reader.await(), wasConnected = true, macLeft = session.macLeft)
             } finally {
                 statusJob.cancel()
                 notificationJob.cancel()
+                remote.cancelAll()
             }
         } catch (e: IOException) {
             SessionEnd.Closed(e.message ?: "连接中断", wasConnected = false)
@@ -217,7 +221,7 @@ class LinkService : Service() {
     }
 
     /** 返回连接结束的原因。 */
-    private fun readLoop(session: Session): String {
+    private fun readLoop(session: Session, remote: RemoteApi): String {
         while (true) {
             val message = try {
                 session.receive()
@@ -226,6 +230,7 @@ class LinkService : Service() {
             }
             when (message) {
                 is Ping -> session.send(Pong(message.t))
+                is Request -> remote.handle(message)
                 is Goodbye -> {
                     Log.i(TAG, "goodbye from Mac: ${message.reason}")
                     session.macLeft = true

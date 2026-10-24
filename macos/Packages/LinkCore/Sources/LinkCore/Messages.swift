@@ -54,6 +54,46 @@ public struct NotificationRemoved: Codable, Equatable, Sendable {
     public var key: String
 }
 
+/// 请求：Mac → 手机（读取相册、文件列表、下载等）。`id` 由发起方分配，响应原样带回。
+public struct RPCRequest: Codable, Equatable, Sendable {
+    public var id: Int
+    public var method: String
+    public var params: JSONValue
+
+    public init(id: Int, method: String, params: JSONValue = .object([:])) {
+        self.id = id
+        self.method = method
+        self.params = params
+    }
+}
+
+public struct RPCResponse: Codable, Equatable, Sendable {
+    public var id: Int
+    public var ok: Bool
+    public var result: JSONValue?
+    public var error: String?
+
+    public init(id: Int, ok: Bool, result: JSONValue? = nil, error: String? = nil) {
+        self.id = id
+        self.ok = ok
+        self.result = result
+        self.error = error
+    }
+}
+
+/// 一次文件流（下载）结束。内容本身走二进制数据帧。
+public struct StreamEnd: Codable, Equatable, Sendable {
+    public var streamId: Int
+    public var ok: Bool
+    public var error: String?
+
+    public init(streamId: Int, ok: Bool, error: String? = nil) {
+        self.streamId = streamId
+        self.ok = ok
+        self.error = error
+    }
+}
+
 /// 链路上的一条消息。JSON 中以 `type` 字段区分类型，其余字段平铺在同一层。
 public enum LinkMessage: Equatable, Sendable {
     case hello(Hello)
@@ -64,6 +104,11 @@ public enum LinkMessage: Equatable, Sendable {
     case goodbye(reason: String)
     case notification(PhoneNotification)
     case notificationRemoved(NotificationRemoved)
+    case request(RPCRequest)
+    case response(RPCResponse)
+    case streamEnd(StreamEnd)
+    /// 二进制数据帧，属于 `streamId` 对应的文件流。不走 JSON，见 FrameCodec。
+    case data(streamId: UInt32, bytes: Data)
     /// 本端版本不认识的消息类型，忽略即可，保证向前兼容。
     case unknown(type: String)
 }
@@ -84,6 +129,9 @@ extension LinkMessage: Codable {
         case "goodbye": self = .goodbye(reason: try fields.decodeIfPresent(String.self, forKey: .reason) ?? "")
         case "notification": self = .notification(try PhoneNotification(from: decoder))
         case "notificationRemoved": self = .notificationRemoved(try NotificationRemoved(from: decoder))
+        case "request": self = .request(try RPCRequest(from: decoder))
+        case "response": self = .response(try RPCResponse(from: decoder))
+        case "streamEnd": self = .streamEnd(try StreamEnd(from: decoder))
         default: self = .unknown(type: type)
         }
     }
@@ -100,7 +148,10 @@ extension LinkMessage: Codable {
         case .goodbye(let reason): try fields.encode(reason, forKey: .reason)
         case .notification(let v): try v.encode(to: encoder)
         case .notificationRemoved(let v): try v.encode(to: encoder)
-        case .unknown: break
+        case .request(let v): try v.encode(to: encoder)
+        case .response(let v): try v.encode(to: encoder)
+        case .streamEnd(let v): try v.encode(to: encoder)
+        case .data, .unknown: break
         }
     }
 
@@ -114,6 +165,10 @@ extension LinkMessage: Codable {
         case .goodbye: "goodbye"
         case .notification: "notification"
         case .notificationRemoved: "notificationRemoved"
+        case .request: "request"
+        case .response: "response"
+        case .streamEnd: "streamEnd"
+        case .data: "data"
         case .unknown(let type): type
         }
     }

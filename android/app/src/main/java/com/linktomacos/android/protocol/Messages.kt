@@ -2,6 +2,7 @@ package com.linktomacos.android.protocol
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.decodeFromJsonElement
@@ -68,6 +69,25 @@ data class PhoneNotification(
 @Serializable
 data class NotificationRemoved(val key: String) : LinkMessage
 
+/** 请求：Mac → 手机（读取相册、文件列表、下载等）。[id] 由发起方分配，响应原样带回。 */
+@Serializable
+data class Request(val id: Int, val method: String, val params: JsonObject = JsonObject(emptyMap())) : LinkMessage
+
+@Serializable
+data class Response(
+    val id: Int,
+    val ok: Boolean,
+    val result: JsonElement? = null,
+    val error: String? = null,
+) : LinkMessage
+
+/** 一次文件流（下载）结束。内容本身走二进制数据帧。 */
+@Serializable
+data class StreamEnd(val streamId: Int, val ok: Boolean, val error: String? = null) : LinkMessage
+
+/** 二进制数据帧，属于 [streamId] 对应的文件流。不走 JSON，见 [Frames]。 */
+class DataChunk(val streamId: Int, val bytes: ByteArray, val length: Int = bytes.size) : LinkMessage
+
 /** 本端版本不认识的消息类型，忽略即可。 */
 data class Unknown(val type: String) : LinkMessage
 
@@ -87,6 +107,10 @@ object MessageCodec {
             is Goodbye -> "goodbye" to json.encodeToJsonElement(message)
             is PhoneNotification -> "notification" to json.encodeToJsonElement(message)
             is NotificationRemoved -> "notificationRemoved" to json.encodeToJsonElement(message)
+            is Request -> "request" to json.encodeToJsonElement(message)
+            is Response -> "response" to json.encodeToJsonElement(message)
+            is StreamEnd -> "streamEnd" to json.encodeToJsonElement(message)
+            is DataChunk -> error("data chunks are binary frames, see Frames")
             is Unknown -> error("cannot send unknown message ${message.type}")
         }
         return JsonObject(mapOf("type" to JsonPrimitive(type)) + body.jsonObject).toString()
@@ -103,6 +127,9 @@ object MessageCodec {
             "goodbye" -> json.decodeFromJsonElement<Goodbye>(obj)
             "notification" -> json.decodeFromJsonElement<PhoneNotification>(obj)
             "notificationRemoved" -> json.decodeFromJsonElement<NotificationRemoved>(obj)
+            "request" -> json.decodeFromJsonElement<Request>(obj)
+            "response" -> json.decodeFromJsonElement<Response>(obj)
+            "streamEnd" -> json.decodeFromJsonElement<StreamEnd>(obj)
             else -> Unknown(type ?: "")
         }
     }

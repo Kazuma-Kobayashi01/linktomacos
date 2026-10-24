@@ -12,6 +12,22 @@ struct ConnectedDevice: Identifiable {
     var id: String { device.deviceId }
 }
 
+/// 连接线程要同步把数据帧交给对应手机的 PhoneRemote，所以单独放一个带锁的表。
+final class RemoteRegistry: @unchecked Sendable {
+    private let lock = NSLock()
+    private var remotes: [String: PhoneRemote] = [:]
+
+    func remote(for deviceId: String) -> PhoneRemote? { lock.withLock { remotes[deviceId] } }
+
+    @discardableResult
+    func set(_ remote: PhoneRemote, for deviceId: String) -> PhoneRemote? {
+        lock.withLock { let old = remotes[deviceId]; remotes[deviceId] = remote; return old }
+    }
+
+    @discardableResult
+    func remove(_ deviceId: String) -> PhoneRemote? { lock.withLock { remotes.removeValue(forKey: deviceId) } }
+}
+
 @MainActor
 @Observable
 final class AppModel {
@@ -26,6 +42,13 @@ final class AppModel {
     private(set) var pairedDevices: [PairedDevice] = []
     private(set) var pairing: (payload: PairingPayload, expires: Date)?
     private(set) var lastRejection: String?
+    /// 每台在线手机一个：相册、文件、缩略图、导出。
+    private(set) var libraries: [String: PhoneLibrary] = [:]
+
+    var activeDevice: ConnectedDevice? { connected.values.min { $0.device.pairedAt < $1.device.pairedAt } }
+    var activeLibrary: PhoneLibrary? { activeDevice.flatMap { libraries[$0.id] } }
+
+    private let registry = RemoteRegistry()
 
     private let notifications = NotificationPresenter()
     private var server: LinkServer?
@@ -48,6 +71,7 @@ final class AppModel {
             options: [.userInitiatedAllowingIdleSystemSleep], reason: "Keep phone link alive")
         observeSleep()
         notifications.requestAuthorization()
+        Task.detached(priority: .background) { ExportService.pruneCache() }
         Task { await startServer() }
     }
 
@@ -60,6 +84,10 @@ final class AppModel {
             self.pairingStore = store
             self.server = server
             pairedDevices = store.pairedDevices
+            // 文件数据量大，在连接线程上直接交给 PhoneRemote，不经过主线程
+            server.setInboundHook { [registry] deviceId, message in
+                registry.remote(for: deviceId)?.handle(message) ?? false
+            }
             try await server.start()
             for await event in server.events { handle(event) }
         } catch {
@@ -74,6 +102,12 @@ final class AppModel {
             serverState = .listening(port: port)
         case .connected(let device, let newlyPaired):
             connected[device.deviceId] = ConnectedDevice(device: device)
+            let id = device.deviceId
+            let remote = PhoneRemote { [weak server] message in server?.send(message, to: id) }
+            registry.set(remote, for: id)?.close()
+            let library = PhoneLibrary(remote: remote, deviceName: device.name)
+            libraries[id] = library
+            Task { await library.refreshOverview() }
             if newlyPaired {
                 pairing = nil
                 pairedDevices = pairingStore?.pairedDevices ?? []
@@ -89,6 +123,8 @@ final class AppModel {
         case .disconnected(let deviceId, let reason):
             log.info("\(deviceId) disconnected: \(reason)")
             connected[deviceId] = nil
+            registry.remove(deviceId)?.close()
+            libraries[deviceId] = nil
             // 手机离线后，Mac 上残留的手机通知已无法与手机同步，一并清掉
             if connected.isEmpty { notifications.removeAll() }
         case .rejected(let reason):

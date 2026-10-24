@@ -26,6 +26,11 @@ struct MenuView: View {
                 }
                 .menuStyle(.borderlessButton)
             }
+            Button("打开相册和文件") {
+                openWindow(id: WindowID.main)
+                NSApp.activate()
+            }
+            .disabled(model.connected.isEmpty)
             HStack {
                 Button("配对新手机…") {
                     model.beginPairing()

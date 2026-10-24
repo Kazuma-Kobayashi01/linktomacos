@@ -32,6 +32,7 @@ public final class LinkServer: @unchecked Sendable {
 
     private let lock = NSLock()
     private var sessions: [String: Channel] = [:]
+    private var inboundHook: (@Sendable (String, LinkMessage) -> Bool)?
 
     public private(set) var port: Int = 0
 
@@ -82,6 +83,12 @@ public final class LinkServer: @unchecked Sendable {
         port = channel.localAddress?.port ?? 0
         await MainActor.run { publishBonjour() }
         eventSink.yield(.listening(port: port))
+    }
+
+    /// 在连接线程上同步拦截入站消息，返回 true 表示已处理、不再进入 `events`。
+    /// 文件数据量大，不能经过主线程的事件流。
+    public func setInboundHook(_ hook: (@Sendable (String, LinkMessage) -> Bool)?) {
+        lock.withLock { inboundHook = hook }
     }
 
     public func send(_ message: LinkMessage, to deviceId: String) {
@@ -155,6 +162,7 @@ public final class LinkServer: @unchecked Sendable {
     }
 
     fileprivate func received(_ message: LinkMessage, from deviceId: String) {
+        if let hook = lock.withLock({ inboundHook }), hook(deviceId, message) { return }
         eventSink.yield(.message(deviceId: deviceId, message))
     }
 

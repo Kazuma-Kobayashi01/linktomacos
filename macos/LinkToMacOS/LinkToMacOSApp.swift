@@ -14,16 +14,25 @@ struct LinkToMacOSApp: App {
         }
         .menuBarExtraStyle(.window)
 
+        Window("LinkToMacOS", id: WindowID.main) {
+            MainWindow()
+                .environment(appDelegate.model)
+        }
+        .defaultSize(width: 1120, height: 720)
+        .defaultLaunchBehavior(.presented)
+
         Window("配对新手机", id: WindowID.pairing) {
             PairingView()
                 .environment(appDelegate.model)
         }
         .windowResizability(.contentSize)
         .defaultPosition(.center)
+        .defaultLaunchBehavior(.suppressed)
     }
 }
 
 enum WindowID {
+    static let main = "main"
     static let pairing = "pairing"
 }
 
