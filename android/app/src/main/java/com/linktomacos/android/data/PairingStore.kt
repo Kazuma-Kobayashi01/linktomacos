@@ -17,6 +17,13 @@ data class PairedMac(
     val pendingToken: String?,
 )
 
+/**
+ * 两次配对状态是否属于同一次配对：同一台 Mac，且新状态不是“带着新令牌重新扫码”。
+ * 握手成功后令牌被作废、地址被更新，这类变化不应让连接重启。
+ */
+fun isSamePairing(old: PairedMac?, new: PairedMac?): Boolean =
+    old?.fingerprint == new?.fingerprint && (new?.pendingToken == null || old?.pendingToken == new.pendingToken)
+
 class PairingStore(context: Context) {
     private val prefs = context.getSharedPreferences("pairing", Context.MODE_PRIVATE)
     private val _paired = MutableStateFlow(load())

@@ -17,6 +17,7 @@ import com.linktomacos.android.LinkApp
 import com.linktomacos.android.MainActivity
 import com.linktomacos.android.R
 import com.linktomacos.android.data.PairedMac
+import com.linktomacos.android.data.isSamePairing
 import com.linktomacos.android.protocol.DeviceStatus
 import com.linktomacos.android.protocol.Frames
 import com.linktomacos.android.protocol.Goodbye
@@ -35,6 +36,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -93,7 +95,9 @@ class LinkService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     private suspend fun run() {
-        store.paired.collectLatest { mac ->
+        // 握手成功后 onConnected 会更新地址并作废令牌，这不是重新配对，不能因此重启连接；
+        // 只有换了 Mac（指纹变化）或重新扫码（拿到新令牌）才重启。
+        store.paired.distinctUntilChanged(::isSamePairing).collectLatest { mac ->
             if (mac == null) {
                 LinkStatus.set(LinkState.NotPaired)
                 return@collectLatest
