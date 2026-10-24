@@ -17,6 +17,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -24,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -31,11 +33,25 @@ import androidx.core.net.toUri
 import com.linktomacos.android.data.PairedMac
 import com.linktomacos.android.link.LinkState
 
+/** 首页要显示和修改的设置状态。 */
+data class SettingsUiState(
+    val notificationAccess: Boolean,
+    val allowedCount: Int,
+    val dndOnConnect: Boolean,
+    val ringCalls: Boolean,
+    val dndAccess: Boolean,
+    val dndActive: Boolean,
+    val dndError: String?,
+)
+
 @Composable
 fun HomeScreen(
     state: LinkState,
     paired: PairedMac?,
-    notificationAccess: Boolean,
+    settings: SettingsUiState,
+    onManageApps: () -> Unit,
+    onDndOnConnectChange: (Boolean) -> Unit,
+    onRingCallsChange: (Boolean) -> Unit,
     onScan: () -> Unit,
     onPairLink: (String) -> Boolean,
     onUnpair: () -> Unit,
@@ -58,7 +74,8 @@ fun HomeScreen(
                 OutlinedButton(onClick = onUnpair) { Text("取消配对") }
             }
         }
-        NotificationAccessCard(notificationAccess)
+        NotificationAccessCard(settings.notificationAccess, settings.allowedCount, onManageApps)
+        DndCard(settings, onDndOnConnectChange, onRingCallsChange)
         KeepAliveCard()
     }
     if (showPaste) PasteDialog(onDismiss = { showPaste = false }, onSubmit = onPairLink)
@@ -82,21 +99,65 @@ private fun StatusCard(state: LinkState) {
 }
 
 @Composable
-private fun NotificationAccessCard(enabled: Boolean) {
+private fun NotificationAccessCard(enabled: Boolean, allowedCount: Int, onManageApps: () -> Unit) {
     val context = LocalContext.current
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("通知转发", style = MaterialTheme.typography.titleMedium)
             Text(
-                if (enabled) "已开启：手机上的新通知会显示在 Mac 上" else "需要开启“通知使用权”，才能把手机通知转发到 Mac",
+                when {
+                    !enabled -> "需要开启“通知使用权”，才能把手机通知转发到 Mac"
+                    allowedCount == 0 -> "还没有选择任何应用，请先选择要转发通知的应用"
+                    else -> "已选择 $allowedCount 个应用，它们的新通知会显示在 Mac 上"
+                },
                 style = MaterialTheme.typography.bodySmall,
             )
-            if (!enabled) {
-                OutlinedButton(onClick = {
-                    context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
-                }) { Text("去开启") }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                if (!enabled) {
+                    OutlinedButton(onClick = {
+                        context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+                    }) { Text("去开启") }
+                }
+                OutlinedButton(onClick = onManageApps) { Text("选择应用") }
             }
         }
+    }
+}
+
+@Composable
+private fun DndCard(settings: SettingsUiState, onDndOnConnectChange: (Boolean) -> Unit, onRingCallsChange: (Boolean) -> Unit) {
+    val context = LocalContext.current
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("免打扰", style = MaterialTheme.typography.titleMedium)
+            SwitchRow("连接 Mac 时自动开启免打扰", "断开、Mac 退出或睡眠时自动关闭", settings.dndOnConnect, onDndOnConnectChange)
+            if (settings.dndOnConnect) {
+                SwitchRow("免打扰期间来电仍然响铃", null, settings.ringCalls, onRingCallsChange)
+                if (!settings.dndAccess) {
+                    Text("需要授予“勿扰权限”才能自动开关免打扰", style = MaterialTheme.typography.bodySmall)
+                    OutlinedButton(onClick = {
+                        context.startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
+                    }) { Text("去授权") }
+                } else {
+                    Text(
+                        settings.dndError?.let { "免打扰出错：$it" }
+                            ?: if (settings.dndActive) "免打扰已由本应用开启" else "当前未开启（连接 Mac 后自动开启）",
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SwitchRow(title: String, subtitle: String?, checked: Boolean, onChecked: (Boolean) -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.bodyMedium)
+            if (subtitle != null) Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Switch(checked = checked, onCheckedChange = onChecked)
     }
 }
 

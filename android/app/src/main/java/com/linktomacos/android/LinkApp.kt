@@ -3,10 +3,12 @@ package com.linktomacos.android
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import com.linktomacos.android.data.LinkSettings
 import com.linktomacos.android.data.PairingStore
 
 class LinkApp : Application() {
     val pairingStore by lazy { PairingStore(this) }
+    val settings by lazy { LinkSettings(this) }
 
     override fun onCreate() {
         super.onCreate()

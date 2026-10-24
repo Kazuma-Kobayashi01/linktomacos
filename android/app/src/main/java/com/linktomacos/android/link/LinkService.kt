@@ -35,6 +35,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.isActive
@@ -55,6 +56,10 @@ private const val CONNECT_TIMEOUT_MS = 3_000
 private const val HANDSHAKE_TIMEOUT_MS = 10_000
 /** Mac 每 5 秒发一次 ping；20 秒收不到任何帧即视为断开。 */
 private const val READ_TIMEOUT_MS = 20_000
+/** 非主动断开（断网、崩溃）时，等多久才关闭免打扰。 */
+private const val DND_GRACE_MS = 10_000L
+/** Mac 主动离开（退出、睡眠）后，等多久再尝试重连。 */
+private const val MAC_LEFT_RETRY_SECONDS = 8
 
 /**
  * 常驻前台服务（connectedDevice 类型）：发现并连接已配对的 Mac，维持心跳，上报设备状态，断线自动重连。
@@ -64,6 +69,8 @@ class LinkService : Service() {
     /** 网络变化或用户操作时立即重试，不必等退避结束。 */
     private val wakeups = Channel<Unit>(Channel.CONFLATED)
     private val store by lazy { (application as LinkApp).pairingStore }
+    private val settings by lazy { (application as LinkApp).settings }
+    private val dnd by lazy { DndController(this, settings, scope) }
     private val discovery by lazy { MacDiscovery(this) }
     private val statusCollector by lazy { DeviceStatusCollector(this) }
 
@@ -77,6 +84,7 @@ class LinkService : Service() {
         super.onCreate()
         startForeground(NOTIFICATION_ID, buildNotification("正在启动…"), ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE)
         getSystemService(ConnectivityManager::class.java).registerDefaultNetworkCallback(networkCallback)
+        dnd.start()
         scope.launch { LinkStatus.state.collect { updateNotification(it) } }
         scope.launch { run() }
     }
@@ -88,6 +96,7 @@ class LinkService : Service() {
 
     override fun onDestroy() {
         getSystemService(ConnectivityManager::class.java).unregisterNetworkCallback(networkCallback)
+        dnd.shutdown()
         scope.cancel()
         super.onDestroy()
     }
@@ -103,27 +112,42 @@ class LinkService : Service() {
                 return@collectLatest
             }
             var failures = 0
-            while (currentCoroutineContext().isActive) {
-                LinkStatus.set(LinkState.Searching(mac.name))
-                when (val end = connectAndServe(store.paired.value ?: mac)) {
-                    is SessionEnd.Rejected -> {
-                        LinkStatus.set(LinkState.Rejected(mac.name, end.reason))
-                        wakeups.receive()
-                        continue
-                    }
-                    is SessionEnd.Closed -> {
-                        failures = if (end.wasConnected) 0 else failures + 1
-                        val delaySeconds = listOf(1, 2, 5, 10, 15)[failures.coerceAtMost(4)]
-                        LinkStatus.set(LinkState.Waiting(mac.name, end.reason, delaySeconds))
-                        withTimeoutOrNull(delaySeconds * 1000L) { wakeups.receive() }
+            try {
+                while (currentCoroutineContext().isActive) {
+                    LinkStatus.set(LinkState.Searching(mac.name))
+                    when (val end = connectAndServe(store.paired.value ?: mac)) {
+                        is SessionEnd.Rejected -> {
+                            dnd.onDisconnected(0)
+                            LinkStatus.set(LinkState.Rejected(mac.name, end.reason))
+                            wakeups.receive()
+                            continue
+                        }
+                        is SessionEnd.Closed -> {
+                            Log.i(TAG, "session closed: reason=${end.reason} wasConnected=${end.wasConnected} macLeft=${end.macLeft}")
+                            // Mac 主动说再见（退出、睡眠）立即关免打扰；其他断开给 10 秒重连的机会
+                            dnd.onDisconnected(if (end.macLeft) 0 else DND_GRACE_MS)
+                            failures = if (end.wasConnected) 0 else failures + 1
+                            val delaySeconds = if (end.macLeft) MAC_LEFT_RETRY_SECONDS
+                            else listOf(1, 2, 5, 10, 15)[failures.coerceAtMost(4)]
+                            LinkStatus.set(LinkState.Waiting(mac.name, end.reason, delaySeconds))
+                            if (end.macLeft) {
+                                // Mac 正在退出或睡眠，立刻重连只会连上一个半死的 Mac；也不理会网络变化的唤醒
+                                delay(delaySeconds * 1000L)
+                            } else {
+                                withTimeoutOrNull(delaySeconds * 1000L) { wakeups.receive() }
+                            }
+                        }
                     }
                 }
+            } finally {
+                // 换 Mac、取消配对或服务停止时，不等宽限期
+                dnd.onDisconnected(0)
             }
         }
     }
 
     private sealed interface SessionEnd {
-        data class Closed(val reason: String, val wasConnected: Boolean) : SessionEnd
+        data class Closed(val reason: String, val wasConnected: Boolean, val macLeft: Boolean = false) : SessionEnd
         data class Rejected(val reason: String) : SessionEnd
     }
 
@@ -160,6 +184,7 @@ class LinkService : Service() {
 
             store.onConnected(host, port, ack.macName)
             LinkStatus.set(LinkState.Connected(ack.macName, host))
+            dnd.onConnected()
             session.socket.soTimeout = READ_TIMEOUT_MS
 
             val statusJob = launch(Dispatchers.IO) {
@@ -178,7 +203,7 @@ class LinkService : Service() {
             }
             val reader = async(Dispatchers.IO) { readLoop(session) }
             try {
-                SessionEnd.Closed(reader.await(), wasConnected = true)
+                SessionEnd.Closed(reader.await(), wasConnected = true, macLeft = session.macLeft)
             } finally {
                 statusJob.cancel()
                 notificationJob.cancel()
@@ -201,7 +226,11 @@ class LinkService : Service() {
             }
             when (message) {
                 is Ping -> session.send(Pong(message.t))
-                is Goodbye -> return "Mac 已断开（${message.reason}）"
+                is Goodbye -> {
+                    Log.i(TAG, "goodbye from Mac: ${message.reason}")
+                    session.macLeft = true
+                    return "Mac 已断开（${message.reason}）"
+                }
                 else -> Log.d(TAG, "unhandled $message")
             }
         }
@@ -217,6 +246,8 @@ class LinkService : Service() {
     )
 
     private class Session(val socket: SSLSocket) {
+        /** 对端是否发过 goodbye（主动离开）。 */
+        @Volatile var macLeft = false
         private val input = DataInputStream(BufferedInputStream(socket.inputStream))
         private val output = DataOutputStream(BufferedOutputStream(socket.outputStream))
 

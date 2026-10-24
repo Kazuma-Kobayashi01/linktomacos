@@ -39,7 +39,7 @@ final class NotificationPresenter: NSObject, UNUserNotificationCenterDelegate {
         let request = UNNotificationRequest(identifier: notification.key, content: content, trigger: nil)
         center.add(request) { error in
             if let error { log.error("post failed: \(error)") }
-            else { log.info("posted \(notification.appName): \(notification.title)") }
+            else { log.info("posted from \(notification.packageName, privacy: .public)") }
         }
     }
 

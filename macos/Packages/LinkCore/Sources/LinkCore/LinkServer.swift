@@ -108,9 +108,11 @@ public final class LinkServer: @unchecked Sendable {
     }
 
     public func shutdown(reason: String) async {
-        await disconnectAll(reason: reason)
-        await MainActor.run { bonjour?.stop() }
+        // 先停止接受新连接并撤下 Bonjour，否则手机收到 goodbye 后立刻重连，会连上一个正在退出的 Mac
         try? await serverChannel?.close().get()
+        serverChannel = nil
+        await MainActor.run { bonjour?.stop() }
+        await disconnectAll(reason: reason)
         try? await group.shutdownGracefully()
         eventSink.finish()
     }

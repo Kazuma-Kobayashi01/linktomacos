@@ -29,12 +29,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.linktomacos.android.link.DndController
+import com.linktomacos.android.link.DndStatus
 import com.linktomacos.android.link.LinkService
 import com.linktomacos.android.link.LinkStatus
 import com.linktomacos.android.link.PhoneNotificationListener
 import com.linktomacos.android.protocol.PairingPayload
+import com.linktomacos.android.ui.AppPickerScreen
 import com.linktomacos.android.ui.HomeScreen
 import com.linktomacos.android.ui.QrScanner
+import com.linktomacos.android.ui.SettingsUiState
 
 class MainActivity : ComponentActivity() {
     private val store by lazy { (application as LinkApp).pairingStore }
@@ -50,11 +54,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private val settings by lazy { (application as LinkApp).settings }
     private var listenerEnabled by mutableStateOf(false)
+    private var dndAccess by mutableStateOf(false)
 
     override fun onResume() {
         super.onResume()
         listenerEnabled = PhoneNotificationListener.isEnabled(this)
+        dndAccess = DndController.hasAccess(this)
         if (store.paired.value != null) LinkService.start(this)
     }
 
@@ -70,6 +77,12 @@ class MainActivity : ComponentActivity() {
         val state by LinkStatus.state.collectAsStateWithLifecycle()
         val paired by store.paired.collectAsStateWithLifecycle()
         var scanning by remember { mutableStateOf(false) }
+        var pickingApps by remember { mutableStateOf(false) }
+        val allowedApps by settings.allowedApps.collectAsStateWithLifecycle()
+        val dndOnConnect by settings.dndOnConnect.collectAsStateWithLifecycle()
+        val ringCalls by settings.ringCalls.collectAsStateWithLifecycle()
+        val dndActive by DndStatus.active.collectAsStateWithLifecycle()
+        val dndError by DndStatus.error.collectAsStateWithLifecycle()
 
         val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {}
         LaunchedEffect(Unit) {
@@ -97,11 +110,30 @@ class MainActivity : ComponentActivity() {
                         color = darkColorScheme().onSurface,
                     )
                 }
+            } else if (pickingApps) {
+                BackHandler { pickingApps = false }
+                AppPickerScreen(
+                    allowed = allowedApps,
+                    onToggle = settings::setAllowed,
+                    onBack = { pickingApps = false },
+                    modifier = Modifier.padding(padding),
+                )
             } else {
                 HomeScreen(
                     state = state,
                     paired = paired,
-                    notificationAccess = listenerEnabled,
+                    settings = SettingsUiState(
+                        notificationAccess = listenerEnabled,
+                        allowedCount = allowedApps.size,
+                        dndOnConnect = dndOnConnect,
+                        ringCalls = ringCalls,
+                        dndAccess = dndAccess,
+                        dndActive = dndActive,
+                        dndError = dndError,
+                    ),
+                    onManageApps = { pickingApps = true },
+                    onDndOnConnectChange = settings::setDndOnConnect,
+                    onRingCallsChange = settings::setRingCalls,
                     onScan = { cameraPermission.launch(Manifest.permission.CAMERA) },
                     onPairLink = ::pair,
                     onUnpair = {

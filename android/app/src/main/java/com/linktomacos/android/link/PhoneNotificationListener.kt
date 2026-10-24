@@ -6,14 +6,17 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.service.notification.NotificationListenerService
+import android.util.Log
 import android.service.notification.StatusBarNotification
 import android.util.Base64
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.createBitmap
+import com.linktomacos.android.LinkApp
 import com.linktomacos.android.protocol.NotificationRemoved
 import com.linktomacos.android.protocol.PhoneNotification
 import java.io.ByteArrayOutputStream
 
+private const val TAG = "NotificationListener"
 private const val ICON_SIZE = 96
 
 /** 读取手机上的通知并交给 [NotificationBridge]，由连接服务转发给 Mac。 */
@@ -26,6 +29,7 @@ class PhoneNotificationListener : NotificationListenerService() {
         val message = convert(sbn) ?: return
         val fingerprint = listOf(message.title, message.text, message.subText).hashCode()
         if (lastSent.put(sbn.key, fingerprint) == fingerprint) return
+        Log.d(TAG, "forward ${sbn.packageName}")
         NotificationBridge.emit(message)
     }
 
@@ -35,6 +39,11 @@ class PhoneNotificationListener : NotificationListenerService() {
 
     private fun convert(sbn: StatusBarNotification): PhoneNotification? {
         if (sbn.packageName == packageName) return null
+        // 白名单：只转发用户勾选的应用
+        if (!(application as LinkApp).settings.isAllowed(sbn.packageName)) {
+            Log.d(TAG, "skip ${sbn.packageName}: not in whitelist")
+            return null
+        }
         val n = sbn.notification
         // 常驻通知（音乐播放、导航、下载进度等）和分组摘要不转发
         if (n.flags and (Notification.FLAG_ONGOING_EVENT or Notification.FLAG_GROUP_SUMMARY or Notification.FLAG_FOREGROUND_SERVICE) != 0) return null
