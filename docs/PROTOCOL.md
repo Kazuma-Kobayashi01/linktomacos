@@ -33,3 +33,41 @@ linktomacos://pair?v=1&n=<Mac 名称>&h=<ip1,ip2>&p=<port>&fp=<sha256 十六进�
 
 - Mac 每 5 秒发一次 `ping`，任一方向 20 秒没有收到任何帧，就判定连接断开。
 - 手机收到 `goodbye` 或心跳超时，都视为“Mac 已离开”。M1 起会在这时关闭免打扰。
+
+## 投屏（增强服务）
+
+增强服务是手机上以 shell 身份运行的常驻进程（`com.linktomacos.android.shell.ShellMain`，由 Mac 通过 USB 上的 adb 启动，之后不再需要 adb）。
+画面和输入的通路：
+
+```
+Mac 窗口 ⇄（本协议，加密连接）⇄ 手机 App ⇄（127.0.0.1:47153）⇄ shell 服务 → 读屏、H.264 硬件编码、注入触摸和按键
+```
+
+### Mac ↔ 手机 App
+
+| 方法 / 消息 | 说明 |
+|---|---|
+| `mirrorStatus` | 请求 → `{ready, outdated, port, secret, apkPath, sdk}`。`secret` 是握手密钥，只经加密连接传递。`outdated` 为真表示连上来的 shell 服务是旧版本（重装 App 不会重启它），此时 `ready` 为假，Mac 要通过 USB 重新启动服务 |
+| `mirrorStart` | 请求 `{mode, maxSize, bitRate, fps, width, height, app?, forceStop?, audio?, mic?}` → `{streamId, width, height, deviceWidth, deviceHeight, displayId, mode, audioStreamId, micStreamId}`；之后手机在 `streamId` 上发视频包。`audio` 为真时，手机把系统混音编码成 Opus，在另一条数据流 `audioStreamId` 上发音频包（手机本体静音）；没有请求音频时 `audioStreamId` 是 0。`mic` 为真时，手机分配一个 `micStreamId`：Mac 往这个流上发数据帧（Mac → 手机），内容是麦克风 PCM（48 kHz、单声道、16 位小端，没有头，每包 20 ms = 1920 字节），手机把它注入系统的麦克风录音（手机上的应用录音时拿到的是 Mac 的声音）。没有请求麦克风时 `micStreamId` 是 0。`mode`：`new` 在手机里新建一个独立的虚拟显示器（`width`/`height` 是初始像素尺寸，0 表示和手机屏幕同样的宽高比（长边不超过 `maxSize`；`maxSize` 不小于手机长边时，显示器和手机屏幕一样大、dpi 也一样）。应用请求横屏或竖屏时，手机会自动把虚拟显示器的宽高对调，并发 `resized`；`app` 是开始时在上面打开的应用包名），`mirror` 镜像手机主屏 |
+| `mirrorResize` | 请求 `{width, height}`，独立显示模式：调整虚拟显示器的像素尺寸，应用按新尺寸重新排版；手机随后发 `mirrorEvent resized` |
+| `mirrorLaunch` | 请求 `{package, forceStop}`，独立显示模式：在虚拟显示器上打开应用 |
+| `listApps` / `appIcon` | 请求。手机上能启动的应用 `{apps:[{package,label}]}`；某个应用的图标 `{data}`（PNG，base64，96 像素） |
+| `mirrorStop` | 请求，停止投屏 |
+| `mirrorInput` | Mac → 手机，无响应。`k`：`t` 触摸（`a` 0 按下 1 抬起 2 移动，`x`/`y` 为 0…1 的相对位置）、`s` 滚轮（`h`/`v`）、`key`（`a` 0/1，`c` Android 键值，`m` 修饰键）、`text`、`cmd`（back / home / recents / notifications / wake / power / sync / screenOff / screenOn） |
+| `mirrorEvent` | 手机 → Mac。`event`：`resized`（旋转或尺寸变化，带新的 `width`/`height`）、`error`、`stopped` |
+
+视频包走二进制数据帧（见上），内容：`[标志 1 字节][pts 8 字节大端，微秒][H.264 Annex-B 数据]`。标志位 1 = 配置包（SPS/PPS），2 = 关键帧。
+音频包格式相同：`[标志 1 字节][pts 8 字节大端，微秒][一个 Opus 包]`，48 kHz 立体声，每包 20 ms，约 128 kbps；标志位 1 = 配置（Opus 头，播放时可以忽略）。音频积压超过约 100 个包时手机丢最旧的，不会拖慢视频。
+尺寸变化后手机会先发新的配置包。数据帧可能比 `mirrorStart` 的响应先到，Mac 端会先缓存再补发。
+
+流控：Mac 读得慢时，手机端队列积压超过约 1.5 MB 就丢弃后续非关键帧，直到下一个关键帧，并让编码器立即产生关键帧。
+
+### 手机 App ↔ shell 服务（127.0.0.1:47153）
+
+帧：`[类型 1 字节][长度 4 字节大端][内容]`，类型 1 = JSON，类型 2 = 视频包，类型 3 = 音频包（格式同上），类型 4 = Mac 麦克风的 PCM（App → 服务，没有头）。`start` 指令带 `mic` 时，服务注册一个只匹配麦克风录音的回环音频策略，把类型 4 的数据写进去。`start` 指令带 `audio` 时，shell 用 REMOTE_SUBMIX 录系统混音并编码成 Opus。
+握手是挑战应答：shell 服务连上后发 `hello{nonce}`，App 回 `auth{mac = HMAC-SHA256(secret, nonce)}`，验证通过后 shell 发 `ready`。
+密钥不上线，所以即使别的 App 抢先监听了这个端口，也无法冒充 App 控制 shell 服务。
+shell 的 `hello` 里带 `v`（服务版本）。App 要求的版本不同就认为服务过期（见上面的 `outdated`）；改了服务的行为要同时加大 `ShellMain.VERSION` 和 `SHELL_VERSION`。
+指令：`start{mode,display,maxSize,bitRate,fps,width,height,app,forceStop}`、`resize{width,height}`、`launch{pkg,forceStop}`、`stop`、`sync`、`input{…}`、`screen{on}`；事件：`started`/`resized{mode,width,height,deviceWidth,deviceHeight,rotation,displayId}`、`launched{pkg,ok,message}`、`error`、`stopped`。
+
+独立显示模式的虚拟显示器带这些标志位：可信、独立显示组、始终解锁、独立焦点、移除时销毁内容，并把它的输入法策略设为隐藏（Mac 键盘直接输入，手机上不弹软键盘）。因此手机自己的屏幕可以关掉或锁屏，应用在虚拟显示器上照常运行。投屏期间手机 App 持有部分唤醒锁，保证 CPU 不休眠。
