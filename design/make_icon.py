@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""生成 macOS App 图标：一台笔记本电脑 + 前方一部 Material 3 风格的手机。
+"""生成 macOS App 图标：白色圆角方形底板上，一台笔记本电脑 + 前方一部 Material 3 风格的手机。
 
 笔记本和手机都是原创绘制。手机配色取自 Material 3 基准色板（种子色蓝）：
     primary #415F91   primaryContainer #D6E3FF   secondary #565F71   secondaryContainer #DAE2F9
@@ -20,6 +20,9 @@ ROOT = Path(__file__).resolve().parent.parent
 SS = 2  # 超采样倍数
 S = 1024 * SS
 OY = 40  # 整体下移，让图案在画布中垂直居中
+PLATE = (100, 100, 924, 924)  # macOS 图标模板：1024 画布里 824 见方的圆角方形
+PLATE_RADIUS = 185
+LOGO_FRACTION = 0.70  # logo 内容的宽度占底板宽度的比例
 
 
 def px(box):
@@ -125,10 +128,43 @@ def draw_phone(img):
     solid_box(img, (724, 804, 784, 810), 3, (110, 114, 124, 255))
 
 
+def plate_layer():
+    """白色的圆角方形底板（带一点投影和极淡的渐变），logo 放在它上面。"""
+    layer = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    x0, y0, x1, y1 = [v * SS for v in PLATE]
+    shadow = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    ImageDraw.Draw(shadow).rounded_rectangle((x0, y0 + 12 * SS, x1, y1 + 12 * SS), PLATE_RADIUS * SS, fill=(0, 0, 0, 70))
+    layer.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(14 * SS)))
+    size = (x1 - x0, y1 - y0)
+    tile = gradient(size, (255, 255, 255), (238, 240, 245)).convert("RGBA")
+    tile.putalpha(shape_mask(size, PLATE_RADIUS))
+    layer.alpha_composite(tile, (x0, y0))
+    return layer
+
+
+def place_logo(plate, logo):
+    """把 logo 缩小后居中放在底板上。按有实际内容的范围（忽略很淡的投影）居中和定大小，
+    但裁剪时要多留一圈，否则投影会被切成一个方块。"""
+    x0, y0, x1, y1 = logo.getchannel("A").point(lambda a: 255 if a > 40 else 0).getbbox()
+    margin = 100 * SS
+    crop_box = (max(0, x0 - margin), max(0, y0 - margin), min(S, x1 + margin), min(S, y1 + margin))
+    cropped = logo.crop(crop_box)
+    scale = (PLATE[2] - PLATE[0]) * SS * LOGO_FRACTION / (x1 - x0)
+    cropped = cropped.resize((round(cropped.width * scale), round(cropped.height * scale)), Image.LANCZOS)
+    # 内容中心在裁剪图里的位置，对准底板中心
+    center_x = ((x0 + x1) / 2 - crop_box[0]) * scale
+    center_y = ((y0 + y1) / 2 - crop_box[1]) * scale
+    plate_x = (PLATE[0] + PLATE[2]) / 2 * SS
+    plate_y = (PLATE[1] + PLATE[3]) / 2 * SS
+    plate.alpha_composite(cropped, (round(plate_x - center_x), round(plate_y - center_y)))
+
+
 def main():
-    canvas = Image.new("RGBA", (S, S), (0, 0, 0, 0))
-    draw_laptop(canvas)
-    draw_phone(canvas)
+    logo = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    draw_laptop(logo)
+    draw_phone(logo)
+    canvas = plate_layer()
+    place_logo(canvas, logo)
     master = canvas.resize((1024, 1024), Image.LANCZOS)
 
     iconset = ROOT / "macos/LinkToMacOS/Assets.xcassets/AppIcon.appiconset"
