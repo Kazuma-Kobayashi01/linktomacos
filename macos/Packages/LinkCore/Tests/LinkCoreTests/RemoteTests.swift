@@ -36,6 +36,43 @@ import Testing
         #expect(try JSONDecoder().decode(LinkMessage.self, from: data) == request)
     }
 
+    @Test func deviceStatusBackwardCompatible() throws {
+        // 旧版手机没有新字段
+        let old = #"{"type":"deviceStatus","batteryLevel":50,"charging":false,"wifiConnected":true,"storageTotal":10,"storageFree":5,"timestamp":1}"#
+        guard case .deviceStatus(let status) = try JSONDecoder().decode(LinkMessage.self, from: Data(old.utf8)) else {
+            Issue.record("not deviceStatus"); return
+        }
+        #expect(status.batteryTemperature == nil && status.memoryTotal == nil)
+        // 新版手机的完整字段，含 Kotlin 编码出的 null 和小数
+        let new = #"{"type":"deviceStatus","batteryLevel":80,"charging":true,"signalLevel":3,"networkType":"5G","carrier":null,"wifiConnected":true,"storageTotal":512,"storageFree":100,"timestamp":1,"batteryTemperature":31.5,"batteryVoltage":4200,"batteryHealth":"good","chargingType":"ac","memoryTotal":12884901888,"memoryAvailable":5368709120,"wifiLevel":4,"wifiLinkSpeed":866,"signalDbm":-92,"uptime":123456}"#
+        guard case .deviceStatus(let full) = try JSONDecoder().decode(LinkMessage.self, from: Data(new.utf8)) else {
+            Issue.record("not deviceStatus"); return
+        }
+        #expect(full.batteryTemperature == 31.5 && full.chargingType == "ac" && full.signalDbm == -92)
+        #expect(full.memoryTotal == 12_884_901_888 && full.uptime == 123_456)
+    }
+
+    @Test func deviceInfoDecodesWithAndWithoutSoc() throws {
+        let base: [String: JSONValue] = [
+            "manufacturer": "samsung", "brand": "samsung", "model": "SM-S9180", "device": "dm3q", "androidVersion": "15", "sdk": 35,
+            "securityPatch": "2025-09-01", "buildId": "AP3A", "abi": "arm64-v8a", "cpuCores": 8, "memoryTotal": 11_580_000_000,
+            "screenWidth": 1440, "screenHeight": 3088, "densityDpi": 600, "refreshRate": 120.0, "language": "en-US",
+            "timezone": "Asia/Shanghai", "appVersion": "0.1.0",
+        ]
+        let old = try JSONValue.object(base).decoded(DeviceInfo.self)
+        #expect(old.socModel == nil)
+        var withSoc = base
+        withSoc["socManufacturer"] = "QTI"; withSoc["socModel"] = "SM8550"; withSoc["hardware"] = "qcom"
+        let new = try JSONValue.object(withSoc).decoded(DeviceInfo.self)
+        #expect(new.socModel == "SM8550" && new.socManufacturer == "QTI")
+    }
+
+    @Test func storageBreakdownDerivesOther() throws {
+        let value = JSONValue.object(["total": 1000, "free": 400, "images": 100, "videos": 200, "audio": 50, "hasMedia": true])
+        let storage = try value.decoded(StorageBreakdown.self)
+        #expect(storage.used == 600 && storage.other == 250)
+    }
+
     @Test func mediaPageDecodes() throws {
         let value = JSONValue.object([
             "total": 1,

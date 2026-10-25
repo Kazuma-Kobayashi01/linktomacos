@@ -8,7 +8,7 @@ public let defaultPort = 47152
 
 public enum LinkEvent: Sendable {
     case listening(port: Int)
-    case connected(PairedDevice, newlyPaired: Bool)
+    case connected(PairedDevice, newlyPaired: Bool, address: String?)
     case message(deviceId: String, LinkMessage)
     case disconnected(deviceId: String, reason: String)
     case rejected(reason: String)
@@ -149,7 +149,7 @@ public final class LinkServer: @unchecked Sendable {
             previous.close(promise: nil)
         }
         channel.writeAndFlush(LinkMessage.helloAck(.init(accepted: true, macName: macName)), promise: nil)
-        eventSink.yield(.connected(device, newlyPaired: newlyPaired))
+        eventSink.yield(.connected(device, newlyPaired: newlyPaired, address: channel.remoteAddress?.ipAddress))
     }
 
     fileprivate func unregister(deviceId: String, channel: Channel, reason: String) {

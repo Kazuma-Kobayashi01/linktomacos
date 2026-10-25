@@ -8,10 +8,10 @@ public enum RemoteError: Error, LocalizedError, Equatable {
 
     public var errorDescription: String? {
         switch self {
-        case .disconnected: "手机已断开连接"
+        case .disconnected: String(localized: "手机已断开连接", bundle: .main)
         case .remote(let message): message
-        case .malformed: "手机返回的数据格式不正确"
-        case .sizeMismatch: "文件传输不完整"
+        case .malformed: String(localized: "手机返回的数据格式不正确", bundle: .main)
+        case .sizeMismatch: String(localized: "文件传输不完整", bundle: .main)
         }
     }
 }
@@ -85,7 +85,7 @@ final class FileSink: @unchecked Sendable {
             if let failure {
                 done.fulfill(.failure(failure))
             } else if !ok {
-                done.fulfill(.failure(RemoteError.remote(error ?? "传输失败")))
+                done.fulfill(.failure(RemoteError.remote(error ?? String(localized: "传输失败", bundle: .main))))
             } else if total >= 0, written != total {
                 done.fulfill(.failure(RemoteError.sizeMismatch))
             } else {
@@ -119,7 +119,15 @@ public final class PhoneRemote: @unchecked Sendable {
     private var nextId = 1
     private var pending: [Int: Pending] = [:]
     private var sinks: [UInt32: FileSink] = [:]
+    private var videoHandlers: [UInt32: VideoHandler] = [:]
+    /// 数据帧比响应先到（或响应还没处理完）时，先缓存起来，处理器登记后按顺序补发。
+    private var earlyData: [(streamId: UInt32, data: Data)] = []
+    private var earlyBytes = 0
+    private var mirrorEventHandler: (@Sendable (MirrorEvent) -> Void)?
     private var isClosed = false
+    private static let maxEarlyBytes = 2 * 1024 * 1024
+
+    public typealias VideoHandler = @Sendable (Data) -> Void
 
     public init(send: @escaping Send) {
         self.send = send
@@ -138,11 +146,28 @@ public final class PhoneRemote: @unchecked Sendable {
                 entry.onResponse?(result)
                 entry.continuation.resume(returning: result)
             } else {
-                entry.continuation.resume(throwing: RemoteError.remote(response.error ?? "未知错误"))
+                entry.continuation.resume(throwing: RemoteError.remote(response.error ?? String(localized: "未知错误", bundle: .main)))
             }
             return true
         case .data(let streamId, let bytes):
-            lock.withLock { sinks[streamId] }?.write(bytes)
+            enum Route { case sink(FileSink), video(VideoHandler), none }
+            let route: Route = lock.withLock {
+                if let sink = sinks[streamId] { return .sink(sink) }
+                if let handler = videoHandlers[streamId] { return .video(handler) }
+                // 还没人认领这个流：先缓存
+                earlyData.append((streamId, bytes))
+                earlyBytes += bytes.count
+                while earlyBytes > Self.maxEarlyBytes, !earlyData.isEmpty { earlyBytes -= earlyData.removeFirst().data.count }
+                return .none
+            }
+            switch route {
+            case .sink(let sink): sink.write(bytes)
+            case .video(let handler): handler(bytes)
+            case .none: break
+            }
+            return true
+        case .mirrorEvent(let event):
+            lock.withLock { mirrorEventHandler }?(event)
             return true
         case .streamEnd(let end):
             let sink = lock.withLock { sinks.removeValue(forKey: UInt32(truncatingIfNeeded: end.streamId)) }
@@ -164,6 +189,12 @@ public final class PhoneRemote: @unchecked Sendable {
         }
         waiting.forEach { $0.continuation.resume(throwing: RemoteError.disconnected) }
         streams.forEach { $0.abort(RemoteError.disconnected) }
+        let handler = lock.withLock {
+            videoHandlers.removeAll()
+            earlyData.removeAll()
+            return mirrorEventHandler
+        }
+        handler?(MirrorEvent(event: "stopped", message: "disconnected"))
     }
 
     // MARK: - 请求
@@ -210,6 +241,87 @@ public final class PhoneRemote: @unchecked Sendable {
 
     public func access() async throws -> AccessInfo {
         try await call("access").decoded(AccessInfo.self)
+    }
+
+    // MARK: - 投屏
+
+    public func mirrorStatus() async throws -> MirrorStatus {
+        try await call("mirrorStatus").decoded(MirrorStatus.self)
+    }
+
+    /// 开始投屏。`video` 和 `audio` 在连接线程上同步调用，收到的是 `VideoPacketData` 格式的原始字节（音频包的数据是 Opus）；
+    /// 不要在里面做耗时操作。只有 `options.audio` 为真、手机也支持时才会有音频数据。
+    public func mirrorStart(
+        _ options: MirrorStartOptions,
+        video: @escaping VideoHandler, audio: VideoHandler? = nil, events: @escaping @Sendable (MirrorEvent) -> Void
+    ) async throws -> MirrorStartInfo {
+        lock.withLock { mirrorEventHandler = events }
+        let result = try await call("mirrorStart", options.params) { [self] result in
+            // 在响应到达的线程上登记，紧随其后的数据帧才不会丢；之前到的数据补发
+            var registrations: [(UInt32, VideoHandler)] = []
+            if let id = result["streamId"]?.int64Value { registrations.append((UInt32(truncatingIfNeeded: id), video)) }
+            if let audio, let id = result["audioStreamId"]?.int64Value, id > 0 {
+                registrations.append((UInt32(truncatingIfNeeded: id), audio))
+            }
+            for (streamId, handler) in registrations {
+                let early: [Data] = lock.withLock {
+                    videoHandlers[streamId] = handler
+                    let mine = earlyData.filter { $0.streamId == streamId }.map(\.data)
+                    earlyData.removeAll { $0.streamId == streamId }
+                    earlyBytes = earlyData.reduce(0) { $0 + $1.data.count }
+                    return mine
+                }
+                early.forEach(handler)
+            }
+        }
+        return try result.decoded(MirrorStartInfo.self)
+    }
+
+    /// 独立显示模式：调整虚拟显示器的尺寸（像素）。手机会重建编码器，应用按新尺寸重新排版。
+    public func mirrorResize(width: Int, height: Int) async throws {
+        _ = try await call("mirrorResize", .object(["width": .int(Int64(width)), "height": .int(Int64(height))]))
+    }
+
+    /// 独立显示模式：在虚拟显示器上打开应用。`forceStop` 先结束该应用，用于它已经在手机屏幕上打开的情况。
+    public func mirrorLaunch(package: String, forceStop: Bool = false) async throws {
+        _ = try await call("mirrorLaunch", .object(["package": .string(package), "forceStop": .bool(forceStop)]))
+    }
+
+    public func listApps() async throws -> [PhoneApp] {
+        try await call("listApps").decoded(PhoneAppList.self).apps
+    }
+
+    /// 应用图标（PNG）。
+    public func appIcon(package: String) async throws -> Data {
+        let result = try await call("appIcon", .object(["package": .string(package)]))
+        guard let base64 = result["data"]?.stringValue, let data = Data(base64Encoded: base64) else { throw RemoteError.malformed }
+        return data
+    }
+
+    public func mirrorStop() async {
+        _ = try? await call("mirrorStop")
+        lock.withLock {
+            videoHandlers.removeAll()
+            earlyData.removeAll()
+            earlyBytes = 0
+        }
+    }
+
+    public func sendInput(_ input: MirrorInput) {
+        send(.mirrorInput(input))
+    }
+
+    /// 把 Mac 麦克风的一包 PCM 发给手机。`streamId` 是 `mirrorStart` 返回的 `micStreamId`。
+    public func sendMic(streamId: Int, _ pcm: Data) {
+        send(.data(streamId: UInt32(truncatingIfNeeded: streamId), bytes: pcm))
+    }
+
+    public func deviceInfo() async throws -> DeviceInfo {
+        try await call("deviceInfo").decoded(DeviceInfo.self)
+    }
+
+    public func storageBreakdown() async throws -> StorageBreakdown {
+        try await call("storageBreakdown").decoded(StorageBreakdown.self)
     }
 
     public func albums() async throws -> AlbumList {

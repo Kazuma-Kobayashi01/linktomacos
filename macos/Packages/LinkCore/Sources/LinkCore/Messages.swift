@@ -35,6 +35,51 @@ public struct DeviceStatus: Codable, Equatable, Sendable {
     public var storageTotal: Int64
     public var storageFree: Int64
     public var timestamp: Int64
+    /// 以下字段由较新版本的手机提供，旧版本缺失时为 nil。
+    public var batteryTemperature: Double?
+    public var batteryVoltage: Int?
+    /// good / overheat / dead / over_voltage / cold / failure / unknown
+    public var batteryHealth: String?
+    /// ac / usb / wireless / dock；未充电为 nil。
+    public var chargingType: String?
+    public var memoryTotal: Int64?
+    public var memoryAvailable: Int64?
+    /// Wi‑Fi 信号格数 0-4。
+    public var wifiLevel: Int?
+    /// Wi‑Fi 连接速率，Mbps。
+    public var wifiLinkSpeed: Int?
+    /// 蜂窝信号强度，dBm。
+    public var signalDbm: Int?
+    /// 开机至今的毫秒数。
+    public var uptime: Int64?
+
+    public init(
+        batteryLevel: Int, charging: Bool, signalLevel: Int? = nil, networkType: String? = nil, carrier: String? = nil,
+        wifiConnected: Bool, storageTotal: Int64, storageFree: Int64, timestamp: Int64,
+        batteryTemperature: Double? = nil, batteryVoltage: Int? = nil, batteryHealth: String? = nil,
+        chargingType: String? = nil, memoryTotal: Int64? = nil, memoryAvailable: Int64? = nil,
+        wifiLevel: Int? = nil, wifiLinkSpeed: Int? = nil, signalDbm: Int? = nil, uptime: Int64? = nil
+    ) {
+        self.batteryLevel = batteryLevel
+        self.charging = charging
+        self.signalLevel = signalLevel
+        self.networkType = networkType
+        self.carrier = carrier
+        self.wifiConnected = wifiConnected
+        self.storageTotal = storageTotal
+        self.storageFree = storageFree
+        self.timestamp = timestamp
+        self.batteryTemperature = batteryTemperature
+        self.batteryVoltage = batteryVoltage
+        self.batteryHealth = batteryHealth
+        self.chargingType = chargingType
+        self.memoryTotal = memoryTotal
+        self.memoryAvailable = memoryAvailable
+        self.wifiLevel = wifiLevel
+        self.wifiLinkSpeed = wifiLinkSpeed
+        self.signalDbm = signalDbm
+        self.uptime = uptime
+    }
 }
 
 /// 手机上弹出的一条通知。`key` 在手机端唯一，同一条通知更新时 key 不变。
@@ -94,6 +139,42 @@ public struct StreamEnd: Codable, Equatable, Sendable {
     }
 }
 
+/// 投屏时 Mac → 手机的输入事件。`k`：t 触摸（`a` 0 按下 1 抬起 2 移动，`x`/`y` 是 0…1 的相对位置）、
+/// s 滚轮（`h`/`v`）、key 按键（`a` 0 按下 1 抬起，`c` Android 键值，`m` 修饰键）、text 文字、
+/// cmd 命令（`cmd`：back / home / recents / wake / power / notifications / sync / screenOff / screenOn）。
+public struct MirrorInput: Codable, Equatable, Sendable {
+    public var k: String
+    public var a: Int?
+    public var x: Double?
+    public var y: Double?
+    public var c: Int?
+    public var m: Int?
+    public var h: Double?
+    public var v: Double?
+    public var text: String?
+    public var cmd: String?
+
+    public init(k: String, a: Int? = nil, x: Double? = nil, y: Double? = nil, c: Int? = nil, m: Int? = nil,
+                h: Double? = nil, v: Double? = nil, text: String? = nil, cmd: String? = nil) {
+        self.k = k; self.a = a; self.x = x; self.y = y; self.c = c; self.m = m
+        self.h = h; self.v = v; self.text = text; self.cmd = cmd
+    }
+
+    public static func touch(_ action: Int, x: Double, y: Double) -> MirrorInput { .init(k: "t", a: action, x: x, y: y) }
+    public static func command(_ name: String) -> MirrorInput { .init(k: "cmd", cmd: name) }
+}
+
+/// 投屏状态变化（手机 → Mac）：resized（旋转或尺寸变化）、stopped、error。
+public struct MirrorEvent: Codable, Equatable, Sendable {
+    public var event: String
+    public var width: Int?
+    public var height: Int?
+    public var deviceWidth: Int?
+    public var deviceHeight: Int?
+    public var rotation: Int?
+    public var message: String?
+}
+
 /// 链路上的一条消息。JSON 中以 `type` 字段区分类型，其余字段平铺在同一层。
 public enum LinkMessage: Equatable, Sendable {
     case hello(Hello)
@@ -107,6 +188,8 @@ public enum LinkMessage: Equatable, Sendable {
     case request(RPCRequest)
     case response(RPCResponse)
     case streamEnd(StreamEnd)
+    case mirrorInput(MirrorInput)
+    case mirrorEvent(MirrorEvent)
     /// 二进制数据帧，属于 `streamId` 对应的文件流。不走 JSON，见 FrameCodec。
     case data(streamId: UInt32, bytes: Data)
     /// 本端版本不认识的消息类型，忽略即可，保证向前兼容。
@@ -132,6 +215,8 @@ extension LinkMessage: Codable {
         case "request": self = .request(try RPCRequest(from: decoder))
         case "response": self = .response(try RPCResponse(from: decoder))
         case "streamEnd": self = .streamEnd(try StreamEnd(from: decoder))
+        case "mirrorInput": self = .mirrorInput(try MirrorInput(from: decoder))
+        case "mirrorEvent": self = .mirrorEvent(try MirrorEvent(from: decoder))
         default: self = .unknown(type: type)
         }
     }
@@ -151,6 +236,8 @@ extension LinkMessage: Codable {
         case .request(let v): try v.encode(to: encoder)
         case .response(let v): try v.encode(to: encoder)
         case .streamEnd(let v): try v.encode(to: encoder)
+        case .mirrorInput(let v): try v.encode(to: encoder)
+        case .mirrorEvent(let v): try v.encode(to: encoder)
         case .data, .unknown: break
         }
     }
@@ -168,6 +255,8 @@ extension LinkMessage: Codable {
         case .request: "request"
         case .response: "response"
         case .streamEnd: "streamEnd"
+        case .mirrorInput: "mirrorInput"
+        case .mirrorEvent: "mirrorEvent"
         case .data: "data"
         case .unknown(let type): type
         }
