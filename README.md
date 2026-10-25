@@ -1,131 +1,231 @@
-# LinkToMacOS
+<div align="center">
 
-让 Android 手机与 macOS 互联，参照“连接到 Windows”复刻。方案与里程碑见 [docs/PLAN.md](docs/PLAN.md)，协议见 [docs/PROTOCOL.md](docs/PROTOCOL.md)。
+<img src="docs/images/logo.svg" width="96" alt="Link to macOS logo" />
 
-| 目录 | 内容 |
-|---|---|
-| `macos/` | Mac 端：SwiftUI 菜单栏 App + `Packages/LinkCore`（协议、TLS 服务、配对） |
-| `android/` | Android 端：Kotlin + Jetpack Compose，常驻前台服务 |
-| `spikes/hfp-spike/` | 蓝牙 HFP 通话技术验证（命令行） |
+# Link to macOS
 
-## 投屏
+**Your Android phone, on your Mac: notifications, photos & files, screen mirroring with sound and microphone, and incoming-call alerts — a native take on Microsoft's *Link to Windows*.**
 
-两种模式：
+English | [简体中文](README.zh-CN.md)
 
-- **独立显示（默认）**：在手机里新建一个独立的显示器，应用开在上面。手机自己的屏幕不受影响，可以关掉或锁屏，投屏继续。Mac 窗口比例固定为手机比例，只能等比缩放。应用请求横屏（比如全屏看视频）时，手机会把这个显示器转成横向，Mac 窗口也跟着转成横向；应用切回竖屏时再转回来。如果某个应用不指定方向、停在了横向，可以用窗口底部 ⋯ 菜单里的“旋转方向”手动转，从 Mac 上打开新应用时也会先还原成竖向。
-  - 应用显示的“缩放”：新建的显示器按手机屏幕的 dp 宽度缩放 dpi（比如 888 像素宽用约 370 dpi），应用看到的版面宽度和手机一样。但有的应用会直接读手机主屏的分辨率和 dpi，这时会显示异常。把画质选成“原生”，显示器就和手机屏幕一样大（1440×3088）、dpi 也一样（600），应用的显示和手机上完全一致，代价是带宽很高，不适合热点。先在 Mac 上选一个应用打开，之后可以随时用窗口底部的 ○ 再开别的，▢ 切换到这次打开过的应用。
-- **镜像手机屏幕**：把手机屏幕原样显示在 Mac 上，窗口比例同样固定为手机比例。可以操控桌面和应用；开始投屏时默认关闭手机自己的屏幕（内容仍在渲染，Mac 上照常操作），打开应用后会再关一次，防止应用把屏幕点亮。
+![Swift](https://img.shields.io/badge/Swift-6.0+-F05138?style=flat-square&logo=swift&logoColor=white)
+![SwiftUI](https://img.shields.io/badge/SwiftUI-macOS_15+-0A84FF?style=flat-square&logo=apple&logoColor=white)
+![SwiftNIO](https://img.shields.io/badge/SwiftNIO-TLS_1.3-F05138?style=flat-square&logo=swift&logoColor=white)
+![Xcode](https://img.shields.io/badge/Xcode-XcodeGen-147EFB?style=flat-square&logo=xcode&logoColor=white)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.4-7F52FF?style=flat-square&logo=kotlin&logoColor=white)
+![Jetpack Compose](https://img.shields.io/badge/Jetpack_Compose-Material_3-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)
+![Android](https://img.shields.io/badge/Android-15+-3DDC84?style=flat-square&logo=android&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-9.8-02303A?style=flat-square&logo=gradle&logoColor=white)
+![Material You](https://img.shields.io/badge/Material_You-dynamic_color-757575?style=flat-square&logo=materialdesign&logoColor=white)
+![H.264](https://img.shields.io/badge/H.264-VideoToolbox-000000?style=flat-square&logo=apple&logoColor=white)
+![Opus](https://img.shields.io/badge/Opus-audio-FF6F00?style=flat-square)
+![Python](https://img.shields.io/badge/Python-i18n_tools-3776AB?style=flat-square&logo=python&logoColor=white)
 
-主窗口侧边栏“资料库”下的“应用”页列出手机上所有应用，点一下就在投屏里打开：已经在投屏就直接打开，否则按当前模式开始投屏。
+<img src="docs/images/overview-top-light-en.png" height="280" alt="Overview, light" />
+&nbsp;&nbsp;
+<img src="docs/images/overview-top-dark-en.png" height="280" alt="Overview, dark" />
 
-手机屏幕上不能盖“幕布”：镜像抓的就是手机屏幕，幕布也会被投到 Mac 上，所以关闭屏幕是更彻底的办法。
+</div>
 
-投屏不需要每次在手机上点授权。开始投屏时默认会关闭手机自己的屏幕（可以在页面里取消勾选）。
+---
 
-做法（类似 scrcpy）：手机上跑一个以 shell 身份运行的小服务，由 Mac 通过 USB 上的 adb 启动**一次**，之后拔掉数据线也一直有效，直到手机重启。
-所以首次使用要在手机上打开“开发者选项 → USB 调试”，三星手机还要关闭“自动拦截器”。Mac 上需要有 adb（Android Studio 自带，或 `brew install android-platform-tools`）。
+## ✨ What you get
 
-- 入口：Mac 主窗口侧边栏的“投屏”页，先点“启动增强服务”（需要 USB 连接），再点“开始投屏”。
-- 投屏窗口只有标题栏和底部一条小导航栏：◁ 返回、○ 主页（独立显示里是打开应用）、▢ 最近任务（独立显示里是最近打开的应用），左边开关手机屏幕，右边 ⋯ 是更多操作。
-- 鼠标：左键 = 点按和拖动，右键 = 返回，中键 = 主页，滚轮 = 滑动。键盘：字母数字和方向键直接转发，Esc = 返回，⌘C / ⌘V 当作 Ctrl+C / Ctrl+V。其他快捷键见菜单栏的“投屏”菜单。
-- 暂不支持：中文等非 ASCII 文字输入、多点触控（双指缩放）、声音。
-- 独立显示模式下，停止投屏会关闭开在虚拟显示器上的应用；如果某个应用已经在手机屏幕上打开，打开时需要勾选“先结束应用再打开”，否则系统会直接把手机屏幕上的那个窗口调到前面。
-- 协议和安全设计见 [docs/PROTOCOL.md](docs/PROTOCOL.md)，参考的开源项目见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+| | Feature | What it does |
+|---|---|---|
+| 🔔 | **Notifications** | Phone notifications show up as native macOS notifications, with the app icon. Only apps you allow are forwarded. While the phone is connected it turns on **Do Not Disturb** by itself (calls can still ring) and turns it off when the Mac app quits. |
+| 🖼️ | **Photos & Files** | A Finder-style window (translucent sidebar) to browse the phone's photos, videos, albums and every folder. Copy with ⌘C and paste into Finder, drag out, or save to a folder. Space previews a photo. |
+| 📱 | **Screen mirroring** | Two modes. **Separate display** creates a virtual display on the phone, so the phone's own screen can stay off or locked while you use apps on the Mac. **Mirror** shows the phone screen as-is. The window keeps the phone's aspect ratio and turns landscape by itself for full-screen video. Mouse and keyboard become touch and keys. |
+| 🔊 | **Sound & microphone** | The phone's sound plays on the Mac speakers (Opus). Your Mac microphone, with echo cancellation, becomes the phone's microphone for apps (voice messages, VoIP calls). |
+| 📞 | **Call alerts** | An incoming call pops up a notification on the Mac and plays a ringtone you pick from the system sounds. A call that ends unanswered leaves a "Missed call" notice. Alerts only: the call audio stays on the phone. |
+| 📊 | **Overview** | Battery, storage, memory and network at a glance, 1/6/24-hour history charts, device details and a storage breakdown. |
+| ⌨️ | **Feels native** | Menu bar app, settings window (⌘,), a Go menu (⌘1–⌘7), a Screen Mirroring menu, ⌘R to refresh. |
+| 🌍 | **Four languages** | English, 简体中文, 繁體中文 (Taiwan; the Android app also has Hong Kong) and 日本語, on both sides. |
+| 🔐 | **Private by design** | No cloud, no account. Everything stays on your network over mutual TLS 1.3 with pinned certificates. |
 
-## 多语言
+## 🖼️ Overview page
 
-两端都支持：简体中文、繁体中文（台湾；Android 另含香港）、English、日本語。跟随系统语言，也可以在系统设置里按应用单独设置（macOS：系统设置 → 通用 → 语言与地区 → App；Android 13+：设置 → 应用 → LinkToMacOS → 语言）。
+<div align="center">
 
-- Mac：`macos/LinkToMacOS/Resources/*.xcstrings`（界面文字、权限说明），源语言是简体中文，代码里的中文原文就是 key。
-- Android：`android/app/src/main/res/values*/strings.xml`。
-- 这些文件由脚本生成，**改文字请改翻译表，不要直接改生成的文件**：
-  - Mac：`tools/i18n/mac_translations.py`，然后先编译一次 Mac App，再运行 `tools/i18n/build_mac_catalog.py`
-  - Android：`tools/i18n/android_strings.py`
-  - 繁体中文由 OpenCC 从简体转换，再用脚本里的修正表换成台湾用语。运行脚本需要 `pip install opencc-python-reimplemented`。
-  - 脚本会检查：漏译、代码里没被提取的中文字符串、占位符（`%1$s`、`%lld`）是否一致。
+<img src="docs/images/overview-detail-light-en.png" height="520" alt="History and details, light" />
+&nbsp;&nbsp;
+<img src="docs/images/overview-detail-dark-en.png" height="520" alt="History and details, dark" />
 
-## 概览页
+</div>
 
-Mac 主窗口默认打开“概览”：设备名称和连接状态，电量、存储、内存、网络四张状态卡片，电量/温度/信号的历史曲线（1、6、24 小时），设备信息表和存储明细表。手机离线时显示最后一次的数据。历史最多保留 24 小时，保存在 `~/Library/Application Support/LinkToMacOS/`。
+## 🧭 Architecture
 
-## 来电提示
-
-手机来电时，Mac 弹出系统通知（有联系人名就显示名字）并循环播放提示音；接通、挂断或手机断线时自动停止，没接就挂了会补一条“未接来电”。只做提示，不转发通话的声音，也不在 Mac 上接听：在 Mac 上用蓝牙当耳机接电话，macOS 不支持（见 docs/PLAN.md 的 C0 结果）。需要手机授予“电话状态”权限（App 启动时会请求）。在设置 → 通用 → 通知里可以关闭提示或铃声，铃声可以从系统自带的提示音里选，并能试听。
-
-## 设置和快捷键
-
-设置窗口用 ⌘, 打开（也可以从菜单栏图标里的“设置…”打开）：
-
-- 通用：登录时启动、启动时是否打开主窗口、是否在 Mac 上显示手机通知、通知提示音
-- 投屏：默认模式、画质、投屏时关闭手机屏幕、先结束应用再打开、adb 路径
-- 设备：已配对的手机，取消配对，配对新手机
-- 快捷键：完整列表
-
-常用快捷键：
-
-| 快捷键 | 功能 |
-|---|---|
-| ⌘0 | 打开主窗口 |
-| ⌘1 … ⌘7 | 前往概览、投屏、所有项目、视频、应用、内部存储、下载 |
-| ⇧⌘N | 配对新手机 |
-| ⌘R | 刷新当前页面 |
-| 空格 | 预览所选照片（再按一次关闭） |
-| ⌘[ / ⌘] / ⌘↑ | 文件：后退 / 前进 / 上一级 |
-| ⇧⌘H / ⇧⌘R | 投屏：主页 / 最近任务 |
-| ⇧⌘A | 投屏（独立显示）：打开应用 |
-| ⇧⌘O | 投屏：关闭或打开手机屏幕 |
-
-## 当前进度：M0 基础
-
-- 二维码配对，双向证书锁定的 TLS 1.3 连接
-- Bonjour 自动发现，断线自动重连
-- 心跳：5 秒一次，20 秒超时
-- Mac 退出或睡眠前通知手机
-- 手机电量、信号、网络、存储实时显示在 Mac 菜单栏
-
-## 运行
-
-**Mac**
-
-```bash
-cd macos && xcodegen generate && open LinkToMacOS.xcodeproj
+```mermaid
+flowchart LR
+  subgraph PHONE["Android 15 phone"]
+    APP["Link to macOS app<br/>Kotlin + Compose<br/>foreground service"]
+    SH["Enhanced service<br/>app_process · shell uid<br/>screen · input · audio"]
+    SYS["Notification listener<br/>Telephony callback"]
+  end
+  subgraph MAC["Mac"]
+    CORE["LinkCore<br/>SwiftNIO · TLS 1.3"]
+    UI["SwiftUI<br/>window · menu bar · settings"]
+    MEDIA["VideoToolbox<br/>AVAudioEngine"]
+  end
+  APP <-- "mutual TLS · pinned SHA-256<br/>Bonjour · :47152" --> CORE
+  SYS --> APP
+  APP <-- "127.0.0.1:47153<br/>HMAC challenge" --> SH
+  CORE --> UI
+  CORE --> MEDIA
+  USB["USB + adb<br/>(once per phone boot)"] -. starts .-> SH
 ```
 
-在 Xcode 中运行即可，App 只显示在菜单栏。首次运行时如果系统询问“本地网络”权限，请选择允许。
+- **Link:** a TLS 1.3 connection with certificates on both sides, each pinned by its SHA-256 fingerprint. Pairing is a QR code with a single-use token. The phone finds the Mac through Bonjour (`_linktomacos._tcp`). Frames are length-prefixed JSON, plus binary frames for files, video and audio. See [docs/PROTOCOL.md](docs/PROTOCOL.md).
+- **Enhanced service:** a small process on the phone started once over USB with `adb`. It runs as the `shell` user, which is what lets it read the screen, inject touches and record the system mix without asking for approval each time. After that you can unplug the cable. The approach follows [scrcpy](https://github.com/Genymobile/scrcpy).
+- **Mirroring pipeline:** MediaCodec H.264 on the phone, VideoToolbox on the Mac. Opus for audio, 20 ms packets. Flow control drops frames instead of building up latency, which matters on a phone hotspot.
 
-测试：
+## 📁 Repository layout
 
-```bash
-cd macos/Packages/LinkCore && swift test
+```
+android/                  Android app (Kotlin, Jetpack Compose, Material 3)
+  app/src/main/java/com/linktomacos/android/
+    link/                 connection service, notification + call monitoring, Do Not Disturb
+    remote/               photos, files, device info, app list over the link
+    mirror/               bridge to the enhanced service, stream forwarding
+    shell/                the enhanced service (runs as shell via app_process)
+macos/                    Mac app (SwiftUI) + XcodeGen project.yml
+  Packages/LinkCore/      protocol, TLS server, pairing, remote API (Swift Package, tested)
+  LinkToMacOS/            app: views, library, mirroring, audio, call alerts
+docs/                     PROTOCOL.md, PLAN.md, images
+design/                   icon generator (Mac icon)
+tools/i18n/               scripts that generate the Mac String Catalogs and Android strings
+spikes/hfp-spike/         Bluetooth HFP experiment (why call audio is not forwarded)
+scripts/                  build-release.sh
 ```
 
-**Android**（S23 Ultra 先打开 USB 调试或无线调试）
+## 🧰 Requirements
+
+- **Mac:** macOS 15 or later. The release build is Apple silicon (arm64). Building from source needs Xcode with the Swift 6 toolchain and [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`).
+- **Phone:** Android 15 or later (min SDK 35). Developed and tested on a Samsung Galaxy S23 Ultra (One UI 7).
+- **For mirroring:** `adb` on the Mac (Android Studio ships it, or `brew install android-platform-tools`), a USB cable once, and **USB debugging** turned on. On Samsung phones also turn off **Auto Blocker**, otherwise USB debugging commands are blocked.
+- **Network:** the phone and the Mac on the same Wi‑Fi, or the Mac connected to the phone's hotspot.
+
+> The app is signed ad hoc, because it is built without an Apple developer account. The Android package is signed with the debug key. Both are meant for personal use.
+
+## 🚀 Quick start
+
+### 1. Build the packages
 
 ```bash
+scripts/build-release.sh            # both; or: scripts/build-release.sh mac | android
+```
+
+You get, in `output/`:
+
+| File | What it is |
+|---|---|
+| `Link-to-macOS-macos-arm64.zip` | the Mac app (Apple silicon) |
+| `Link-to-macOS-android-arm64-v8a.apk` | the Android app (arm64-v8a) |
+| `SHA256SUMS.txt` | checksums |
+
+### 2. Install
+
+```bash
+# Mac: unzip, move "Link to macOS.app" to /Applications, then right-click → Open the first time
+# Android: with the phone connected over USB (uninstall a debug build first, the signatures differ)
+adb install -r output/Link-to-macOS-android-arm64-v8a.apk
+```
+
+### 3. Pair
+
+1. On the Mac, click the menu bar icon → **Pair New Phone…**. A QR code appears.
+2. On the phone, open **Link to macOS** → **Scan to Pair Mac**, and scan it. If scanning is not possible, copy the pairing link on the Mac and paste it on the phone.
+3. Grant the permissions the phone app asks for: notification access, Do Not Disturb access, photos and all-files access (for Photos & Files), and phone state (for call alerts). On the Mac allow notifications and the local network.
+
+### 4. Turn on screen mirroring (once per phone boot)
+
+1. Plug the phone in over USB and accept **Allow USB debugging?**.
+2. In the Mac app open **Screen Mirroring** → **Start Enhanced Service**. When it says it is running you can unplug the cable.
+3. Open **Apps**, click an app, and it opens in the mirror window. Or use **Screen Mirroring** → **Start Mirroring**.
+
+The service keeps running until the phone restarts. After a reinstall of the phone app, or a phone restart, start it again. The app checks the version and tells you when it is out of date.
+
+## 📱 Screen mirroring in detail
+
+| Mode | What happens | Good for |
+|---|---|---|
+| **Separate display** (default) | Apps open on a new virtual display inside the phone. The phone's own screen is untouched and can be off or locked. | Using phone apps from the Mac while the phone stays in your pocket. |
+| **Mirror** | The phone's screen is shown as-is on the Mac, and the phone's panel is turned off by default. | Controlling the home screen and system UI. |
+
+- **Quality presets:** Smooth (1280 px, 4 Mbps, good for hotspots), Standard (1920 px, 8 Mbps), High (2560 px, 16 Mbps), Native (the phone's own resolution and dpi, 24 Mbps). Pick **Native** if some app lays out wrongly on the scaled display.
+- **Window:** a slim title bar and a small bar at the bottom with ◁ ○ ▢. It always keeps the phone's aspect ratio. When an app asks for landscape, the virtual display and the window turn landscape too.
+- **Input:** left click is touch, right click is Back, middle click is Home, the wheel scrolls, Esc is Back, ⌘C/⌘V go to the phone as Ctrl+C/Ctrl+V. Typing non-ASCII text is not supported yet.
+- **Sound:** on by default. The phone is silent while mirroring. `defaults write com.linktomacos.mac mirrorAudio -bool false` turns it off.
+- **Microphone:** off by default and needs microphone permission on the Mac. `defaults write com.linktomacos.mac mirrorMicrophone -bool true` turns it on. (Settings for both are on the way.)
+
+## ⌨️ Keyboard shortcuts
+
+| Shortcut | Action |
+|---|---|
+| ⌘, | Settings |
+| ⌘0 | Open the main window |
+| ⌘1 … ⌘7 | Overview, Screen Mirroring, All Items, Videos, Apps, Internal Storage, Downloads |
+| ⇧⌘N | Pair a new phone |
+| ⌘R | Refresh the current page |
+| Space | Preview the selected photo |
+| ⌘[ / ⌘] / ⌘↑ | Files: back / forward / enclosing folder |
+| ⇧⌘H / ⇧⌘R / ⇧⌘A / ⇧⌘O | Screen Mirroring menu: Home / Recents / open an app / turn the phone screen off or on |
+
+## 🔧 Build from source
+
+```bash
+# Mac app (Debug)
+cd macos && xcodegen generate
+xcodebuild -project LinkToMacOS.xcodeproj -scheme LinkToMacOS -configuration Debug \
+  -derivedDataPath build -clonedSourcePackagesDirPath Packages/.spm build
+open "build/Products/Debug/Link to macOS.app"
+
+# Android app (Debug), phone connected over USB
 cd android && ./gradlew installDebug
 ```
 
-测试：
+Tests:
 
 ```bash
-cd android && ./gradlew testDebugUnitTest
+cd macos/Packages/LinkCore && swift test       # protocol, server, pairing, mirroring streams
+cd android && ./gradlew testDebugUnitTest      # protocol, handshake, size maths
 ```
 
-**配对**：Mac 菜单栏 → “配对新手机…”，然后在手机 App 里点“扫码配对 Mac”。
+The text on both sides is generated from translation tables. **Edit `tools/i18n/mac_translations.py` and `tools/i18n/android_strings.py`, not the generated `.xcstrings` and `strings.xml`.** The details are in the scripts.
 
-## HFP 通话验证（C0）
+## 🛡️ Security model
 
-1. 在 Mac 的“系统设置 → 蓝牙”里与手机配对；手机配对时允许“通话音频”（三星在蓝牙设置里每个设备有“通话音频 / 媒体音频”开关）。
-2. 自动验证（推荐）。首次运行会请求蓝牙和麦克风权限，请点允许；运行后用另一部手机拨打这台手机，接通后按提示对着话筒说话 4 秒：
-   ```bash
-   cd spikes/hfp-spike && swift run hfp-spike --auto Galaxy
-   ```
-   工具会自动：连接 HFP → 等来电 → 2 秒后接听 → 打开语音链路 → 检查系统里有没有蓝牙通话音频设备（以及是宽带还是窄带）→ 录 4 秒对方的声音 → 向对方播 2 秒“嘟”声 → 挂断，最后打印汇总，并把全部过程写进 `spikes/hfp-spike/hfp-spike.log`。
-   - 想测从 Mac 拨出：加 `--dial <号码>`，例如 `swift run hfp-spike --auto Galaxy --dial 10086`。
-   - 等来电的时间默认 180 秒，用 `--wait <秒>` 修改。
-   - 只想看系统音频设备：`swift run hfp-spike --list-audio`（不碰蓝牙）。
-3. 交互验证（手动输入命令）：
-   ```bash
-   cd spikes/hfp-spike && swift run hfp-spike Galaxy
-   ```
-   按顺序记录：是否出现“✅ HFP 已连接”；用另一部手机拨打 S23U 能否看到 📞 来电和号码；输入 `a` 能否接听；输入 `sco` 后能否看到“✅ 语音链路已打开”，`audio` 的输出里是否出现 🔵 蓝牙音频设备；能否用 Mac 的麦克风和扬声器正常通话；输入 `e` 能否挂断，`d <号码>` 能否拨出。
+- Mutual TLS 1.3 with self-signed certificates. Each side pins the other's SHA-256 fingerprint, so there is no certificate authority to trust.
+- Pairing uses a one-time token in a QR code that expires in 5 minutes.
+- The phone app and the enhanced service talk over `127.0.0.1` with an HMAC challenge. The shared secret never travels on the wire. Only a process that has it can control the service.
+- Notifications are forwarded by an allowlist: nothing leaves the phone from an app you did not tick.
+- The microphone is off by default, and the Mac asks for permission the first time.
+- No cloud, no analytics. Photos and files go straight from the phone to the Mac.
+- The enhanced service runs as the `shell` user. It can do what `adb shell` can do, so keep USB debugging and your adb keys to yourself.
+
+## 🩺 Troubleshooting
+
+| Symptom | What to check |
+|---|---|
+| The phone does not connect | Same network? On a hotspot the Mac must be joined to it. Allow the **Local Network** permission on the Mac, and keep the phone app's battery setting on *Unrestricted*. |
+| "Enhanced service is not running" | USB cable, **USB debugging** on, and on Samsung **Auto Blocker** off. Then click **Start Enhanced Service** again. After the phone restarts it must be started again. |
+| "Outdated, restart needed" | The phone app was reinstalled but the old service is still running. Start the enhanced service once more. |
+| The Mac app will not open | It is ad hoc signed. Right-click → Open the first time, or `xattr -dr com.apple.quarantine "/Applications/Link to macOS.app"`. |
+| No sound while mirroring | Check the Mac output device. The phone is silent on purpose while audio is forwarded. |
+| The mic is not heard | `mirrorMicrophone` is on? The Mac asked for permission? The app on the phone must record from the microphone (not a call). |
+| No call alert | The phone app has the **Phone** permission? Mac notifications allowed? The switch in Settings → General → Notifications is on? |
+| Why can't I answer calls on the Mac? | macOS on Apple silicon refuses to open the Bluetooth voice link (SCO) as a headset, so the call audio cannot come to the Mac. Details in [docs/PLAN.md](docs/PLAN.md). VoIP calls (WhatsApp, WeChat…) work through mirroring. |
+
+## 🗺️ Status
+
+**Done:** pairing and encrypted link · notifications with an allowlist and automatic Do Not Disturb · Photos & Files · overview · screen mirroring (two modes, audio, microphone, landscape) · apps page · settings and shortcuts · call alerts · four languages.
+
+**Not done:** a desktop widget · copying files from the Mac to the phone · non-ASCII text input while mirroring · multi-touch gestures · answering or dialing calls from the Mac.
+
+## 📜 License and credits
+
+No license has been chosen yet, so by default all rights are reserved. This is a personal project.
+
+Built on [SwiftNIO](https://github.com/apple/swift-nio), [swift-nio-ssl](https://github.com/apple/swift-nio-ssl), [swift-certificates](https://github.com/apple/swift-certificates), [swift-crypto](https://github.com/apple/swift-crypto), [ZXing](https://github.com/zxing/zxing), AndroidX and Jetpack Compose, and [OpenCC](https://github.com/BYVoid/OpenCC) (Traditional Chinese conversion in the tools). The enhanced service is written after [scrcpy](https://github.com/Genymobile/scrcpy) (Apache-2.0); see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+*Link to Windows* and *Phone Link* are Microsoft products, *macOS* is a trademark of Apple Inc., *Android* is a trademark of Google LLC. This project is independent and not affiliated with or endorsed by any of them.

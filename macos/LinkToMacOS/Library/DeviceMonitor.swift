@@ -169,7 +169,7 @@ extension DeviceMonitor {
         func decode<T: Decodable>(_ value: JSONValue) -> T { try! value.decoded(T.self) }
         let now = Date()
         let device: PairedDevice = decode(.object([
-            "deviceId": "sample", "name": "Kazuma's Galaxy S23 Ultra", "model": "SM-S9180",
+            "deviceId": "sample", "name": "Galaxy S23 Ultra", "model": "SM-S9180",
             "certificateFingerprint": "", "pairedAt": .double(now.addingTimeInterval(-86400).timeIntervalSinceReferenceDate),
         ]))
         let monitor = DeviceMonitor(device: device, directory: FileManager.default.temporaryDirectory.appendingPathComponent("linktomacos-sample"))
@@ -201,7 +201,7 @@ extension DeviceMonitor {
         monitor.history = history
         if online {
             monitor.isOnline = true
-            monitor.address = "10.73.171.9"
+            monitor.address = "192.168.1.23"
             monitor.connectedSince = now.addingTimeInterval(-380)
         } else {
             monitor.lastSeen = now.addingTimeInterval(-3600)

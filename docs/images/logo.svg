@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4080D6"/>
+      <stop offset="1" stop-color="#90BEF4"/>
+    </linearGradient>
+    <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EEF0F5"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#plate)" stroke="#DDE1EA"/>
+  <rect x="26" y="34" width="64" height="44" rx="5" fill="#26282D"/>
+  <rect x="29" y="37" width="58" height="38" rx="3" fill="url(#sky)"/>
+  <rect x="51" y="37" width="14" height="3.6" rx="1.8" fill="#121315"/>
+  <path d="M20 78h76v1.5a4.5 4.5 0 0 1-4.5 4.5h-67a4.5 4.5 0 0 1-4.5-4.5z" fill="#C4C8D1"/>
+  <rect x="73" y="56" width="26" height="46" rx="7.5" fill="#3F5E8D"/>
+  <rect x="75.2" y="58.2" width="21.6" height="41.6" rx="5.6" fill="#F9F9FF"/>
+  <rect x="78.5" y="63" width="11" height="3" rx="1.5" fill="#415F91"/>
+  <rect x="78.5" y="70" width="16" height="9" rx="2.5" fill="#D6E3FF"/>
+  <rect x="78.5" y="82" width="16" height="7" rx="2.5" fill="#DAE2F9"/>
+  <rect x="86" y="90" width="8.5" height="7" rx="2.6" fill="#FAD8FD"/>
+</svg>
