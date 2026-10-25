@@ -31,6 +31,8 @@ targets:
       path: LinkToMacOS/Info.plist
       properties:
         CFBundleDisplayName: Link to macOS
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSUIElement: true
         CFBundleLocalizations: [en, zh-Hans, zh-Hant, ja]
         LSApplicationCategoryType: public.app-category.utilities
