@@ -4,4 +4,14 @@
     <issue id="ObsoleteSdkInt">
         <ignore regexp="mipmap-anydpi-v26" />
     </issue>
+    <!-- 相册浏览需要完整读取权限，不使用 Android 14 的“部分照片”模式 -->
+    <issue id="SelectedPhotoAccess" severity="ignore" />
+    <!-- shell 服务（com.linktomacos.android.shell）有意使用系统内部接口：它以 shell 身份运行，不经过应用沙箱 -->
+    <issue id="PrivateApi"><ignore regexp="android/shell/" /></issue>
+    <issue id="DiscouragedPrivateApi"><ignore regexp="android/shell/" /></issue>
+    <issue id="BlockedPrivateApi"><ignore regexp="android/shell/" /></issue>
+    <issue id="SoonBlockedPrivateApi"><ignore regexp="android/shell/" /></issue>
+    <issue id="StaticFieldLeak"><ignore regexp="android/shell/" /></issue>
+    <!-- shell 身份自带录音等权限，不需要 App 声明或向用户申请 -->
+    <issue id="MissingPermission"><ignore regexp="android/shell/" /></issue>
 </lint>

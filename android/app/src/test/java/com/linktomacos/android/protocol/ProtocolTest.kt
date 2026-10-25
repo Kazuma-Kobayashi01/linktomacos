@@ -75,6 +75,37 @@ class ProtocolTest {
     }
 
     @Test
+    fun deviceStatusExtrasAreOptionalAndBackwardCompatible() {
+        // 旧版本手机发来的状态没有新字段，新版 Mac 仍要能解析；反过来新字段对旧版 Mac 是被忽略的未知字段
+        val old = MessageCodec.decode(
+            """{"type":"deviceStatus","batteryLevel":50,"charging":false,"wifiConnected":true,"storageTotal":10,"storageFree":5,"timestamp":1}""")
+        old as DeviceStatus
+        assertNull(old.batteryTemperature)
+        assertNull(old.memoryTotal)
+        val full = DeviceStatus(
+            80, true, 3, "5G", "CMHK", true, 512, 100, 1,
+            batteryTemperature = 31.5, batteryVoltage = 4200, batteryHealth = "good", chargingType = "ac",
+            memoryTotal = 12L shl 30, memoryAvailable = 5L shl 30, wifiLevel = 4, wifiLinkSpeed = 866, signalDbm = -92, uptime = 123456,
+        )
+        assertEquals(full, MessageCodec.decode(MessageCodec.encode(full)))
+        assertTrue(MessageCodec.encode(full).contains("\"batteryTemperature\":31.5"))
+    }
+
+    @Test
+    fun mirrorMessagesRoundTrip() {
+        val touch = MirrorInput(k = "t", a = 0, x = 0.25, y = 0.75)
+        assertEquals(touch, MessageCodec.decode(MessageCodec.encode(touch)))
+        val key = MirrorInput(k = "key", a = 1, c = 66, m = 0x1000)
+        assertEquals(key, MessageCodec.decode(MessageCodec.encode(key)))
+        val resized = MirrorEvent("resized", 1080, 2312, 1080, 2316, 1)
+        assertEquals(resized, MessageCodec.decode(MessageCodec.encode(resized)))
+        // Swift 端编码出的 null 字段
+        val fromSwift = MessageCodec.decode("""{"type":"mirrorInput","k":"s","x":0.5,"y":0.5,"v":-1.5,"a":null,"text":null}""") as MirrorInput
+        assertEquals("s", fromSwift.k)
+        assertEquals(-1.5, fromSwift.v!!, 0.0)
+    }
+
+    @Test
     fun unknownTypeIsTolerated() {
         assertEquals(Unknown("future"), MessageCodec.decode("""{"type":"future","x":1}"""))
     }

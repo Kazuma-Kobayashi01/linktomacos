@@ -1,5 +1,7 @@
 package com.linktomacos.android.ui
 
+import com.linktomacos.android.R
+import androidx.compose.ui.res.stringResource
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -57,11 +59,11 @@ fun AppPickerScreen(
 
     Column(modifier = modifier.fillMaxSize()) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 8.dp)) {
-            TextButton(onClick = onBack) { Text("返回") }
-            Text("选择要转发的应用", style = MaterialTheme.typography.titleLarge)
+            TextButton(onClick = onBack) { Text(stringResource(R.string.back)) }
+            Text(stringResource(R.string.picker_title), style = MaterialTheme.typography.titleLarge)
         }
         Text(
-            "只有勾选的应用的通知会转发到 Mac（已选 ${allowed.size} 个）",
+            stringResource(R.string.picker_hint, allowed.size),
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(horizontal = 20.dp),
         )
@@ -69,7 +71,7 @@ fun AppPickerScreen(
             value = query,
             onValueChange = { query = it },
             singleLine = true,
-            placeholder = { Text("搜索应用") },
+            placeholder = { Text(stringResource(R.string.picker_search)) },
             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
         )
         val list = apps

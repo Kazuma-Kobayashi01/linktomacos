@@ -47,6 +47,24 @@ data class DeviceStatus(
     val storageTotal: Long,
     val storageFree: Long,
     val timestamp: Long,
+    /** 电池温度，摄氏度。 */
+    val batteryTemperature: Double? = null,
+    /** 电池电压，毫伏。 */
+    val batteryVoltage: Int? = null,
+    /** good / overheat / dead / over_voltage / cold / failure / unknown */
+    val batteryHealth: String? = null,
+    /** ac / usb / wireless / dock；未充电为 null。 */
+    val chargingType: String? = null,
+    val memoryTotal: Long? = null,
+    val memoryAvailable: Long? = null,
+    /** Wi‑Fi 信号格数 0-4；未连接 Wi‑Fi 为 null。 */
+    val wifiLevel: Int? = null,
+    /** Wi‑Fi 连接速率，Mbps。 */
+    val wifiLinkSpeed: Int? = null,
+    /** 蜂窝信号强度，dBm。 */
+    val signalDbm: Int? = null,
+    /** 开机至今的毫秒数。 */
+    val uptime: Long? = null,
 ) : LinkMessage
 
 @Serializable
@@ -88,6 +106,37 @@ data class StreamEnd(val streamId: Int, val ok: Boolean, val error: String? = nu
 /** 二进制数据帧，属于 [streamId] 对应的文件流。不走 JSON，见 [Frames]。 */
 class DataChunk(val streamId: Int, val bytes: ByteArray, val length: Int = bytes.size) : LinkMessage
 
+/**
+ * 投屏时 Mac → 手机的输入事件。[k]：t 触摸（[a] 0 按下 1 抬起 2 移动，[x]/[y] 是 0..1 的相对位置）、
+ * s 滚轮（[h]/[v]）、key 按键（[a] 0 按下 1 抬起，[c] Android 键值，[m] 修饰键）、text 文字、
+ * cmd 命令（[cmd]：back/home/recents/wake/power/notifications/sync/screenOff/screenOn）。
+ */
+@Serializable
+data class MirrorInput(
+    val k: String,
+    val a: Int? = null,
+    val x: Double? = null,
+    val y: Double? = null,
+    val c: Int? = null,
+    val m: Int? = null,
+    val h: Double? = null,
+    val v: Double? = null,
+    val text: String? = null,
+    val cmd: String? = null,
+) : LinkMessage
+
+/** 投屏状态变化（手机 → Mac）：resized（旋转或尺寸变化）、stopped、error。 */
+@Serializable
+data class MirrorEvent(
+    val event: String,
+    val width: Int? = null,
+    val height: Int? = null,
+    val deviceWidth: Int? = null,
+    val deviceHeight: Int? = null,
+    val rotation: Int? = null,
+    val message: String? = null,
+) : LinkMessage
+
 /** 本端版本不认识的消息类型，忽略即可。 */
 data class Unknown(val type: String) : LinkMessage
 
@@ -110,6 +159,8 @@ object MessageCodec {
             is Request -> "request" to json.encodeToJsonElement(message)
             is Response -> "response" to json.encodeToJsonElement(message)
             is StreamEnd -> "streamEnd" to json.encodeToJsonElement(message)
+            is MirrorInput -> "mirrorInput" to json.encodeToJsonElement(message)
+            is MirrorEvent -> "mirrorEvent" to json.encodeToJsonElement(message)
             is DataChunk -> error("data chunks are binary frames, see Frames")
             is Unknown -> error("cannot send unknown message ${message.type}")
         }
@@ -130,6 +181,8 @@ object MessageCodec {
             "request" -> json.decodeFromJsonElement<Request>(obj)
             "response" -> json.decodeFromJsonElement<Response>(obj)
             "streamEnd" -> json.decodeFromJsonElement<StreamEnd>(obj)
+            "mirrorInput" -> json.decodeFromJsonElement<MirrorInput>(obj)
+            "mirrorEvent" -> json.decodeFromJsonElement<MirrorEvent>(obj)
             else -> Unknown(type ?: "")
         }
     }

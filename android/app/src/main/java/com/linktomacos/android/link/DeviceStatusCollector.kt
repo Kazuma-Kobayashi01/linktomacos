@@ -1,6 +1,7 @@
 package com.linktomacos.android.link
 
 import android.Manifest
+import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -8,8 +9,11 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.wifi.WifiInfo
+import android.net.wifi.WifiManager
 import android.os.BatteryManager
 import android.os.Environment
+import android.os.SystemClock
 import android.os.StatFs
 import android.telephony.TelephonyManager
 import androidx.core.content.ContextCompat
@@ -27,10 +31,11 @@ import kotlinx.coroutines.flow.merge
 class DeviceStatusCollector(private val context: Context) {
     private val telephony = context.getSystemService(TelephonyManager::class.java)
     private val connectivity = context.getSystemService(ConnectivityManager::class.java)
+    private val wifiManager = context.getSystemService(WifiManager::class.java)
 
     fun updates(): Flow<DeviceStatus> = merge(batteryChanges(), ticker(60_000))
         .map { snapshot() }
-        .distinctUntilChanged { a, b -> a.copy(timestamp = 0) == b.copy(timestamp = 0) }
+        .distinctUntilChanged { a, b -> a.copy(timestamp = 0, uptime = null) == b.copy(timestamp = 0, uptime = null) }
 
     fun snapshot(): DeviceStatus {
         val battery = ContextCompat.registerReceiver(
@@ -44,6 +49,8 @@ class DeviceStatusCollector(private val context: Context) {
         val plugged = (battery?.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) ?: 0) != 0
         val stat = StatFs(Environment.getDataDirectory().path)
         val caps = connectivity.getNetworkCapabilities(connectivity.activeNetwork)
+        val memory = ActivityManager.MemoryInfo().also { context.getSystemService(ActivityManager::class.java).getMemoryInfo(it) }
+        val wifi = caps?.transportInfo as? WifiInfo
         return DeviceStatus(
             batteryLevel = level,
             charging = plugged,
@@ -54,7 +61,41 @@ class DeviceStatusCollector(private val context: Context) {
             storageTotal = stat.totalBytes,
             storageFree = stat.availableBytes,
             timestamp = System.currentTimeMillis(),
+            batteryTemperature = battery?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, Int.MIN_VALUE)
+                ?.takeIf { it != Int.MIN_VALUE }?.let { it / 10.0 },
+            batteryVoltage = battery?.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0)?.takeIf { it > 0 },
+            batteryHealth = when (battery?.getIntExtra(BatteryManager.EXTRA_HEALTH, 0)) {
+                BatteryManager.BATTERY_HEALTH_GOOD -> "good"
+                BatteryManager.BATTERY_HEALTH_OVERHEAT -> "overheat"
+                BatteryManager.BATTERY_HEALTH_DEAD -> "dead"
+                BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE -> "over_voltage"
+                BatteryManager.BATTERY_HEALTH_COLD -> "cold"
+                BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE -> "failure"
+                else -> "unknown"
+            },
+            chargingType = when {
+                battery == null -> null
+                else -> when (battery.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0)) {
+                    BatteryManager.BATTERY_PLUGGED_AC -> "ac"
+                    BatteryManager.BATTERY_PLUGGED_USB -> "usb"
+                    BatteryManager.BATTERY_PLUGGED_WIRELESS -> "wireless"
+                    BatteryManager.BATTERY_PLUGGED_DOCK -> "dock"
+                    else -> null
+                }
+            },
+            memoryTotal = memory.totalMem,
+            memoryAvailable = memory.availMem,
+            wifiLevel = wifi?.takeIf { it.rssi > -127 }?.let { wifiManager.calculateSignalLevel(it.rssi) },
+            wifiLinkSpeed = wifi?.linkSpeed?.takeIf { it > 0 },
+            signalDbm = signalDbm(),
+            uptime = SystemClock.elapsedRealtime(),
         )
+    }
+
+    /** 需要 READ_PHONE_STATE；未授权或无信号时返回 null。 */
+    private fun signalDbm(): Int? {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) return null
+        return telephony.signalStrength?.cellSignalStrengths?.firstOrNull()?.dbm?.takeIf { it != Int.MAX_VALUE && it != 0 }
     }
 
     /** 需要 READ_PHONE_STATE；未授权时返回 null。 */

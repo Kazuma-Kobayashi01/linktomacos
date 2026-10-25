@@ -1,5 +1,6 @@
 package com.linktomacos.android
 
+import androidx.compose.ui.res.stringResource
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -89,6 +90,7 @@ class MainActivity : ComponentActivity() {
         val ringCalls by settings.ringCalls.collectAsStateWithLifecycle()
         val dndActive by DndStatus.active.collectAsStateWithLifecycle()
         val dndError by DndStatus.error.collectAsStateWithLifecycle()
+        val enhancedReady by (application as LinkApp).bridge.ready.collectAsStateWithLifecycle()
 
         val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {}
         LaunchedEffect(Unit) {
@@ -99,7 +101,7 @@ class MainActivity : ComponentActivity() {
         }
         val cameraPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) scanning = true
-            else Toast.makeText(this, "需要相机权限才能扫码", Toast.LENGTH_SHORT).show()
+            else Toast.makeText(this, getString(R.string.need_camera), Toast.LENGTH_SHORT).show()
         }
 
         Scaffold { padding ->
@@ -110,11 +112,11 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         onResult = { text ->
                             scanning = false
-                            if (!pair(text)) Toast.makeText(this@MainActivity, "不是 LinkToMacOS 的配对码", Toast.LENGTH_SHORT).show()
+                            if (!pair(text)) Toast.makeText(this@MainActivity, getString(R.string.not_pairing_code), Toast.LENGTH_SHORT).show()
                         },
                     )
                     Text(
-                        "对准 Mac 上的配对二维码",
+                        stringResource(R.string.scan_hint),
                         modifier = Modifier.align(Alignment.BottomCenter).padding(32.dp),
                         color = darkColorScheme().onSurface,
                     )
@@ -141,6 +143,7 @@ class MainActivity : ComponentActivity() {
                         dndError = dndError,
                         mediaAccess = mediaAccess,
                         allFilesAccess = allFilesAccess,
+                        enhancedReady = enhancedReady,
                     ),
                     onGrantMedia = {
                         mediaPermission.launch(arrayOf(

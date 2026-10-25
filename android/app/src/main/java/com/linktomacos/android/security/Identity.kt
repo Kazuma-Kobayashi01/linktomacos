@@ -73,7 +73,7 @@ object Identity {
         val trustManager = object : X509TrustManager {
             override fun checkServerTrusted(chain: Array<out X509Certificate>, authType: String?) {
                 val actual = chain.firstOrNull()?.let(::fingerprint)
-                if (actual != pinnedFingerprint) throw CertificateException("Mac 证书指纹不匹配")
+                if (actual != pinnedFingerprint) throw CertificateException("Mac certificate fingerprint does not match")
             }
             override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) =
                 throw CertificateException("client mode only")

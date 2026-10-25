@@ -1,5 +1,6 @@
 package com.linktomacos.android.link
 
+import com.linktomacos.android.R
 import android.app.AutomaticZenRule
 import android.app.NotificationManager
 import android.content.ComponentName
@@ -104,7 +105,7 @@ class DndController(
     private fun apply() = synchronized(lock) {
         val want = connected && settings.dndOnConnect.value
         if (!nm.isNotificationPolicyAccessGranted) {
-            DndStatus.set(false, if (want) "未授予“勿扰权限”，无法自动开启免打扰" else null)
+            DndStatus.set(false, if (want) context.getString(R.string.dnd_no_access) else null)
             return@synchronized
         }
         try {
@@ -121,7 +122,7 @@ class DndController(
                 nm.updateAutomaticZenRule(ruleId, buildRule())
             }
             val state = if (want) Condition.STATE_TRUE else Condition.STATE_FALSE
-            nm.setAutomaticZenRuleState(ruleId, Condition(CONDITION_URI, SUMMARY, state))
+            nm.setAutomaticZenRuleState(ruleId, Condition(CONDITION_URI, context.getString(R.string.dnd_rule_name), state))
             Log.i(TAG, "rule state -> ${if (want) "TRUE" else "FALSE"}")
             DndStatus.set(want, null)
         } catch (t: Throwable) {
@@ -147,7 +148,7 @@ class DndController(
         // 不用 AutomaticZenRule.Builder：它的 (name, Uri) 构造方法在部分 Android 15 系统（含 One UI 7）上不存在
         @Suppress("DEPRECATION")
         return AutomaticZenRule(
-            RULE_NAME,
+            context.getString(R.string.dnd_rule_name),
             null,
             ComponentName(context, MainActivity::class.java),
             CONDITION_URI,
@@ -159,8 +160,6 @@ class DndController(
 
     companion object {
         private const val KEY_RULE_ID = "rule_id"
-        private const val RULE_NAME = "已连接 Mac"
-        private const val SUMMARY = "已连接 Mac"
         private val CONDITION_URI: Uri = "linktomacos://dnd/connected".toUri()
 
         fun hasAccess(context: Context): Boolean =

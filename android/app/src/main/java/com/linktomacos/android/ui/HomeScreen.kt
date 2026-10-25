@@ -1,5 +1,8 @@
 package com.linktomacos.android.ui
 
+import com.linktomacos.android.R
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.PowerManager
@@ -44,6 +47,7 @@ data class SettingsUiState(
     val dndError: String?,
     val mediaAccess: Boolean,
     val allFilesAccess: Boolean,
+    val enhancedReady: Boolean,
 )
 
 @Composable
@@ -68,18 +72,19 @@ fun HomeScreen(
         Text("LinkToMacOS", style = MaterialTheme.typography.headlineMedium)
         StatusCard(state)
         if (paired == null) {
-            Button(onClick = onScan, modifier = Modifier.fillMaxWidth()) { Text("扫码配对 Mac") }
-            OutlinedButton(onClick = { showPaste = true }, modifier = Modifier.fillMaxWidth()) { Text("粘贴配对链接") }
+            Button(onClick = onScan, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pair_scan)) }
+            OutlinedButton(onClick = { showPaste = true }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pair_paste)) }
         } else {
-            Text("已配对：${paired.name}", style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(R.string.paired_with, paired.name), style = MaterialTheme.typography.bodyMedium)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedButton(onClick = onScan) { Text("重新配对") }
-                OutlinedButton(onClick = onUnpair) { Text("取消配对") }
+                OutlinedButton(onClick = onScan) { Text(stringResource(R.string.re_pair)) }
+                OutlinedButton(onClick = onUnpair) { Text(stringResource(R.string.unpair)) }
             }
         }
         NotificationAccessCard(settings.notificationAccess, settings.allowedCount, onManageApps)
         DndCard(settings, onDndOnConnectChange, onRingCallsChange)
         FilesAccessCard(settings.mediaAccess, settings.allFilesAccess, onGrantMedia)
+        EnhancedCard(settings.enhancedReady)
         KeepAliveCard()
     }
     if (showPaste) PasteDialog(onDismiss = { showPaste = false }, onSubmit = onPairLink)
@@ -88,11 +93,11 @@ fun HomeScreen(
 @Composable
 private fun StatusCard(state: LinkState) {
     val (title, detail) = when (state) {
-        LinkState.NotPaired -> "未配对" to "在 Mac 菜单栏点击“配对新手机…”，然后扫描二维码"
-        is LinkState.Searching -> "正在连接" to state.macName
-        is LinkState.Connected -> "已连接" to "${state.macName} · ${state.host}"
-        is LinkState.Waiting -> "未连接" to "${state.reason}，${state.retryInSeconds} 秒后重试"
-        is LinkState.Rejected -> "被拒绝" to "${state.macName}：${state.reason}。请重新扫码配对"
+        LinkState.NotPaired -> stringResource(R.string.state_not_paired_title) to stringResource(R.string.state_not_paired_detail)
+        is LinkState.Searching -> stringResource(R.string.state_searching_title) to state.macName
+        is LinkState.Connected -> stringResource(R.string.state_connected_title) to "${state.macName} · ${state.host}"
+        is LinkState.Waiting -> stringResource(R.string.state_waiting_title) to stringResource(R.string.state_waiting_detail, state.reason, state.retryInSeconds)
+        is LinkState.Rejected -> stringResource(R.string.state_rejected_title) to stringResource(R.string.state_rejected_detail, state.macName, state.reason)
     }
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -107,12 +112,12 @@ private fun NotificationAccessCard(enabled: Boolean, allowedCount: Int, onManage
     val context = LocalContext.current
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("通知转发", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.notif_title), style = MaterialTheme.typography.titleMedium)
             Text(
                 when {
-                    !enabled -> "需要开启“通知使用权”，才能把手机通知转发到 Mac"
-                    allowedCount == 0 -> "还没有选择任何应用，请先选择要转发通知的应用"
-                    else -> "已选择 $allowedCount 个应用，它们的新通知会显示在 Mac 上"
+                    !enabled -> stringResource(R.string.notif_need_access)
+                    allowedCount == 0 -> stringResource(R.string.notif_none_selected)
+                    else -> pluralStringResource(R.plurals.apps_selected, allowedCount, allowedCount)
                 },
                 style = MaterialTheme.typography.bodySmall,
             )
@@ -120,9 +125,9 @@ private fun NotificationAccessCard(enabled: Boolean, allowedCount: Int, onManage
                 if (!enabled) {
                     OutlinedButton(onClick = {
                         context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
-                    }) { Text("去开启") }
+                    }) { Text(stringResource(R.string.go_enable)) }
                 }
-                OutlinedButton(onClick = onManageApps) { Text("选择应用") }
+                OutlinedButton(onClick = onManageApps) { Text(stringResource(R.string.choose_apps)) }
             }
         }
     }
@@ -133,19 +138,19 @@ private fun DndCard(settings: SettingsUiState, onDndOnConnectChange: (Boolean) -
     val context = LocalContext.current
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("免打扰", style = MaterialTheme.typography.titleMedium)
-            SwitchRow("连接 Mac 时自动开启免打扰", "断开、Mac 退出或睡眠时自动关闭", settings.dndOnConnect, onDndOnConnectChange)
+            Text(stringResource(R.string.dnd_title), style = MaterialTheme.typography.titleMedium)
+            SwitchRow(stringResource(R.string.dnd_auto), stringResource(R.string.dnd_auto_sub), settings.dndOnConnect, onDndOnConnectChange)
             if (settings.dndOnConnect) {
-                SwitchRow("免打扰期间来电仍然响铃", null, settings.ringCalls, onRingCallsChange)
+                SwitchRow(stringResource(R.string.dnd_ring), null, settings.ringCalls, onRingCallsChange)
                 if (!settings.dndAccess) {
-                    Text("需要授予“勿扰权限”才能自动开关免打扰", style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(R.string.dnd_need_policy), style = MaterialTheme.typography.bodySmall)
                     OutlinedButton(onClick = {
                         context.startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
-                    }) { Text("去授权") }
+                    }) { Text(stringResource(R.string.go_grant)) }
                 } else {
                     Text(
-                        settings.dndError?.let { "免打扰出错：$it" }
-                            ?: if (settings.dndActive) "免打扰已由本应用开启" else "当前未开启（连接 Mac 后自动开启）",
+                        settings.dndError?.let { stringResource(R.string.dnd_error, it) }
+                            ?: if (settings.dndActive) stringResource(R.string.dnd_active) else stringResource(R.string.dnd_inactive),
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
@@ -159,14 +164,28 @@ private fun FilesAccessCard(mediaAccess: Boolean, allFilesAccess: Boolean, onGra
     val context = LocalContext.current
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("相册与文件", style = MaterialTheme.typography.titleMedium)
-            Text("在 Mac 上浏览手机的相册和文件，需要下面两项授权", style = MaterialTheme.typography.bodySmall)
-            AccessRow("相册读取（需选“允许全部”）", mediaAccess, onGrantMedia)
-            AccessRow("所有文件访问", allFilesAccess) {
+            Text(stringResource(R.string.files_title), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.files_desc), style = MaterialTheme.typography.bodySmall)
+            AccessRow(stringResource(R.string.files_media), mediaAccess, onGrantMedia)
+            AccessRow(stringResource(R.string.files_all), allFilesAccess) {
                 val packageUri = "package:${context.packageName}".toUri()
                 runCatching { context.startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, packageUri)) }
                     .onFailure { context.startActivity(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)) }
             }
+        }
+    }
+}
+
+@Composable
+private fun EnhancedCard(ready: Boolean) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.enhanced_title), style = MaterialTheme.typography.titleMedium)
+            Text(
+                stringResource(if (ready) R.string.enhanced_running else R.string.enhanced_stopped),
+                style = MaterialTheme.typography.bodySmall,
+                color = if (ready) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }
@@ -177,12 +196,12 @@ private fun AccessRow(title: String, granted: Boolean, onGrant: () -> Unit) {
         Column(Modifier.weight(1f)) {
             Text(title, style = MaterialTheme.typography.bodyMedium)
             Text(
-                if (granted) "已授权" else "未授权",
+                if (granted) stringResource(R.string.granted) else stringResource(R.string.not_granted),
                 style = MaterialTheme.typography.bodySmall,
                 color = if (granted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
             )
         }
-        if (!granted) OutlinedButton(onClick = onGrant) { Text("去授权") }
+        if (!granted) OutlinedButton(onClick = onGrant) { Text(stringResource(R.string.go_grant)) }
     }
 }
 
@@ -206,11 +225,9 @@ private fun KeepAliveCard() {
     val ignoring = power.isIgnoringBatteryOptimizations(context.packageName)
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("保持连接", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.keepalive_title), style = MaterialTheme.typography.titleMedium)
             Text(
-                "1. 关闭电池优化（应用电池设为“不受限制”）\n" +
-                    "2. 设置 → 电池 → 后台使用限制 → 将本应用加入“从不休眠的应用”\n" +
-                    "3. 关闭“自动拦截器”",
+                stringResource(R.string.keepalive_steps),
                 style = MaterialTheme.typography.bodySmall,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -221,12 +238,12 @@ private fun KeepAliveCard() {
                             Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, "package:${context.packageName}".toUri()),
                         )
                     },
-                ) { Text(if (ignoring) "电池优化已关闭" else "关闭电池优化") }
+                ) { Text(if (ignoring) stringResource(R.string.battery_opt_off) else stringResource(R.string.battery_opt_turn_off)) }
                 TextButton(onClick = {
                     context.startActivity(
                         Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:${context.packageName}".toUri()),
                     )
-                }) { Text("应用信息") }
+                }) { Text(stringResource(R.string.app_info)) }
             }
         }
     }
@@ -238,19 +255,19 @@ private fun PasteDialog(onDismiss: () -> Unit, onSubmit: (String) -> Boolean) {
     var error by remember { mutableStateOf(false) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("粘贴配对链接") },
+        title = { Text(stringResource(R.string.pair_paste)) },
         text = {
             OutlinedTextField(
                 value = text,
                 onValueChange = { text = it; error = false },
                 isError = error,
-                supportingText = { if (error) Text("链接无效") },
+                supportingText = { if (error) Text(stringResource(R.string.link_invalid)) },
                 placeholder = { Text("linktomacos://pair?…") },
             )
         },
         confirmButton = {
-            TextButton(onClick = { if (onSubmit(text)) onDismiss() else error = true }) { Text("配对") }
+            TextButton(onClick = { if (onSubmit(text)) onDismiss() else error = true }) { Text(stringResource(R.string.pair)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } },
     )
 }

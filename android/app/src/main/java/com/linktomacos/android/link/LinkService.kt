@@ -18,12 +18,14 @@ import com.linktomacos.android.MainActivity
 import com.linktomacos.android.R
 import com.linktomacos.android.data.PairedMac
 import com.linktomacos.android.data.isSamePairing
+import com.linktomacos.android.protocol.DataChunk
 import com.linktomacos.android.protocol.DeviceStatus
 import com.linktomacos.android.protocol.Frames
 import com.linktomacos.android.protocol.Goodbye
 import com.linktomacos.android.protocol.Hello
 import com.linktomacos.android.protocol.HelloAck
 import com.linktomacos.android.protocol.LinkMessage
+import com.linktomacos.android.protocol.MirrorInput
 import com.linktomacos.android.protocol.Ping
 import com.linktomacos.android.protocol.Pong
 import com.linktomacos.android.protocol.Request
@@ -84,9 +86,10 @@ class LinkService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        startForeground(NOTIFICATION_ID, buildNotification("正在启动…"), ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE)
+        startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.svc_starting)), ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE)
         getSystemService(ConnectivityManager::class.java).registerDefaultNetworkCallback(networkCallback)
         dnd.start()
+        (application as LinkApp).bridge.start()
         scope.launch { LinkStatus.state.collect { updateNotification(it) } }
         scope.launch { run() }
     }
@@ -172,7 +175,7 @@ class LinkService : Service() {
             } ?: continue
             return serve(Session(socket), mac, host, port)
         }
-        return SessionEnd.Closed(if (candidates.isEmpty()) "未找到 Mac" else "无法连接 Mac", wasConnected = false)
+        return SessionEnd.Closed(if (candidates.isEmpty()) getString(R.string.svc_not_found) else getString(R.string.svc_cannot_connect), wasConnected = false)
     }
 
     private suspend fun serve(session: Session, mac: PairedMac, host: String, port: Int): SessionEnd = coroutineScope {
@@ -181,8 +184,8 @@ class LinkService : Service() {
                 session.send(hello(mac.pendingToken))
                 session.receive()
             }
-            if (ack !is HelloAck) return@coroutineScope SessionEnd.Closed("握手失败", wasConnected = false)
-            if (!ack.accepted) return@coroutineScope SessionEnd.Rejected(ack.reason ?: "Mac 拒绝连接")
+            if (ack !is HelloAck) return@coroutineScope SessionEnd.Closed(getString(R.string.svc_handshake_failed), wasConnected = false)
+            if (!ack.accepted) return@coroutineScope SessionEnd.Rejected(ack.reason ?: getString(R.string.svc_mac_refused))
 
             store.onConnected(host, port, ack.macName)
             LinkStatus.set(LinkState.Connected(ack.macName, host))
@@ -203,7 +206,7 @@ class LinkService : Service() {
                     session.close()
                 }
             }
-            val remote = RemoteApi(this@LinkService, this, session::send)
+            val remote = RemoteApi(this@LinkService, this, session::send, (application as LinkApp).bridge)
             val reader = async(Dispatchers.IO) { readLoop(session, remote) }
             try {
                 SessionEnd.Closed(reader.await(), wasConnected = true, macLeft = session.macLeft)
@@ -213,7 +216,7 @@ class LinkService : Service() {
                 remote.cancelAll()
             }
         } catch (e: IOException) {
-            SessionEnd.Closed(e.message ?: "连接中断", wasConnected = false)
+            SessionEnd.Closed(e.message ?: getString(R.string.svc_conn_interrupted), wasConnected = false)
         } finally {
             // 关闭 socket 也会让阻塞中的读取立即返回
             session.close()
@@ -226,15 +229,17 @@ class LinkService : Service() {
             val message = try {
                 session.receive()
             } catch (e: IOException) {
-                return if (e is java.net.SocketTimeoutException) "心跳超时" else (e.message ?: "连接中断")
+                return if (e is java.net.SocketTimeoutException) getString(R.string.svc_heartbeat_timeout) else (e.message ?: getString(R.string.svc_conn_interrupted))
             }
             when (message) {
                 is Ping -> session.send(Pong(message.t))
                 is Request -> remote.handle(message)
+                is MirrorInput -> remote.mirror.input(message)
+                is DataChunk -> remote.mirror.onMicData(message)
                 is Goodbye -> {
                     Log.i(TAG, "goodbye from Mac: ${message.reason}")
                     session.macLeft = true
-                    return "Mac 已断开（${message.reason}）"
+                    return getString(R.string.svc_mac_left, message.reason)
                 }
                 else -> Log.d(TAG, "unhandled $message")
             }
@@ -272,11 +277,11 @@ class LinkService : Service() {
 
     private fun updateNotification(state: LinkState) {
         val text = when (state) {
-            LinkState.NotPaired -> "尚未配对 Mac"
-            is LinkState.Searching -> "正在连接 ${state.macName}…"
-            is LinkState.Connected -> "已连接 ${state.macName}"
-            is LinkState.Waiting -> "${state.reason}，${state.retryInSeconds} 秒后重试"
-            is LinkState.Rejected -> "${state.macName} 拒绝连接：${state.reason}"
+            LinkState.NotPaired -> getString(R.string.notif_not_paired)
+            is LinkState.Searching -> getString(R.string.notif_connecting, state.macName)
+            is LinkState.Connected -> getString(R.string.notif_connected, state.macName)
+            is LinkState.Waiting -> getString(R.string.state_waiting_detail, state.reason, state.retryInSeconds)
+            is LinkState.Rejected -> getString(R.string.notif_rejected, state.macName, state.reason)
         }
         getSystemService(android.app.NotificationManager::class.java).notify(NOTIFICATION_ID, buildNotification(text))
     }
