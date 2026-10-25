@@ -107,7 +107,7 @@ struct FilesView: View {
                 ContentUnavailableView {
                     Label("无法读取文件", systemImage: "lock.shield")
                 } description: {
-                    Text("请在手机上打开 LinkToMacOS，授予“所有文件访问”权限，然后回到这里。")
+                    Text("请在手机上打开 Link to macOS，授予“所有文件访问”权限，然后回到这里。")
                 } actions: {
                     Button("重新检查") { Task { await library.refreshOverview() } }
                 }

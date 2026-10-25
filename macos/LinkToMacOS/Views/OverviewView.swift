@@ -797,7 +797,7 @@ private struct DeviceInfoCard: View {
                 ("rectangle.portrait", "屏幕", "\(info.screenWidth) × \(info.screenHeight) · \(info.densityDpi) dpi · \(Int(info.refreshRate.rounded())) Hz"),
                 ("globe", "语言", Format.language(info.language)),
                 ("clock", "时区", Format.timeZone(info.timezone)),
-                ("app.badge", "LinkToMacOS 版本", info.appVersion),
+                ("app.badge", "Link to macOS 版本", info.appVersion),
             ]
         }
         if let pairedAt = monitor.pairedAt {

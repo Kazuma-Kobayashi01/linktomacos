@@ -25,7 +25,7 @@ struct PhotosView: View {
                 ContentUnavailableView {
                     Label("无法读取相册", systemImage: "lock.shield")
                 } description: {
-                    Text("请在手机上打开 LinkToMacOS，授予“相册读取”权限（选择“允许全部”），然后回到这里。")
+                    Text("请在手机上打开 Link to macOS，授予“相册读取”权限（选择“允许全部”），然后回到这里。")
                 } actions: {
                     Button("重新检查") { Task { await library.refreshOverview() } }
                 }

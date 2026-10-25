@@ -29,6 +29,7 @@
 		87DB2019C9D8523C1C911D3A /* MirrorWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D37D3579269C3CDE6913D0E /* MirrorWindow.swift */; };
 		93B6F4ABD9FE7787E57EC69D /* PhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534209D9416859E7EA4D09C9 /* PhotosView.swift */; };
 		959CE4EBE7D4E715CDEB868B /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D4EAFA984DEE9ACA3DD303 /* MenuView.swift */; };
+		965160FAC8BAC158B9AB6D90 /* CallAlerter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E237F10BF4EC2F41B09A7B31 /* CallAlerter.swift */; };
 		96967D2F860540FDBC5B1B8C /* LinkToMacOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FE64467621FBACC20CC343 /* LinkToMacOSApp.swift */; };
 		A1EC946C25F585B470E36107 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A79E5307B246AA4C9044A12 /* AppModel.swift */; };
 		A21D417D625892A08C19A597 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 238E1140EBFBFF6E1D739FC9 /* Assets.xcassets */; };
@@ -74,6 +75,7 @@
 		C572D2BAC392C6F5594E7843 /* MirrorPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MirrorPage.swift; sourceTree = "<group>"; };
 		D24447DF380887D7D4E23E00 /* AppsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsView.swift; sourceTree = "<group>"; };
 		DA537BD578C6E92B8991F8AF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		E237F10BF4EC2F41B09A7B31 /* CallAlerter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallAlerter.swift; sourceTree = "<group>"; };
 		E2D37955067F827C31A03E49 /* ChipCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChipCatalog.swift; sourceTree = "<group>"; };
 		E520050EC0B69FA7C3579667 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		E556CC239883C6CAD9EE7EE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 				C22C929BEDB25B8EF6321E1C /* AdbLauncher.swift */,
 				2C562F19C5C0E67A24F4704D /* AppIconLoader.swift */,
 				286E95ABFAB14A0896D4E69F /* AudioPlayer.swift */,
+				E237F10BF4EC2F41B09A7B31 /* CallAlerter.swift */,
 				E2D37955067F827C31A03E49 /* ChipCatalog.swift */,
 				B635FA1ACC2DC0797057C7EB /* DeviceMonitor.swift */,
 				345D2C85657B1E9D8BE72CCD /* ExportService.swift */,
@@ -272,6 +275,7 @@
 				A1EC946C25F585B470E36107 /* AppModel.swift in Sources */,
 				A55474D50A2AA641038AC2C5 /* AppsView.swift in Sources */,
 				15C0E57825F03EB724D04E57 /* AudioPlayer.swift in Sources */,
+				965160FAC8BAC158B9AB6D90 /* CallAlerter.swift in Sources */,
 				48418F1CBBE1894CC3590423 /* ChipCatalog.swift in Sources */,
 				6330FD5ED486693E9C9D69D6 /* DeviceMonitor.swift in Sources */,
 				29747915284789C2968ED6FE /* ExportService.swift in Sources */,
@@ -373,7 +377,7 @@
 				MARKETING_VERSION = 0.1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Link to macOS";
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -460,7 +464,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Link to macOS";
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";

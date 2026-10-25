@@ -49,7 +49,7 @@
     <string name="picker_hint">Only notifications from checked apps are forwarded to your Mac (selected: %1$d)</string>
     <string name="picker_search">Search apps</string>
     <string name="need_camera">Camera permission is needed to scan the code</string>
-    <string name="not_pairing_code">This isn’t a LinkToMacOS pairing code</string>
+    <string name="not_pairing_code">This isn’t a Link to macOS pairing code</string>
     <string name="scan_hint">Point the camera at the pairing QR code on your Mac</string>
     <string name="channel_name">Connection status</string>
     <string name="channel_desc">Ongoing status of the connection to your Mac</string>

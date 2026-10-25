@@ -44,7 +44,7 @@
         android:localeConfig="@xml/locales_config"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"
-        android:label="LinkToMacOS"
+        android:label="Link to macOS"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.NoActionBar">
 
@@ -71,7 +71,7 @@
         <service
             android:name=".link.PhoneNotificationListener"
             android:exported="true"
-            android:label="LinkToMacOS"
+            android:label="Link to macOS"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />

@@ -55,6 +55,7 @@ Mac 窗口 ⇄（本协议，加密连接）⇄ 手机 App ⇄（127.0.0.1:47153
 | `mirrorStop` | 请求，停止投屏 |
 | `mirrorInput` | Mac → 手机，无响应。`k`：`t` 触摸（`a` 0 按下 1 抬起 2 移动，`x`/`y` 为 0…1 的相对位置）、`s` 滚轮（`h`/`v`）、`key`（`a` 0/1，`c` Android 键值，`m` 修饰键）、`text`、`cmd`（back / home / recents / notifications / wake / power / sync / screenOff / screenOn） |
 | `mirrorEvent` | 手机 → Mac。`event`：`resized`（旋转或尺寸变化，带新的 `width`/`height`）、`error`、`stopped` |
+| `callState` | 手机 → Mac，无响应，不是请求。`{state, name?, timestamp}`。`state`：`ringing`（来电响铃）、`offhook`（通话中，接通或拨出）、`idle`（空闲，通话结束）。`name` 是来电的联系人名或号码，取自手机上的来电通知，拿不到时为空；响铃期间可能再发一次带名字的 `ringing`。Mac 据此弹出来电提示、播放铃声，不转发通话的声音 |
 
 视频包走二进制数据帧（见上），内容：`[标志 1 字节][pts 8 字节大端，微秒][H.264 Annex-B 数据]`。标志位 1 = 配置包（SPS/PPS），2 = 关键帧。
 音频包格式相同：`[标志 1 字节][pts 8 字节大端，微秒][一个 Opus 包]`，48 kHz 立体声，每包 20 ms，约 128 kbps；标志位 1 = 配置（Opus 头，播放时可以忽略）。音频积压超过约 100 个包时手机丢最旧的，不会拖慢视频。

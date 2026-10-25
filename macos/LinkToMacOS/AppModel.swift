@@ -61,6 +61,7 @@ final class AppModel {
 
     let mirror = MirrorSession()
     private let notifications = NotificationPresenter()
+    private let calls = CallAlerter()
     private var server: LinkServer?
     private var pairingStore: PairingStore?
     private var identity: LinkIdentity?
@@ -136,6 +137,8 @@ final class AppModel {
             notifications.post(notification, from: connected[deviceId]?.device.name ?? String(localized: "手机"))
         case .message(_, .notificationRemoved(let removed)):
             notifications.remove(key: removed.key)
+        case .message(let deviceId, .callState(let call)):
+            calls.handle(call, from: connected[deviceId]?.device.name ?? String(localized: "手机"))
         case .message(let deviceId, let message):
             log.debug("unhandled \(message.typeName) from \(deviceId)")
         case .disconnected(let deviceId, let reason):
@@ -144,8 +147,9 @@ final class AppModel {
             registry.remove(deviceId)?.close()
             libraries[deviceId] = nil
             monitors[deviceId]?.detach()
-            // 手机离线后，Mac 上残留的手机通知已无法与手机同步，一并清掉
+            // 手机离线后，Mac 上残留的手机通知已无法与手机同步，一并清掉；正在响的来电提示也停掉
             if connected.isEmpty { notifications.removeAll() }
+            calls.stop()
         case .rejected(let reason):
             lastRejection = reason
         }
@@ -182,6 +186,7 @@ final class AppModel {
     // MARK: - 生命周期：退出或睡眠前通知手机，让手机及时退出免打扰
 
     func prepareForQuit() async {
+        calls.stop()
         await server?.shutdown(reason: "quit")
     }
 

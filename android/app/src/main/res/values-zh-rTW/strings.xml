@@ -49,7 +49,7 @@
     <string name="picker_hint">只有勾選的應用程式的通知會轉發到 Mac（已選 %1$d 個）</string>
     <string name="picker_search">搜尋應用程式</string>
     <string name="need_camera">需要相機權限才能掃描</string>
-    <string name="not_pairing_code">這不是 LinkToMacOS 的配對碼</string>
+    <string name="not_pairing_code">這不是 Link to macOS 的配對碼</string>
     <string name="scan_hint">將相機對準 Mac 上的配對 QR Code</string>
     <string name="channel_name">連線狀態</string>
     <string name="channel_desc">與 Mac 的連線狀態（常駐）</string>

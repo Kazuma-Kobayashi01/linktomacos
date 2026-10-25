@@ -49,7 +49,7 @@
     <string name="picker_hint">只有勾选的应用的通知会转发到 Mac（已选 %1$d 个）</string>
     <string name="picker_search">搜索应用</string>
     <string name="need_camera">需要相机权限才能扫码</string>
-    <string name="not_pairing_code">不是 LinkToMacOS 的配对码</string>
+    <string name="not_pairing_code">不是 Link to macOS 的配对码</string>
     <string name="scan_hint">对准 Mac 上的配对二维码</string>
     <string name="channel_name">连接状态</string>
     <string name="channel_desc">与 Mac 的连接状态（常驻）</string>

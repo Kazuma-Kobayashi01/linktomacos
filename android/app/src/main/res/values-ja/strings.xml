@@ -49,7 +49,7 @@
     <string name="picker_hint">チェックしたアプリの通知だけが Mac に転送されます（選択中：%1$d）</string>
     <string name="picker_search">アプリを検索</string>
     <string name="need_camera">コードをスキャンするにはカメラの許可が必要です</string>
-    <string name="not_pairing_code">LinkToMacOS のペアリングコードではありません</string>
+    <string name="not_pairing_code">Link to macOS のペアリングコードではありません</string>
     <string name="scan_hint">Mac に表示されたペアリング QR コードにカメラを向けてください</string>
     <string name="channel_name">接続状態</string>
     <string name="channel_desc">Mac との接続状態（常時表示）</string>

@@ -69,7 +69,7 @@ fun HomeScreen(
         modifier = modifier.verticalScroll(rememberScrollState()).padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Text("LinkToMacOS", style = MaterialTheme.typography.headlineMedium)
+        Text("Link to macOS", style = MaterialTheme.typography.headlineMedium)
         StatusCard(state)
         if (paired == null) {
             Button(onClick = onScan, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pair_scan)) }

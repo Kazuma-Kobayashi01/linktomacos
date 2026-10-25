@@ -137,6 +137,17 @@ data class MirrorEvent(
     val message: String? = null,
 ) : LinkMessage
 
+/**
+ * 手机的通话状态变化（手机 → Mac）。[state]：ringing（来电响铃）、offhook（通话中，接通或拨出）、idle（空闲，通话结束）。
+ * [name] 是来电的联系人名或号码，取自来电通知，拿不到时为 null；响铃期间可能再发一次带名字的 ringing。
+ */
+@Serializable
+data class CallState(
+    val state: String,
+    val name: String? = null,
+    val timestamp: Long,
+) : LinkMessage
+
 /** 本端版本不认识的消息类型，忽略即可。 */
 data class Unknown(val type: String) : LinkMessage
 
@@ -161,6 +172,7 @@ object MessageCodec {
             is StreamEnd -> "streamEnd" to json.encodeToJsonElement(message)
             is MirrorInput -> "mirrorInput" to json.encodeToJsonElement(message)
             is MirrorEvent -> "mirrorEvent" to json.encodeToJsonElement(message)
+            is CallState -> "callState" to json.encodeToJsonElement(message)
             is DataChunk -> error("data chunks are binary frames, see Frames")
             is Unknown -> error("cannot send unknown message ${message.type}")
         }
@@ -183,6 +195,7 @@ object MessageCodec {
             "streamEnd" -> json.decodeFromJsonElement<StreamEnd>(obj)
             "mirrorInput" -> json.decodeFromJsonElement<MirrorInput>(obj)
             "mirrorEvent" -> json.decodeFromJsonElement<MirrorEvent>(obj)
+            "callState" -> json.decodeFromJsonElement<CallState>(obj)
             else -> Unknown(type ?: "")
         }
     }

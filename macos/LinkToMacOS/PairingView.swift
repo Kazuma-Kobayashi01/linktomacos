@@ -8,7 +8,7 @@ struct PairingView: View {
     var body: some View {
         VStack(spacing: 16) {
             if let pairing = model.pairing {
-                Text("用手机上的 LinkToMacOS 扫描二维码").font(.headline)
+                Text("用手机上的 Link to macOS 扫描二维码").font(.headline)
                 if let image = qrImage(pairing.payload.uri) {
                     Image(nsImage: image)
                         .interpolation(.none)

@@ -23,13 +23,17 @@ private struct GeneralSettings: View {
     @AppStorage(Prefs.openMainWindowAtLaunch) private var openMainWindow = true
     @AppStorage(Prefs.showNotifications) private var showNotifications = true
     @AppStorage(Prefs.notificationSound) private var notificationSound = true
+    @AppStorage(Prefs.showCallAlerts) private var showCallAlerts = true
+    @AppStorage(Prefs.callRingtone) private var callRingtone = true
+    @AppStorage(Prefs.callRingtoneName) private var callRingtoneName = Prefs.defaultCallRingtoneName
+    @State private var preview: NSSound?
     @State private var loginItemStatus = SMAppService.mainApp.status
     @State private var loginItemError: String?
 
     var body: some View {
         Form {
             Section("启动") {
-                Toggle("登录时启动 LinkToMacOS", isOn: Binding(get: { loginItemStatus == .enabled }, set: setLoginItem))
+                Toggle("登录时启动 Link to macOS", isOn: Binding(get: { loginItemStatus == .enabled }, set: setLoginItem))
                 if loginItemStatus == .requiresApproval {
                     HStack {
                         Text("需要在系统设置里允许").foregroundStyle(.secondary)
@@ -46,10 +50,23 @@ private struct GeneralSettings: View {
             Section {
                 Toggle("在 Mac 上显示手机通知", isOn: $showNotifications)
                 Toggle("播放提示音", isOn: $notificationSound).disabled(!showNotifications)
+                Toggle("来电时在 Mac 上提示", isOn: $showCallAlerts)
+                Toggle("来电时播放铃声", isOn: $callRingtone).disabled(!showCallAlerts)
+                HStack {
+                    Picker("铃声", selection: $callRingtoneName) {
+                        ForEach(Prefs.systemSounds, id: \.self) { Text($0).tag($0) }
+                    }
+                    Button("试听") {
+                        preview?.stop()
+                        preview = NSSound(named: NSSound.Name(callRingtoneName))
+                        preview?.play()
+                    }
+                }
+                .disabled(!showCallAlerts || !callRingtone)
             } header: {
                 Text("通知")
             } footer: {
-                Text("转发哪些应用的通知、连接时是否开启免打扰，在手机上的 LinkToMacOS 里设置。")
+                Text("转发哪些应用的通知、连接时是否开启免打扰，在手机上的 Link to macOS 里设置。")
                     .font(.caption).foregroundStyle(.secondary)
             }
         }
@@ -257,7 +274,7 @@ private struct AboutSettings: View {
     var body: some View {
         VStack(spacing: 10) {
             Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 96, height: 96)
-            Text("LinkToMacOS").font(.title.bold())
+            Text("Link to macOS").font(.title.bold())
             Text("版本 \(version)").foregroundStyle(.secondary)
             Text("让 Android 手机与 Mac 互联：通知、相册与文件、投屏。")
                 .multilineTextAlignment(.center)

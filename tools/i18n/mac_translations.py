@@ -35,9 +35,9 @@ TRANSLATIONS = {
     '还没有配对手机。点下面的按钮，用手机扫码配对。': (
         'No phone is paired yet. Click the button below, then scan the code with your phone.',
         'まだスマートフォンがペアリングされていません。下のボタンを押し、スマートフォンでコードをスキャンしてください。'),
-    '请确认手机和这台 Mac 在同一个网络，并且手机上的 LinkToMacOS 正在运行。': (
-        'Make sure your phone and this Mac are on the same network and LinkToMacOS is running on your phone.',
-        'スマートフォンとこの Mac が同じネットワークにあり、スマートフォンで LinkToMacOS が動作していることを確認してください。'),
+    '请确认手机和这台 Mac 在同一个网络，并且手机上的 Link to macOS 正在运行。': (
+        'Make sure your phone and this Mac are on the same network and Link to macOS is running on your phone.',
+        'スマートフォンとこの Mac が同じネットワークにあり、スマートフォンで Link to macOS が動作していることを確認してください。'),
 
     # 菜单栏
     '配对新手机…': ('Pair New Phone…', '新しいスマートフォンをペアリング…'),
@@ -52,9 +52,9 @@ TRANSLATIONS = {
 
     # 配对窗口
     '配对新手机': ('Pair New Phone', '新しいスマートフォンをペアリング'),
-    '用手机上的 LinkToMacOS 扫描二维码': (
-        'Scan the QR code with LinkToMacOS on your phone',
-        'スマートフォンの LinkToMacOS で QR コードをスキャンしてください'),
+    '用手机上的 Link to macOS 扫描二维码': (
+        'Scan the QR code with Link to macOS on your phone',
+        'スマートフォンの Link to macOS で QR コードをスキャンしてください'),
     '二维码将在 %lld:%@ 后失效': ('QR code expires in %lld:%@', 'QR コードは %lld:%@ 後に無効になります'),
     '二维码已失效': ('QR code expired', 'QR コードの有効期限が切れました'),
     '复制配对链接': ('Copy Pairing Link', 'ペアリングリンクをコピー'),
@@ -121,7 +121,7 @@ TRANSLATIONS = {
     '屏幕': ('Display', 'ディスプレイ'),
     '语言': ('Language', '言語'),
     '时区': ('Time Zone', 'タイムゾーン'),
-    'LinkToMacOS 版本': ('LinkToMacOS Version', 'LinkToMacOS バージョン'),
+    'Link to macOS 版本': ('Link to macOS Version', 'Link to macOS バージョン'),
     '配对时间': ('Paired On', 'ペアリング日時'),
     '存储明细': ('Storage Breakdown', 'ストレージの内訳'),
     '手机未授予相册读取权限，图片、视频、音频的占用暂时无法统计。': (
@@ -130,9 +130,9 @@ TRANSLATIONS = {
 
     # 照片
     '无法读取相册': ('Can’t Read Photos', '写真を読み込めません'),
-    '请在手机上打开 LinkToMacOS，授予“相册读取”权限（选择“允许全部”），然后回到这里。': (
-        'Open LinkToMacOS on your phone, grant “Photo access” (choose “Allow all”), then come back here.',
-        'スマートフォンで LinkToMacOS を開き、「写真へのアクセス」を許可（「すべて許可」を選択）してから、ここに戻ってください。'),
+    '请在手机上打开 Link to macOS，授予“相册读取”权限（选择“允许全部”），然后回到这里。': (
+        'Open Link to macOS on your phone, grant “Photo access” (choose “Allow all”), then come back here.',
+        'スマートフォンで Link to macOS を開き、「写真へのアクセス」を許可（「すべて許可」を選択）してから、ここに戻ってください。'),
     '没有照片': ('No Photos', '写真がありません'),
     '缩放': ('Zoom', 'ズーム'),
     '无法加载': ('Can’t Load', '読み込めません'),
@@ -147,9 +147,9 @@ TRANSLATIONS = {
     # 文件
     '手机 / 内部存储': ('Phone / Internal Storage', 'スマートフォン / 内部ストレージ'),
     '无法读取文件': ('Can’t Read Files', 'ファイルを読み込めません'),
-    '请在手机上打开 LinkToMacOS，授予“所有文件访问”权限，然后回到这里。': (
-        'Open LinkToMacOS on your phone, grant “All files access”, then come back here.',
-        'スマートフォンで LinkToMacOS を開き、「すべてのファイルへのアクセス」を許可してから、ここに戻ってください。'),
+    '请在手机上打开 Link to macOS，授予“所有文件访问”权限，然后回到这里。': (
+        'Open Link to macOS on your phone, grant “All files access”, then come back here.',
+        'スマートフォンで Link to macOS を開き、「すべてのファイルへのアクセス」を許可してから、ここに戻ってください。'),
     '后退': ('Back', '戻る'),
     '前进': ('Forward', '進む'),
     '拷贝所选文件（⌘C），可在访达里粘贴': (
@@ -273,16 +273,16 @@ TRANSLATIONS = {
     '快捷键': ('Shortcuts', 'ショートカット'),
     '关于': ('About', '情報'),
     '启动': ('Startup', '起動'),
-    '登录时启动 LinkToMacOS': ('Open LinkToMacOS at login', 'ログイン時に LinkToMacOS を開く'),
+    '登录时启动 Link to macOS': ('Open Link to macOS at login', 'ログイン時に Link to macOS を開く'),
     '需要在系统设置里允许': ('Needs approval in System Settings', 'システム設定で許可が必要です'),
     '打开登录项设置': ('Open Login Items Settings', 'ログイン項目の設定を開く'),
     '启动时打开主窗口': ('Show the main window at launch', '起動時にメインウィンドウを表示'),
     '通知': ('Notifications', '通知'),
     '在 Mac 上显示手机通知': ('Show phone notifications on this Mac', 'スマートフォンの通知をこの Mac に表示'),
     '播放提示音': ('Play sound', 'サウンドを再生'),
-    '转发哪些应用的通知、连接时是否开启免打扰，在手机上的 LinkToMacOS 里设置。': (
-        'Choose which apps’ notifications to forward, and whether to turn on Do Not Disturb while connected, in LinkToMacOS on your phone.',
-        'どのアプリの通知を転送するか、接続中におやすみモードをオンにするかは、スマートフォンの LinkToMacOS で設定します。'),
+    '转发哪些应用的通知、连接时是否开启免打扰，在手机上的 Link to macOS 里设置。': (
+        'Choose which apps’ notifications to forward, and whether to turn on Do Not Disturb while connected, in Link to macOS on your phone.',
+        'どのアプリの通知を転送するか、接続中におやすみモードをオンにするかは、スマートフォンの Link to macOS で設定します。'),
     '默认设置': ('Defaults', 'デフォルト'),
     '这些设置在下次开始投屏时生效。': ('These settings take effect the next time you start mirroring.', 'これらの設定は次回ミラーリングを開始したときに有効になります。'),
     '路径': ('Path', 'パス'),
@@ -337,6 +337,12 @@ TRANSLATIONS = {
         'Connect the cable to your Mac and start it once on the Mirroring page. After that you can unplug the cable.',
         'USB ケーブルで Mac に接続し、「ミラーリング」ページで一度起動してください。その後はケーブルを外せます。'),
     '前往投屏页': ('Go to Mirroring', 'ミラーリングへ移動'),
+    '来电': ('Incoming Call', '着信'),
+    '未接来电': ('Missed Call', '不在着信'),
+    '来电时在 Mac 上提示': ('Alert on this Mac for incoming calls', '着信時にこの Mac で通知する'),
+    '来电时播放铃声': ('Play a ringtone for incoming calls', '着信時に着信音を鳴らす'),
+    '铃声': ('Ringtone', '着信音'),
+    '试听': ('Preview', 'プレビュー'),
     '没有麦克风权限，这次投屏不会使用 Mac 的麦克风。可以在系统设置 → 隐私与安全性 → 麦克风里允许。': (
         'Microphone access is off, so this mirroring session won’t use your Mac’s microphone. You can allow it in System Settings → Privacy & Security → Microphone.',
         'マイクへのアクセスが許可されていないため、今回のミラーリングでは Mac のマイクを使いません。システム設定 → プライバシーとセキュリティ → マイク で許可できます。'),
@@ -417,6 +423,12 @@ ZH_HANT_OVERRIDES = {
     '原生': '原生',
     '旋转方向': '旋轉方向',
     '前往投屏页': '前往螢幕鏡像頁面',
+    '来电': '來電',
+    '未接来电': '未接來電',
+    '来电时在 Mac 上提示': '來電時在 Mac 上提示',
+    '来电时播放铃声': '來電時播放鈴聲',
+    '铃声': '鈴聲',
+    '试听': '試聽',
     '没有麦克风权限，这次投屏不会使用 Mac 的麦克风。可以在系统设置 → 隐私与安全性 → 麦克风里允许。': '沒有麥克風權限，這次螢幕鏡像不會使用 Mac 的麥克風。可以在系統設定 → 隱私權與安全性 → 麥克風中允許。',
     '版本过旧，需要重新启动': '版本過舊，需要重新啟動',
     '增强服务需要更新': '增強服務需要更新',
@@ -461,10 +473,10 @@ ZH_HANT_OVERRIDES = {
     '上一级文件夹（⌘↑）': '上層資料夾（⌘↑）',
     '默认设置': '預設設定',
     '恢复自动查找': '恢復自動尋找',
-    '登录时启动 LinkToMacOS': '登入時啟動 LinkToMacOS',
+    '登录时启动 Link to macOS': '登入時啟動 Link to macOS',
     '打开登录项设置': '打開登入項目設定',
     '需要在系统设置里允许': '需要在系統設定中允許',
-    '转发哪些应用的通知、连接时是否开启免打扰，在手机上的 LinkToMacOS 里设置。': '要轉送哪些應用程式的通知、連線時是否開啟勿擾模式，請在手機上的 LinkToMacOS 中設定。',
+    '转发哪些应用的通知、连接时是否开启免打扰，在手机上的 Link to macOS 里设置。': '要轉送哪些應用程式的通知、連線時是否開啟勿擾模式，請在手機上的 Link to macOS 中設定。',
     '这些设置在下次开始投屏时生效。': '這些設定會在下次開始螢幕鏡像時生效。',
     '在 Mac 上显示手机通知': '在 Mac 上顯示手機通知',
     '展开通知栏': '展開通知列',
@@ -494,14 +506,14 @@ ZH_HANT_OVERRIDES = {
     '二维码将在 %lld:%@ 后失效': 'QR Code 將於 %lld:%@ 後失效',
     '二维码已失效': 'QR Code 已失效',
     '生成二维码': '產生 QR Code',
-    '用手机上的 LinkToMacOS 扫描二维码': '請用手機上的 LinkToMacOS 掃描 QR Code',
+    '用手机上的 Link to macOS 扫描二维码': '請用手機上的 Link to macOS 掃描 QR Code',
     '还没有配对手机。点下面的按钮，用手机扫码配对。': '尚未配對手機。請按下方按鈕，並用手機掃描 QR Code 進行配對。',
     '拷贝所选文件（⌘C），可在访达里粘贴': '拷貝所選檔案（⌘C），可在 Finder 中貼上',
     '拷贝所选项目（⌘C），可在访达里粘贴': '拷貝所選項目（⌘C），可在 Finder 中貼上',
     '%lld 项': '%lld 個項目',
     '手机未授予相册读取权限，图片、视频、音频的占用暂时无法统计。': '手機未授予照片讀取權限，因此暫時無法統計圖片、影片和音訊的用量。',
-    '请在手机上打开 LinkToMacOS，授予“相册读取”权限（选择“允许全部”），然后回到这里。': '請在手機上打開 LinkToMacOS，授予「照片讀取」權限（選擇「允許全部」），然後回到這裡。',
-    '请在手机上打开 LinkToMacOS，授予“所有文件访问”权限，然后回到这里。': '請在手機上打開 LinkToMacOS，授予「所有檔案存取」權限，然後回到這裡。',
+    '请在手机上打开 Link to macOS，授予“相册读取”权限（选择“允许全部”），然后回到这里。': '請在手機上打開 Link to macOS，授予「照片讀取」權限（選擇「允許全部」），然後回到這裡。',
+    '请在手机上打开 Link to macOS，授予“所有文件访问”权限，然后回到这里。': '請在手機上打開 Link to macOS，授予「所有檔案存取」權限，然後回到這裡。',
     '下载并用默认播放器打开': '下載並用預設播放器打開',
     '无法读取相册': '無法讀取照片',
 }

@@ -11,6 +11,7 @@ packages:
 settings:
   base:
     SWIFT_VERSION: "5.0"
+    PRODUCT_NAME: "Link to macOS"
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
     # 免费账号阶段：本地签名运行（Sign to Run Locally）
@@ -29,7 +30,7 @@ targets:
     info:
       path: LinkToMacOS/Info.plist
       properties:
-        CFBundleDisplayName: LinkToMacOS
+        CFBundleDisplayName: Link to macOS
         LSUIElement: true
         CFBundleLocalizations: [en, zh-Hans, zh-Hant, ja]
         LSApplicationCategoryType: public.app-category.utilities

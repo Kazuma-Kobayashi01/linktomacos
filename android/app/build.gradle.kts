@@ -18,7 +18,12 @@ android {
 
     buildTypes {
         release {
+            // 不混淆：增强服务（shell 包）靠反射调用系统内部接口，混淆会把它们改名
             isMinifyEnabled = false
+            // 仅自用：用调试密钥签名，这样 release 包能直接安装
+            signingConfig = signingConfigs.getByName("debug")
+            // 手机是 arm64-v8a，只打这一种架构，包更小
+            ndk { abiFilters += "arm64-v8a" }
         }
     }
     compileOptions {

@@ -54,7 +54,7 @@ struct MenuView: View {
 
     private var header: some View {
         HStack {
-            Text("LinkToMacOS").font(.headline)
+            Text("Link to macOS").font(.headline)
             Spacer()
             switch model.serverState {
             case .starting: Text("启动中…").font(.caption).foregroundStyle(.secondary)

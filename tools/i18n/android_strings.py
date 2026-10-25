@@ -126,7 +126,7 @@ STRINGS = {
 
     # --- 扫码 ---
     'need_camera': ('需要相机权限才能扫码', 'Camera permission is needed to scan the code', 'コードをスキャンするにはカメラの許可が必要です'),
-    'not_pairing_code': ('不是 LinkToMacOS 的配对码', 'This isn’t a LinkToMacOS pairing code', 'LinkToMacOS のペアリングコードではありません'),
+    'not_pairing_code': ('不是 Link to macOS 的配对码', 'This isn’t a Link to macOS pairing code', 'Link to macOS のペアリングコードではありません'),
     'scan_hint': (
         '对准 Mac 上的配对二维码',
         'Point the camera at the pairing QR code on your Mac',
@@ -211,7 +211,7 @@ ZH_HANT_OVERRIDES = {
     'state_not_paired_detail': '在 Mac 選單列點選「配對新手機…」，然後掃描 QR Code',
     'scan_hint': '將相機對準 Mac 上的配對 QR Code',
     'state_rejected_detail': '%1$s：%2$s。請重新掃描 QR Code 配對',
-    'not_pairing_code': '這不是 LinkToMacOS 的配對碼',
+    'not_pairing_code': '這不是 Link to macOS 的配對碼',
     'need_camera': '需要相機權限才能掃描',
     'files_media': '相片讀取（請選「全部允許」）',
     'dnd_inactive': '目前未開啟（連線 Mac 後自動開啟）',

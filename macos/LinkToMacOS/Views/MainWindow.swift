@@ -182,7 +182,7 @@ private struct DisconnectedView: View {
         } description: {
             Text(model.pairedDevices.isEmpty
                  ? "还没有配对手机。点下面的按钮，用手机扫码配对。"
-                 : "请确认手机和这台 Mac 在同一个网络，并且手机上的 LinkToMacOS 正在运行。")
+                 : "请确认手机和这台 Mac 在同一个网络，并且手机上的 Link to macOS 正在运行。")
         } actions: {
             if model.pairedDevices.isEmpty {
                 Button("配对新手机…") {

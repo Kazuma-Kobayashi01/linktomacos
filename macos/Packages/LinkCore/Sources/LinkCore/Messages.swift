@@ -175,6 +175,20 @@ public struct MirrorEvent: Codable, Equatable, Sendable {
     public var message: String?
 }
 
+/// 手机的通话状态变化（手机 → Mac）。`state`：ringing（来电响铃）、offhook（通话中，接通或拨出）、idle（空闲，通话结束）。
+/// `name` 是来电的联系人名或号码，取自手机上的来电通知，拿不到时为 nil；响铃期间可能再发一次带名字的 ringing。
+public struct CallState: Codable, Equatable, Sendable {
+    public var state: String
+    public var name: String?
+    public var timestamp: Int64
+
+    public init(state: String, name: String? = nil, timestamp: Int64 = 0) {
+        self.state = state; self.name = name; self.timestamp = timestamp
+    }
+
+    public var isRinging: Bool { state == "ringing" }
+}
+
 /// 链路上的一条消息。JSON 中以 `type` 字段区分类型，其余字段平铺在同一层。
 public enum LinkMessage: Equatable, Sendable {
     case hello(Hello)
@@ -190,6 +204,7 @@ public enum LinkMessage: Equatable, Sendable {
     case streamEnd(StreamEnd)
     case mirrorInput(MirrorInput)
     case mirrorEvent(MirrorEvent)
+    case callState(CallState)
     /// 二进制数据帧，属于 `streamId` 对应的文件流。不走 JSON，见 FrameCodec。
     case data(streamId: UInt32, bytes: Data)
     /// 本端版本不认识的消息类型，忽略即可，保证向前兼容。
@@ -217,6 +232,7 @@ extension LinkMessage: Codable {
         case "streamEnd": self = .streamEnd(try StreamEnd(from: decoder))
         case "mirrorInput": self = .mirrorInput(try MirrorInput(from: decoder))
         case "mirrorEvent": self = .mirrorEvent(try MirrorEvent(from: decoder))
+        case "callState": self = .callState(try CallState(from: decoder))
         default: self = .unknown(type: type)
         }
     }
@@ -238,6 +254,7 @@ extension LinkMessage: Codable {
         case .streamEnd(let v): try v.encode(to: encoder)
         case .mirrorInput(let v): try v.encode(to: encoder)
         case .mirrorEvent(let v): try v.encode(to: encoder)
+        case .callState(let v): try v.encode(to: encoder)
         case .data, .unknown: break
         }
     }
@@ -257,6 +274,7 @@ extension LinkMessage: Codable {
         case .streamEnd: "streamEnd"
         case .mirrorInput: "mirrorInput"
         case .mirrorEvent: "mirrorEvent"
+        case .callState: "callState"
         case .data: "data"
         case .unknown(let type): type
         }

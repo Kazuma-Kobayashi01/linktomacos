@@ -84,7 +84,29 @@ class PhoneNotificationListener : NotificationListenerService() {
         null
     }
 
+    override fun onListenerConnected() {
+        instance = this
+    }
+
+    override fun onListenerDisconnected() {
+        if (instance === this) instance = null
+    }
+
     companion object {
+        @Volatile private var instance: PhoneNotificationListener? = null
+
+        /** 正在响铃的来电的联系人名（或号码），取自系统的来电通知；取不到返回 null。 */
+        fun activeCallIdentity(): String? {
+            val listener = instance ?: return null
+            val now = System.currentTimeMillis()
+            val sbn = runCatching { listener.activeNotifications }.getOrNull().orEmpty()
+                .filter { it.notification.category == Notification.CATEGORY_CALL && now - it.postTime < 30_000 }
+                .maxByOrNull { it.postTime } ?: return null
+            val extras = sbn.notification.extras
+            val person = extras.getParcelable(Notification.EXTRA_CALL_PERSON, android.app.Person::class.java)?.name?.toString()
+            return (person ?: extras.getCharSequence(Notification.EXTRA_TITLE)?.toString())?.takeIf { it.isNotBlank() }
+        }
+
         fun isEnabled(context: Context): Boolean =
             context.packageName in NotificationManagerCompat.getEnabledListenerPackages(context)
     }

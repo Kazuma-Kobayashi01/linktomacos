@@ -106,6 +106,16 @@ class ProtocolTest {
     }
 
     @Test
+    fun callStateRoundTripsAndToleratesMissingName() {
+        val ringing = CallState("ringing", "张三", 1_700_000_000_000)
+        assertEquals(ringing, MessageCodec.decode(MessageCodec.encode(ringing)))
+        assertEquals(
+            CallState("idle", null, 5),
+            MessageCodec.decode("""{"type":"callState","state":"idle","name":null,"timestamp":5}"""),
+        )
+    }
+
+    @Test
     fun unknownTypeIsTolerated() {
         assertEquals(Unknown("future"), MessageCodec.decode("""{"type":"future","x":1}"""))
     }

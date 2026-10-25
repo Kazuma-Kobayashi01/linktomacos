@@ -77,6 +77,7 @@ class LinkService : Service() {
     private val dnd by lazy { DndController(this, settings, scope) }
     private val discovery by lazy { MacDiscovery(this) }
     private val statusCollector by lazy { DeviceStatusCollector(this) }
+    private val callMonitor by lazy { CallMonitor(this, scope) }
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
@@ -89,12 +90,14 @@ class LinkService : Service() {
         startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.svc_starting)), ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE)
         getSystemService(ConnectivityManager::class.java).registerDefaultNetworkCallback(networkCallback)
         dnd.start()
+        callMonitor.start()
         (application as LinkApp).bridge.start()
         scope.launch { LinkStatus.state.collect { updateNotification(it) } }
         scope.launch { run() }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        callMonitor.start() // 刚授予电话状态权限时在这里补上监听
         wakeups.trySend(Unit)
         return START_STICKY
     }
@@ -102,6 +105,7 @@ class LinkService : Service() {
     override fun onDestroy() {
         getSystemService(ConnectivityManager::class.java).unregisterNetworkCallback(networkCallback)
         dnd.shutdown()
+        callMonitor.stop()
         scope.cancel()
         super.onDestroy()
     }
@@ -292,7 +296,7 @@ class LinkService : Service() {
         )
         return NotificationCompat.Builder(this, LinkApp.CHANNEL_LINK)
             .setSmallIcon(R.drawable.ic_link)
-            .setContentTitle("LinkToMacOS")
+            .setContentTitle("Link to macOS")
             .setContentText(text)
             .setContentIntent(open)
             .setOngoing(true)

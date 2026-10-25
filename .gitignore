@@ -5,3 +5,6 @@ macos/Packages/.spm/
 **/.build/
 **/.swiftpm/
 xcuserdata/
+spikes/hfp-spike/hfp-spike.log
+# 发布包
+output/

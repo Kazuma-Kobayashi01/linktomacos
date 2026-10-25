@@ -20,7 +20,7 @@ struct LinkToMacOSApp: App {
         }
         .menuBarExtraStyle(.window)
 
-        Window("LinkToMacOS", id: WindowID.main) {
+        Window("Link to macOS", id: WindowID.main) {
             MainWindow()
                 .environment(appDelegate.model)
         }

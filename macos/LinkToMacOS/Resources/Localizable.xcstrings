@@ -309,30 +309,30 @@
         }
       }
     },
-    "LinkToMacOS 版本": {
+    "Link to macOS 版本": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "LinkToMacOS 版本"
+            "value": "Link to macOS 版本"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "LinkToMacOS Version"
+            "value": "Link to macOS Version"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "LinkToMacOS バージョン"
+            "value": "Link to macOS バージョン"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "LinkToMacOS 版本"
+            "value": "Link to macOS 版本"
           }
         }
       }
@@ -5129,6 +5129,34 @@
         }
       }
     },
+    "未接来电": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未接来电"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Missed Call"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不在着信"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未接來電"
+          }
+        }
+      }
+    },
     "未检测到": {
       "localizations": {
         "zh-Hans": {
@@ -5238,6 +5266,90 @@
           "stringUnit": {
             "state": "translated",
             "value": "未執行"
+          }
+        }
+      }
+    },
+    "来电": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "来电"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incoming Call"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "着信"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "來電"
+          }
+        }
+      }
+    },
+    "来电时在 Mac 上提示": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "来电时在 Mac 上提示"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alert on this Mac for incoming calls"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "着信時にこの Mac で通知する"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "來電時在 Mac 上提示"
+          }
+        }
+      }
+    },
+    "来电时播放铃声": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "来电时播放铃声"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play a ringtone for incoming calls"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "着信時に着信音を鳴らす"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "來電時播放鈴聲"
           }
         }
       }
@@ -5774,30 +5886,30 @@
         }
       }
     },
-    "用手机上的 LinkToMacOS 扫描二维码": {
+    "用手机上的 Link to macOS 扫描二维码": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "用手机上的 LinkToMacOS 扫描二维码"
+            "value": "用手机上的 Link to macOS 扫描二维码"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scan the QR code with LinkToMacOS on your phone"
+            "value": "Scan the QR code with Link to macOS on your phone"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "スマートフォンの LinkToMacOS で QR コードをスキャンしてください"
+            "value": "スマートフォンの Link to macOS で QR コードをスキャンしてください"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "請用手機上的 LinkToMacOS 掃描 QR Code"
+            "value": "請用手機上的 Link to macOS 掃描 QR Code"
           }
         }
       }
@@ -5998,30 +6110,30 @@
         }
       }
     },
-    "登录时启动 LinkToMacOS": {
+    "登录时启动 Link to macOS": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "登录时启动 LinkToMacOS"
+            "value": "登录时启动 Link to macOS"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open LinkToMacOS at login"
+            "value": "Open Link to macOS at login"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ログイン時に LinkToMacOS を開く"
+            "value": "ログイン時に Link to macOS を開く"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "登入時啟動 LinkToMacOS"
+            "value": "登入時啟動 Link to macOS"
           }
         }
       }
@@ -6670,6 +6782,34 @@
         }
       }
     },
+    "试听": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "试听"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preview"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "プレビュー"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "試聽"
+          }
+        }
+      }
+    },
     "详细信息": {
       "localizations": {
         "zh-Hans": {
@@ -6754,86 +6894,86 @@
         }
       }
     },
-    "请在手机上打开 LinkToMacOS，授予“所有文件访问”权限，然后回到这里。": {
+    "请在手机上打开 Link to macOS，授予“所有文件访问”权限，然后回到这里。": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "请在手机上打开 LinkToMacOS，授予“所有文件访问”权限，然后回到这里。"
+            "value": "请在手机上打开 Link to macOS，授予“所有文件访问”权限，然后回到这里。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open LinkToMacOS on your phone, grant “All files access”, then come back here."
+            "value": "Open Link to macOS on your phone, grant “All files access”, then come back here."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "スマートフォンで LinkToMacOS を開き、「すべてのファイルへのアクセス」を許可してから、ここに戻ってください。"
+            "value": "スマートフォンで Link to macOS を開き、「すべてのファイルへのアクセス」を許可してから、ここに戻ってください。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "請在手機上打開 LinkToMacOS，授予「所有檔案存取」權限，然後回到這裡。"
+            "value": "請在手機上打開 Link to macOS，授予「所有檔案存取」權限，然後回到這裡。"
           }
         }
       }
     },
-    "请在手机上打开 LinkToMacOS，授予“相册读取”权限（选择“允许全部”），然后回到这里。": {
+    "请在手机上打开 Link to macOS，授予“相册读取”权限（选择“允许全部”），然后回到这里。": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "请在手机上打开 LinkToMacOS，授予“相册读取”权限（选择“允许全部”），然后回到这里。"
+            "value": "请在手机上打开 Link to macOS，授予“相册读取”权限（选择“允许全部”），然后回到这里。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open LinkToMacOS on your phone, grant “Photo access” (choose “Allow all”), then come back here."
+            "value": "Open Link to macOS on your phone, grant “Photo access” (choose “Allow all”), then come back here."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "スマートフォンで LinkToMacOS を開き、「写真へのアクセス」を許可（「すべて許可」を選択）してから、ここに戻ってください。"
+            "value": "スマートフォンで Link to macOS を開き、「写真へのアクセス」を許可（「すべて許可」を選択）してから、ここに戻ってください。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "請在手機上打開 LinkToMacOS，授予「照片讀取」權限（選擇「允許全部」），然後回到這裡。"
+            "value": "請在手機上打開 Link to macOS，授予「照片讀取」權限（選擇「允許全部」），然後回到這裡。"
           }
         }
       }
     },
-    "请确认手机和这台 Mac 在同一个网络，并且手机上的 LinkToMacOS 正在运行。": {
+    "请确认手机和这台 Mac 在同一个网络，并且手机上的 Link to macOS 正在运行。": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "请确认手机和这台 Mac 在同一个网络，并且手机上的 LinkToMacOS 正在运行。"
+            "value": "请确认手机和这台 Mac 在同一个网络，并且手机上的 Link to macOS 正在运行。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Make sure your phone and this Mac are on the same network and LinkToMacOS is running on your phone."
+            "value": "Make sure your phone and this Mac are on the same network and Link to macOS is running on your phone."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "スマートフォンとこの Mac が同じネットワークにあり、スマートフォンで LinkToMacOS が動作していることを確認してください。"
+            "value": "スマートフォンとこの Mac が同じネットワークにあり、スマートフォンで Link to macOS が動作していることを確認してください。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "請確認手機和這台 Mac 在同一個網路，並且手機上的 LinkToMacOS 正在執行。"
+            "value": "請確認手機和這台 Mac 在同一個網路，並且手機上的 Link to macOS 正在執行。"
           }
         }
       }
@@ -6894,30 +7034,30 @@
         }
       }
     },
-    "转发哪些应用的通知、连接时是否开启免打扰，在手机上的 LinkToMacOS 里设置。": {
+    "转发哪些应用的通知、连接时是否开启免打扰，在手机上的 Link to macOS 里设置。": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "转发哪些应用的通知、连接时是否开启免打扰，在手机上的 LinkToMacOS 里设置。"
+            "value": "转发哪些应用的通知、连接时是否开启免打扰，在手机上的 Link to macOS 里设置。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choose which apps’ notifications to forward, and whether to turn on Do Not Disturb while connected, in LinkToMacOS on your phone."
+            "value": "Choose which apps’ notifications to forward, and whether to turn on Do Not Disturb while connected, in Link to macOS on your phone."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "どのアプリの通知を転送するか、接続中におやすみモードをオンにするかは、スマートフォンの LinkToMacOS で設定します。"
+            "value": "どのアプリの通知を転送するか、接続中におやすみモードをオンにするかは、スマートフォンの Link to macOS で設定します。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "要轉送哪些應用程式的通知、連線時是否開啟勿擾模式，請在手機上的 LinkToMacOS 中設定。"
+            "value": "要轉送哪些應用程式的通知、連線時是否開啟勿擾模式，請在手機上的 Link to macOS 中設定。"
           }
         }
       }
@@ -7730,6 +7870,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "重試"
+          }
+        }
+      }
+    },
+    "铃声": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "铃声"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ringtone"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "着信音"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "鈴聲"
           }
         }
       }

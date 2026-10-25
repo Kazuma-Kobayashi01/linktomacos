@@ -47,6 +47,18 @@ import Testing
         #expect(hello.pairingToken == nil)
     }
 
+    @Test func decodesAndroidCallState() throws {
+        let json = #"{"type":"callState","state":"ringing","name":"张三","timestamp":1700000000000}"#
+        guard case .callState(let call) = try JSONDecoder().decode(LinkMessage.self, from: Data(json.utf8)) else {
+            Issue.record("not callState"); return
+        }
+        #expect(call.isRinging && call.name == "张三")
+        let idle = try JSONDecoder().decode(LinkMessage.self, from: Data(#"{"type":"callState","state":"idle","name":null,"timestamp":5}"#.utf8))
+        #expect(idle == .callState(.init(state: "idle", name: nil, timestamp: 5)))
+        let data = try JSONEncoder().encode(LinkMessage.callState(call))
+        #expect(try JSONDecoder().decode(LinkMessage.self, from: data) == .callState(call))
+    }
+
     @Test func unknownTypeIsTolerated() throws {
         let message = try JSONDecoder().decode(LinkMessage.self, from: Data(#"{"type":"future","x":1}"#.utf8))
         #expect(message == .unknown(type: "future"))
