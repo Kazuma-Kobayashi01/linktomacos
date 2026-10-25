@@ -1,0 +1,90 @@
+{
+  "sourceLanguage": "zh-Hans",
+  "strings": {
+    "NSBluetoothAlwaysUsageDescription": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用于通过蓝牙在电脑上接打手机电话。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Used to make and answer phone calls from this Mac over Bluetooth."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bluetooth 経由でこの Mac からスマートフォンの電話を発着信するために使用します。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用於透過藍牙在 Mac 上撥打和接聽手機電話。"
+          }
+        }
+      }
+    },
+    "NSLocalNetworkUsageDescription": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用于在局域网内发现并连接你的 Android 手机。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Used to find and connect to your Android phone on the local network."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ローカルネットワーク上の Android スマートフォンを検出して接続するために使用します。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用於在區域網路內探索並連線你的 Android 手機。"
+          }
+        }
+      }
+    },
+    "NSMicrophoneUsageDescription": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用于在投屏时把你的声音传给手机，以及在电脑上接打手机电话时采集声音。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Used to send your voice to the phone while mirroring, and when making or answering phone calls on this Mac."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "画面ミラーリング中にあなたの声をスマートフォンに送るため、およびこの Mac で通話するときに音声を取得するために使用します。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用於在螢幕鏡像時將你的聲音傳給手機，以及在 Mac 上撥打或接聽手機電話時收錄你的聲音。"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

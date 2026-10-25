@@ -24,8 +24,9 @@ final class FilesModel {
     var canGoForward: Bool { !forwardStack.isEmpty }
     var canGoUp: Bool { !path.isEmpty }
 
-    var folderName: String {
-        path.isEmpty ? "内部存储" : (path as NSString).lastPathComponent
+    /// 窗口标题：根目录显示“内部存储”（随语言变化），其余显示文件夹名（原样显示）。
+    var folderTitle: Text {
+        path.isEmpty ? Text("内部存储") : Text(verbatim: (path as NSString).lastPathComponent)
     }
 
     func load() async {
@@ -91,6 +92,11 @@ struct FilesView: View {
         return sorted.filter(\.isDir) + sorted.filter { !$0.isDir }
     }
 
+    private var subtitle: String {
+        let root = String(localized: "手机 / 内部存储")
+        return model.path.isEmpty ? root : root + " / " + model.path.replacingOccurrences(of: "/", with: " / ")
+    }
+
     private var selectedEntries: [FileEntry] {
         model.entries.filter { selection.contains($0.id) }
     }
@@ -109,14 +115,18 @@ struct FilesView: View {
                 table
             }
         }
-        .navigationTitle(model.folderName)
-        .navigationSubtitle(model.path.isEmpty ? "手机 / 内部存储" : "手机 / 内部存储 / " + model.path.replacingOccurrences(of: "/", with: " / "))
+        .navigationTitle(model.folderTitle)
+        .navigationSubtitle(subtitle)
         .toolbar {
             ToolbarItemGroup(placement: .navigation) {
                 Button { Task { await model.goBack() } } label: { Label("后退", systemImage: "chevron.left") }
                     .disabled(!model.canGoBack)
+                    .help("后退（⌘[）")
+                    .keyboardShortcut("[")
                 Button { Task { await model.goForward() } } label: { Label("前进", systemImage: "chevron.right") }
                     .disabled(!model.canGoForward)
+                    .help("前进（⌘]）")
+                    .keyboardShortcut("]")
             }
             ToolbarItemGroup {
                 Button { copy(selectedEntries) } label: { Label("拷贝", systemImage: "doc.on.doc") }
@@ -127,9 +137,11 @@ struct FilesView: View {
                     .help("把所选文件存储到 Mac")
                 Button { Task { await model.goUp() } } label: { Label("上一级", systemImage: "arrow.up") }
                     .disabled(!model.canGoUp)
-                    .help("上一级文件夹")
+                    .help("上一级文件夹（⌘↑）")
+                    .keyboardShortcut(.upArrow)
                 Button { Task { await model.load() } } label: { Label("刷新", systemImage: "arrow.clockwise") }
-                    .help("刷新")
+                    .help("刷新（⌘R）")
+                    .keyboardShortcut("r")
             }
         }
         .task(id: library.filesAllowed) {
@@ -231,8 +243,8 @@ struct FilesView: View {
             panel.canChooseDirectories = true
             panel.canChooseFiles = false
             panel.canCreateDirectories = true
-            panel.prompt = "存储"
-            panel.message = "选择用来保存 \(files.count) 个文件的文件夹"
+            panel.prompt = String(localized: "存到这里")
+            panel.message = String(localized: "选择用来保存 \(files.count) 个文件的文件夹")
             guard panel.runModal() == .OK, let url = panel.url else { return }
             run { try await library.exporter.save(files.map { .init(file: $0, directory: directory) }, to: url) }
         }
@@ -260,8 +272,9 @@ enum FileIcons {
     }
 
     static func kind(for entry: FileEntry) -> String {
-        if entry.isDir { return "文件夹" }
+        if entry.isDir { return String(localized: "文件夹") }
         let ext = (entry.name as NSString).pathExtension
-        return UTType(filenameExtension: ext)?.localizedDescription ?? (ext.isEmpty ? "文件" : "\(ext.uppercased()) 文件")
+        return UTType(filenameExtension: ext)?.localizedDescription
+            ?? (ext.isEmpty ? String(localized: "种类未知") : String(localized: "\(ext.uppercased()) 文件"))
     }
 }

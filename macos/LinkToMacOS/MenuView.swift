@@ -4,6 +4,7 @@ import SwiftUI
 struct MenuView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -26,11 +27,17 @@ struct MenuView: View {
                 }
                 .menuStyle(.borderlessButton)
             }
-            Button("打开相册和文件") {
-                openWindow(id: WindowID.main)
-                NSApp.activate()
+            HStack {
+                Button("打开主窗口") {
+                    openWindow(id: WindowID.main)
+                    NSApp.activate()
+                }
+                Spacer()
+                Button("设置…") {
+                    NSApp.activate()
+                    openSettings()
+                }
             }
-            .disabled(model.connected.isEmpty)
             HStack {
                 Button("配对新手机…") {
                     model.beginPairing()

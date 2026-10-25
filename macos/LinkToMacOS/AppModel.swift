@@ -44,12 +44,22 @@ final class AppModel {
     private(set) var lastRejection: String?
     /// 每台在线手机一个：相册、文件、缩略图、导出。
     private(set) var libraries: [String: PhoneLibrary] = [:]
+    /// 每台已配对手机一个：设备信息、状态、历史。离线时保留最后已知的数据。
+    private(set) var monitors: [String: DeviceMonitor] = [:]
 
     var activeDevice: ConnectedDevice? { connected.values.min { $0.device.pairedAt < $1.device.pairedAt } }
     var activeLibrary: PhoneLibrary? { activeDevice.flatMap { libraries[$0.id] } }
+    /// 概览页显示哪台手机：在线的优先，否则是最早配对的那台。
+    var activeMonitor: DeviceMonitor? {
+        activeDevice.flatMap { monitors[$0.id] } ?? monitors.values.min { ($0.pairedAt ?? .distantPast) < ($1.pairedAt ?? .distantPast) }
+    }
+
+    /// 主窗口侧边栏的选中项。放在这里，菜单栏的“前往”命令也能切换。
+    var sidebarSelection: SidebarItem? = .overview
 
     private let registry = RemoteRegistry()
 
+    let mirror = MirrorSession()
     private let notifications = NotificationPresenter()
     private var server: LinkServer?
     private var pairingStore: PairingStore?
@@ -71,6 +81,8 @@ final class AppModel {
             options: [.userInitiatedAllowingIdleSystemSleep], reason: "Keep phone link alive")
         observeSleep()
         notifications.requestAuthorization()
+        mirror.remoteProvider = { [weak self] in self?.activeLibrary?.remote }
+        mirror.preferredModel = { [weak self] in self?.activeDevice?.device.model }
         Task.detached(priority: .background) { ExportService.pruneCache() }
         Task { await startServer() }
     }
@@ -84,6 +96,7 @@ final class AppModel {
             self.pairingStore = store
             self.server = server
             pairedDevices = store.pairedDevices
+            for device in pairedDevices { monitors[device.deviceId] = DeviceMonitor(device: device, directory: Self.supportDirectory) }
             // 文件数据量大，在连接线程上直接交给 PhoneRemote，不经过主线程
             server.setInboundHook { [registry] deviceId, message in
                 registry.remote(for: deviceId)?.handle(message) ?? false
@@ -100,7 +113,7 @@ final class AppModel {
         switch event {
         case .listening(let port):
             serverState = .listening(port: port)
-        case .connected(let device, let newlyPaired):
+        case .connected(let device, let newlyPaired, let address):
             connected[device.deviceId] = ConnectedDevice(device: device)
             let id = device.deviceId
             let remote = PhoneRemote { [weak server] message in server?.send(message, to: id) }
@@ -112,10 +125,15 @@ final class AppModel {
                 pairing = nil
                 pairedDevices = pairingStore?.pairedDevices ?? []
             }
+            let monitor = monitors[id] ?? DeviceMonitor(device: device, directory: Self.supportDirectory)
+            monitors[id] = monitor
+            monitor.attach(remote: remote, device: device, address: address)
         case .message(let deviceId, .deviceStatus(let status)):
             connected[deviceId]?.status = status
+            monitors[deviceId]?.update(status)
         case .message(let deviceId, .notification(let notification)):
-            notifications.post(notification, from: connected[deviceId]?.device.name ?? "手机")
+            guard Prefs.bool(Prefs.showNotifications, default: true) else { break }
+            notifications.post(notification, from: connected[deviceId]?.device.name ?? String(localized: "手机"))
         case .message(_, .notificationRemoved(let removed)):
             notifications.remove(key: removed.key)
         case .message(let deviceId, let message):
@@ -125,6 +143,7 @@ final class AppModel {
             connected[deviceId] = nil
             registry.remove(deviceId)?.close()
             libraries[deviceId] = nil
+            monitors[deviceId]?.detach()
             // 手机离线后，Mac 上残留的手机通知已无法与手机同步，一并清掉
             if connected.isEmpty { notifications.removeAll() }
         case .rejected(let reason):
@@ -149,9 +168,15 @@ final class AppModel {
     }
 
     func unpair(_ device: PairedDevice) {
+        // 正在投这台手机的屏，先停掉（会把手机屏幕还原）
+        if activeDevice?.id == device.deviceId, mirror.isRunning || mirror.isBusy {
+            Task { await mirror.stop() }
+        }
         server?.send(.goodbye(reason: "unpaired"), to: device.deviceId)
         pairingStore?.remove(deviceId: device.deviceId)
         pairedDevices = pairingStore?.pairedDevices ?? []
+        monitors[device.deviceId]?.deleteSavedData()
+        monitors[device.deviceId] = nil
     }
 
     // MARK: - 生命周期：退出或睡眠前通知手机，让手机及时退出免打扰

@@ -5,6 +5,12 @@ import SwiftUI
 struct LinkToMacOSApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
 
+    init() {
+        #if DEBUG
+        MainActor.assumeIsolated { SnapshotRenderer.runIfRequested() }
+        #endif
+    }
+
     var body: some Scene {
         MenuBarExtra {
             MenuView()
@@ -19,7 +25,16 @@ struct LinkToMacOSApp: App {
                 .environment(appDelegate.model)
         }
         .defaultSize(width: 1120, height: 720)
-        .defaultLaunchBehavior(.presented)
+        .defaultLaunchBehavior(Prefs.bool(Prefs.openMainWindowAtLaunch, default: true) ? .presented : .suppressed)
+        .commands { AppCommands(model: appDelegate.model) }
+
+        Window("投屏", id: WindowID.mirror) {
+            MirrorWindow()
+                .environment(appDelegate.model)
+        }
+        .defaultSize(width: 400, height: 867)
+        .windowResizability(.contentMinSize)
+        .defaultLaunchBehavior(.suppressed)
 
         Window("配对新手机", id: WindowID.pairing) {
             PairingView()
@@ -28,12 +43,18 @@ struct LinkToMacOSApp: App {
         .windowResizability(.contentSize)
         .defaultPosition(.center)
         .defaultLaunchBehavior(.suppressed)
+
+        Settings {
+            SettingsView()
+                .environment(appDelegate.model)
+        }
     }
 }
 
 enum WindowID {
     static let main = "main"
     static let pairing = "pairing"
+    static let mirror = "mirror"
 }
 
 final class AppDelegate: NSObject, NSApplicationDelegate {

@@ -12,6 +12,13 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>zh-Hans</string>
+		<string>zh-Hant</string>
+		<string>ja</string>
+	</array>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
@@ -25,14 +32,14 @@
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>用于通过蓝牙在电脑上接打手机电话。</string>
+	<string>Used to make and answer phone calls from this Mac over Bluetooth.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_linktomacos._tcp</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>用于在局域网内发现并连接你的 Android 手机。</string>
+	<string>Used to find and connect to your Android phone on the local network.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>用于在电脑上接打手机电话时采集声音。</string>
+	<string>Used to send your voice to the phone while mirroring, and when making or answering phone calls on this Mac.</string>
 </dict>
 </plist>

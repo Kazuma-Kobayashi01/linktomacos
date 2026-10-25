@@ -28,7 +28,7 @@ final class NotificationPresenter: NSObject, UNUserNotificationCenterDelegate {
         content.subtitle = notification.title.isEmpty ? "" : notification.appName
         content.body = notification.text
         content.threadIdentifier = notification.packageName
-        content.sound = .default
+        content.sound = Prefs.bool(Prefs.notificationSound, default: true) ? .default : nil
         if let subText = notification.subText, !subText.isEmpty {
             content.subtitle = "\(notification.appName) · \(subText)"
         }
@@ -68,6 +68,6 @@ final class NotificationPresenter: NSObject, UNUserNotificationCenterDelegate {
     func userNotificationCenter(
         _ center: UNUserNotificationCenter, willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
-        [.banner, .list, .sound]
+        notification.request.content.sound == nil ? [.banner, .list] : [.banner, .list, .sound]
     }
 }

@@ -2,8 +2,11 @@ import LinkCore
 import SwiftUI
 
 enum SidebarItem: Hashable {
+    case overview
+    case mirror
     case library
     case videos
+    case apps
     case album(Int64)
     /// 相对于手机内部存储根目录的文件夹。
     case files(String)
@@ -12,24 +15,18 @@ enum SidebarItem: Hashable {
 /// 主窗口：左侧是 macOS 标准的半透明侧边栏（毛玻璃），右侧是内容。
 struct MainWindow: View {
     @Environment(AppModel.self) private var model
-    @State private var selection: SidebarItem? = .library
 
     var body: some View {
+        @Bindable var model = model
+        let selection = model.sidebarSelection
         NavigationSplitView {
-            SidebarView(selection: $selection)
+            SidebarView(selection: $model.sidebarSelection)
                 .navigationSplitViewColumnWidth(min: 200, ideal: 230, max: 320)
         } detail: {
-            if let library = model.activeLibrary {
-                DetailView(library: library, item: selection ?? .library)
-                    .id(selection)
-                    .overlay(alignment: .bottom) { TransferHUD(center: library.transfers) }
-            } else {
-                DisconnectedView()
-            }
+            DetailRouter(item: selection ?? .overview)
+                .id(selection)
         }
         .frame(minWidth: 900, minHeight: 580)
-        // 界面文字是中文，日期也按中文显示
-        .environment(\.locale, Locale(identifier: "zh_CN"))
         .onAppear {
             // 菜单栏常驻程序：打开窗口时才出现在 Dock 里
             NSApp.setActivationPolicy(.regular)
@@ -43,6 +40,26 @@ struct MainWindow: View {
     }
 }
 
+private struct DetailRouter: View {
+    @Environment(AppModel.self) private var model
+    let item: SidebarItem
+
+    var body: some View {
+        if item == .overview {
+            if let monitor = model.activeMonitor {
+                OverviewView(monitor: monitor)
+            } else {
+                DisconnectedView()
+            }
+        } else if let library = model.activeLibrary {
+            DetailView(library: library, item: item)
+                .overlay(alignment: .bottom) { TransferHUD(center: library.transfers) }
+        } else {
+            DisconnectedView()
+        }
+    }
+}
+
 private struct DetailView: View {
     @Bindable var library: PhoneLibrary
     let item: SidebarItem
@@ -50,12 +67,18 @@ private struct DetailView: View {
     var body: some View {
         Group {
             switch item {
+            case .overview:
+                EmptyView()
+            case .mirror:
+                MirrorPage(library: library)
             case .library:
-                PhotosView(library: library, title: "所有项目", album: nil, kind: .all)
+                PhotosView(library: library, title: Text("所有项目"), album: nil, kind: .all)
             case .videos:
-                PhotosView(library: library, title: "视频", album: nil, kind: .video)
+                PhotosView(library: library, title: Text("视频"), album: nil, kind: .video)
+            case .apps:
+                AppsView(library: library)
             case .album(let id):
-                PhotosView(library: library, title: library.albums.first { $0.id == id }?.name ?? "相簿", album: id, kind: .all)
+                PhotosView(library: library, title: library.albums.first { $0.id == id }.map { Text(verbatim: $0.name) } ?? Text("相簿"), album: id, kind: .all)
             case .files(let path):
                 FilesView(library: library, startPath: path)
             }
@@ -73,7 +96,7 @@ private struct SidebarView: View {
     @Binding var selection: SidebarItem?
     @AppStorage("sidebarAlbumsExpanded") private var albumsExpanded = true
 
-    private let folders: [(title: String, path: String, icon: String)] = [
+    private let folders: [(title: LocalizedStringKey, path: String, icon: String)] = [
         ("内部存储", "", "internaldrive"),
         ("下载", "Download", "arrow.down.circle"),
         ("文稿", "Documents", "doc"),
@@ -84,8 +107,14 @@ private struct SidebarView: View {
 
     var body: some View {
         List(selection: $selection) {
-            if let device = model.activeDevice {
-                Section { DeviceHeader(device: device).selectionDisabled() }
+            if let monitor = model.activeMonitor {
+                Section { DeviceHeader(monitor: monitor).selectionDisabled() }
+                Section {
+                    Label("概览", systemImage: "gauge.with.dots.needle.67percent").tag(SidebarItem.overview)
+                    if model.activeLibrary != nil {
+                        Label("投屏", systemImage: "rectangle.on.rectangle").tag(SidebarItem.mirror)
+                    }
+                }
             }
             if let library = model.activeLibrary {
                 Section("资料库") {
@@ -95,6 +124,7 @@ private struct SidebarView: View {
                     Label("视频", systemImage: "video")
                         .badge(library.videoCount)
                         .tag(SidebarItem.videos)
+                    Label("应用", systemImage: "square.grid.2x2").tag(SidebarItem.apps)
                 }
                 Section("文件") {
                     ForEach(folders, id: \.path) { folder in
@@ -117,16 +147,18 @@ private struct SidebarView: View {
 }
 
 private struct DeviceHeader: View {
-    let device: ConnectedDevice
+    let monitor: DeviceMonitor
 
     var body: some View {
         HStack(spacing: 10) {
             Image(systemName: "iphone").font(.title2).foregroundStyle(.secondary)
             VStack(alignment: .leading, spacing: 1) {
-                Text(device.device.name).font(.headline).lineLimit(1)
+                Text(monitor.name).font(.headline).lineLimit(1)
                 HStack(spacing: 4) {
-                    Circle().fill(.green).frame(width: 6, height: 6)
-                    if let status = device.status {
+                    Circle().fill(monitor.isOnline ? Color.green : Color.gray).frame(width: 6, height: 6)
+                    if !monitor.isOnline {
+                        Text("离线")
+                    } else if let status = monitor.status {
                         Text("已连接 · 电量 \(status.batteryLevel)%")
                     } else {
                         Text("已连接")

@@ -5,7 +5,7 @@ import SwiftUI
 /// 照片网格：按天分组，缩放滑块，单击选择，双击大图，右键 / ⌘C / 拖拽导出。
 struct PhotosView: View {
     let library: PhoneLibrary
-    let title: String
+    let title: Text
 
     @State private var model: MediaListModel
     @State private var selection: Set<Int64> = []
@@ -13,7 +13,7 @@ struct PhotosView: View {
     @State private var viewing: Int64?
     @AppStorage("photoCellSize") private var cellSize: Double = 140
 
-    init(library: PhoneLibrary, title: String, album: Int64?, kind: MediaKind) {
+    init(library: PhoneLibrary, title: Text, album: Int64?, kind: MediaKind) {
         self.library = library
         self.title = title
         _model = State(initialValue: MediaListModel(remote: library.remote, album: album, kind: kind))
@@ -54,7 +54,8 @@ struct PhotosView: View {
                 } label: {
                     Label("刷新", systemImage: "arrow.clockwise")
                 }
-                .help("刷新")
+                .help("刷新（⌘R）")
+                .keyboardShortcut("r")
             }
         }
         .task(id: library.mediaAllowed) {
@@ -63,7 +64,12 @@ struct PhotosView: View {
         .background(ShortcutMonitor(
             isEnabled: viewing == nil,
             onCopy: { copy(selectedItems) },
-            onSelectAll: { selection = Set(model.items.map(\.id)) }))
+            onSelectAll: { selection = Set(model.items.map(\.id)) },
+            onSpace: {
+                // 空格预览：最后点的那张，否则所选的第一张
+                if let anchor, selection.contains(anchor) { viewing = anchor }
+                else { viewing = model.items.first { selection.contains($0.id) }?.id }
+            }))
         .overlay {
             if viewing != nil {
                 PhotoViewer(
@@ -169,8 +175,8 @@ struct PhotosView: View {
             panel.canChooseDirectories = true
             panel.canChooseFiles = false
             panel.canCreateDirectories = true
-            panel.prompt = "存储"
-            panel.message = "选择用来保存 \(items.count) 个项目的文件夹"
+            panel.prompt = String(localized: "存到这里")
+            panel.message = String(localized: "选择用来保存 \(items.count) 个项目的文件夹")
             guard panel.runModal() == .OK, let url = panel.url else { return }
             run { try await library.exporter.save(items.map(ExportService.Item.init(media:)), to: url) }
         }

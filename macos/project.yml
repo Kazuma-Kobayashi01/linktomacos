@@ -1,6 +1,7 @@
 name: LinkToMacOS
 options:
   bundleIdPrefix: com.linktomacos
+  developmentLanguage: en
   deploymentTarget:
     macOS: "15.0"
   createIntermediateGroups: true
@@ -30,14 +31,17 @@ targets:
       properties:
         CFBundleDisplayName: LinkToMacOS
         LSUIElement: true
+        CFBundleLocalizations: [en, zh-Hans, zh-Hant, ja]
         LSApplicationCategoryType: public.app-category.utilities
-        NSLocalNetworkUsageDescription: 用于在局域网内发现并连接你的 Android 手机。
+        NSLocalNetworkUsageDescription: Used to find and connect to your Android phone on the local network.
         NSBonjourServices:
           - _linktomacos._tcp
-        NSBluetoothAlwaysUsageDescription: 用于通过蓝牙在电脑上接打手机电话。
-        NSMicrophoneUsageDescription: 用于在电脑上接打手机电话时采集声音。
+        NSBluetoothAlwaysUsageDescription: Used to make and answer phone calls from this Mac over Bluetooth.
+        NSMicrophoneUsageDescription: Used to send your voice to the phone while mirroring, and when making or answering phone calls on this Mac.
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.linktomacos.mac
         ENABLE_APP_SANDBOX: NO
+        SWIFT_EMIT_LOC_STRINGS: YES
+        LOCALIZATION_PREFERS_STRING_CATALOGS: YES
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon

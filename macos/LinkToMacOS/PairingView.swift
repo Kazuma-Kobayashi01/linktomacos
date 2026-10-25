@@ -17,7 +17,10 @@ struct PairingView: View {
                 }
                 TimelineView(.periodic(from: .now, by: 1)) { context in
                     let remaining = max(0, Int(pairing.expires.timeIntervalSince(context.date)))
-                    Text(remaining > 0 ? "二维码将在 \(remaining / 60):\(String(format: "%02d", remaining % 60)) 后失效" : "二维码已失效")
+                    let minutes = remaining / 60
+                    let seconds = String(format: "%02d", remaining % 60)
+                    let message: LocalizedStringKey = remaining > 0 ? "二维码将在 \(minutes):\(seconds) 后失效" : "二维码已失效"
+                    Text(message)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
