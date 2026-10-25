@@ -8,6 +8,7 @@
 
 [English](README.md) | 简体中文
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 ![Swift](https://img.shields.io/badge/Swift-6.0+-F05138?style=flat-square&logo=swift&logoColor=white)
 ![SwiftUI](https://img.shields.io/badge/SwiftUI-macOS_15+-0A84FF?style=flat-square&logo=apple&logoColor=white)
 ![SwiftNIO](https://img.shields.io/badge/SwiftNIO-TLS_1.3-F05138?style=flat-square&logo=swift&logoColor=white)
@@ -224,8 +225,8 @@ cd android && ./gradlew testDebugUnitTest      # 协议、握手、尺寸计算
 
 ## 📜 许可证与致谢
 
-还没有选定许可证，所以默认保留所有权利。这是一个个人项目。
+[MIT](LICENSE) © 2026 Kazuma-Kobayashi01。
 
-使用了 [SwiftNIO](https://github.com/apple/swift-nio)、[swift-nio-ssl](https://github.com/apple/swift-nio-ssl)、[swift-certificates](https://github.com/apple/swift-certificates)、[swift-crypto](https://github.com/apple/swift-crypto)、[ZXing](https://github.com/zxing/zxing)、AndroidX 和 Jetpack Compose，以及 [OpenCC](https://github.com/BYVoid/OpenCC)（工具里的繁体中文转换）。增强服务参照 [scrcpy](https://github.com/Genymobile/scrcpy)（Apache-2.0）的思路重新编写，见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+使用了 [SwiftNIO](https://github.com/apple/swift-nio)、[swift-nio-ssl](https://github.com/apple/swift-nio-ssl)、[swift-certificates](https://github.com/apple/swift-certificates)、[swift-crypto](https://github.com/apple/swift-crypto)、[ZXing](https://github.com/zxing/zxing)、AndroidX 和 Jetpack Compose（都是 Apache-2.0）。增强服务参照 [scrcpy](https://github.com/Genymobile/scrcpy)（Apache-2.0）的思路重新编写。完整清单（含版本和要求附上的声明）见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)，Apache-2.0 全文见 [LICENSES/Apache-2.0.txt](LICENSES/Apache-2.0.txt)。
 
 *连接到 Windows* 和 *Phone Link* 是 Microsoft 的产品，*macOS* 是 Apple Inc. 的商标，*Android* 是 Google LLC 的商标。本项目是独立项目，与它们无隶属或认可关系。

@@ -8,6 +8,7 @@
 
 English | [简体中文](README.zh-CN.md)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 ![Swift](https://img.shields.io/badge/Swift-6.0+-F05138?style=flat-square&logo=swift&logoColor=white)
 ![SwiftUI](https://img.shields.io/badge/SwiftUI-macOS_15+-0A84FF?style=flat-square&logo=apple&logoColor=white)
 ![SwiftNIO](https://img.shields.io/badge/SwiftNIO-TLS_1.3-F05138?style=flat-square&logo=swift&logoColor=white)
@@ -224,8 +225,8 @@ The text on both sides is generated from translation tables. **Edit `tools/i18n/
 
 ## 📜 License and credits
 
-No license has been chosen yet, so by default all rights are reserved. This is a personal project.
+[MIT](LICENSE) © 2026 Kazuma-Kobayashi01.
 
-Built on [SwiftNIO](https://github.com/apple/swift-nio), [swift-nio-ssl](https://github.com/apple/swift-nio-ssl), [swift-certificates](https://github.com/apple/swift-certificates), [swift-crypto](https://github.com/apple/swift-crypto), [ZXing](https://github.com/zxing/zxing), AndroidX and Jetpack Compose, and [OpenCC](https://github.com/BYVoid/OpenCC) (Traditional Chinese conversion in the tools). The enhanced service is written after [scrcpy](https://github.com/Genymobile/scrcpy) (Apache-2.0); see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Built on [SwiftNIO](https://github.com/apple/swift-nio), [swift-nio-ssl](https://github.com/apple/swift-nio-ssl), [swift-certificates](https://github.com/apple/swift-certificates), [swift-crypto](https://github.com/apple/swift-crypto), [ZXing](https://github.com/zxing/zxing), AndroidX and Jetpack Compose (all Apache-2.0). The enhanced service is written after [scrcpy](https://github.com/Genymobile/scrcpy) (Apache-2.0). The full list, with versions and the required notices, is in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); the Apache-2.0 text is in [LICENSES/Apache-2.0.txt](LICENSES/Apache-2.0.txt).
 
 *Link to Windows* and *Phone Link* are Microsoft products, *macOS* is a trademark of Apple Inc., *Android* is a trademark of Google LLC. This project is independent and not affiliated with or endorsed by any of them.
