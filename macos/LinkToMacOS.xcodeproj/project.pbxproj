@@ -11,6 +11,7 @@
 		19CDE9BB0113A246FC59CE76 /* AppIconLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C562F19C5C0E67A24F4704D /* AppIconLoader.swift */; };
 		1AFDCBC16EFF98958165DB0E /* PhotoViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9B2AA38B48A4F0E39B461B /* PhotoViewer.swift */; };
 		29747915284789C2968ED6FE /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345D2C85657B1E9D8BE72CCD /* ExportService.swift */; };
+		2F48051D80E3D63E1932CD51 /* ClipboardSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266697DFA48B789E4DF0CB0C /* ClipboardSync.swift */; };
 		3DC167DFDCF86D89BEEFACA7 /* MediaListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4C3ACE6D79D7C454BB6FE1 /* MediaListModel.swift */; };
 		48418F1CBBE1894CC3590423 /* ChipCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D37955067F827C31A03E49 /* ChipCatalog.swift */; };
 		49E29FEFB7AE3E244695C0F4 /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91B14E80BE438C1A18CF0E7 /* FilesView.swift */; };
@@ -50,6 +51,7 @@
 		1A79E5307B246AA4C9044A12 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		233F96C3E85599A7D082A39B /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		238E1140EBFBFF6E1D739FC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		266697DFA48B789E4DF0CB0C /* ClipboardSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardSync.swift; sourceTree = "<group>"; };
 		286E95ABFAB14A0896D4E69F /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
 		2C562F19C5C0E67A24F4704D /* AppIconLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconLoader.swift; sourceTree = "<group>"; };
 		320D982DF762A33A3BC24C23 /* SnapshotRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotRenderer.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				286E95ABFAB14A0896D4E69F /* AudioPlayer.swift */,
 				E237F10BF4EC2F41B09A7B31 /* CallAlerter.swift */,
 				E2D37955067F827C31A03E49 /* ChipCatalog.swift */,
+				266697DFA48B789E4DF0CB0C /* ClipboardSync.swift */,
 				B635FA1ACC2DC0797057C7EB /* DeviceMonitor.swift */,
 				345D2C85657B1E9D8BE72CCD /* ExportService.swift */,
 				0B4C3ACE6D79D7C454BB6FE1 /* MediaListModel.swift */,
@@ -277,6 +280,7 @@
 				15C0E57825F03EB724D04E57 /* AudioPlayer.swift in Sources */,
 				965160FAC8BAC158B9AB6D90 /* CallAlerter.swift in Sources */,
 				48418F1CBBE1894CC3590423 /* ChipCatalog.swift in Sources */,
+				2F48051D80E3D63E1932CD51 /* ClipboardSync.swift in Sources */,
 				6330FD5ED486693E9C9D69D6 /* DeviceMonitor.swift in Sources */,
 				29747915284789C2968ED6FE /* ExportService.swift in Sources */,
 				49E29FEFB7AE3E244695C0F4 /* FilesView.swift in Sources */,

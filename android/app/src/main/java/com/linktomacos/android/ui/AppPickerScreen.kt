@@ -16,12 +16,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,22 +64,24 @@ fun AppPickerScreen(
         value = withContext(Dispatchers.IO) { loadApps(context, initiallyAllowed) }
     }
 
-    Column(modifier = modifier.fillMaxSize()) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 8.dp)) {
-            TextButton(onClick = onBack) { Text(stringResource(R.string.back)) }
+    Column(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).statusBarsPadding()) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)) {
+            IconButton(onClick = onBack) { Icon(LinkIcons.ArrowBack, contentDescription = stringResource(R.string.back)) }
             Text(stringResource(R.string.picker_title), style = MaterialTheme.typography.titleLarge)
         }
         Text(
             stringResource(R.string.picker_hint, allowed.size),
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(horizontal = 20.dp),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 24.dp),
         )
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },
             singleLine = true,
+            shape = RoundedCornerShape(28.dp),
             placeholder = { Text(stringResource(R.string.picker_search)) },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
         )
         val list = apps
         if (list == null) {
@@ -81,7 +90,7 @@ fun AppPickerScreen(
             val filtered = list.filter {
                 query.isBlank() || it.label.contains(query, ignoreCase = true) || it.packageName.contains(query, ignoreCase = true)
             }
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = WindowInsets.navigationBars.asPaddingValues()) {
                 items(filtered, key = { it.packageName }) { app ->
                     AppRow(app, checked = app.packageName in allowed) { onToggle(app.packageName, it) }
                 }

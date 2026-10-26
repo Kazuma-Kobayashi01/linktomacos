@@ -39,6 +39,7 @@ English | [简体中文](README.zh-CN.md)
 | 📱 | **Screen mirroring** | Two modes. **Separate display** creates a virtual display on the phone, so the phone's own screen can stay off or locked while you use apps on the Mac. **Mirror** shows the phone screen as-is. The window keeps the phone's aspect ratio and turns landscape by itself for full-screen video. Mouse and keyboard become touch and keys. |
 | 🔊 | **Sound & microphone** | The phone's sound plays on the Mac speakers (Opus). Your Mac microphone, with echo cancellation, becomes the phone's microphone for apps (voice messages, VoIP calls). |
 | 📞 | **Call alerts** | An incoming call pops up a notification on the Mac and plays a ringtone you pick from the system sounds. A call that ends unanswered leaves a "Missed call" notice. Alerts only: the call audio stays on the phone. |
+| 📋 | **Clipboard** | Copy text on one device, paste on the other. Phone → Mac is instant while the enhanced service is running (Android doesn't let normal apps read the clipboard in the background); otherwise it syncs when you open the app. Content that password managers mark as sensitive is never sent. |
 | 📊 | **Overview** | Battery, storage, memory and network at a glance, 1/6/24-hour history charts, device details and a storage breakdown. |
 | ⌨️ | **Feels native** | Menu bar app, settings window (⌘,), a Go menu (⌘1–⌘7), a Screen Mirroring menu, ⌘R to refresh. |
 | 🌍 | **Four languages** | English, 简体中文, 繁體中文 (Taiwan; the Android app also has Hong Kong) and 日本語, on both sides. |

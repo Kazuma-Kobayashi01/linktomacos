@@ -12,7 +12,7 @@ settings:
   base:
     SWIFT_VERSION: "5.0"
     PRODUCT_NAME: "Link to macOS"
-    MARKETING_VERSION: "0.1.0"
+    MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
     # 免费账号阶段：本地签名运行（Sign to Run Locally）
     CODE_SIGN_IDENTITY: "-"

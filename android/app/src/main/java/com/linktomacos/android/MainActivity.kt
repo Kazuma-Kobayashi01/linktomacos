@@ -5,6 +5,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
+import android.os.PowerManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -17,7 +18,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -39,6 +39,28 @@ import com.linktomacos.android.link.LinkStatus
 import com.linktomacos.android.link.PhoneNotificationListener
 import com.linktomacos.android.protocol.PairingPayload
 import com.linktomacos.android.ui.AppPickerScreen
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.IntOffset
+import com.linktomacos.android.ui.Page
+import com.linktomacos.android.ui.UiActions
+import com.linktomacos.android.ui.NotificationsPage
+import com.linktomacos.android.ui.ClipboardPage
+import com.linktomacos.android.ui.FilesPage
+import com.linktomacos.android.ui.MirrorPage
+import com.linktomacos.android.ui.DndPage
+import com.linktomacos.android.ui.KeepAlivePage
+import com.linktomacos.android.ui.AboutPage
+
 import com.linktomacos.android.ui.HomeScreen
 import com.linktomacos.android.ui.QrScanner
 import com.linktomacos.android.ui.SettingsUiState
@@ -62,6 +84,8 @@ class MainActivity : ComponentActivity() {
     private var dndAccess by mutableStateOf(false)
     private var mediaAccess by mutableStateOf(false)
     private var allFilesAccess by mutableStateOf(false)
+    private var batteryIgnored by mutableStateOf(false)
+    private val versionName by lazy { packageManager.getPackageInfo(packageName, 0).versionName ?: "" }
 
     override fun onResume() {
         super.onResume()
@@ -69,7 +93,14 @@ class MainActivity : ComponentActivity() {
         dndAccess = DndController.hasAccess(this)
         allFilesAccess = Environment.isExternalStorageManager()
         mediaAccess = checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+        batteryIgnored = getSystemService(PowerManager::class.java).isIgnoringBatteryOptimizations(packageName)
         if (store.paired.value != null) LinkService.start(this)
+    }
+
+    /** 回到前台时读一次剪贴板：没有增强服务时，这是手机上复制的文字能传给 Mac 的唯一时机。 */
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) (application as LinkApp).clipboard.onForeground()
     }
 
     private fun pair(text: String): Boolean {
@@ -84,10 +115,11 @@ class MainActivity : ComponentActivity() {
         val state by LinkStatus.state.collectAsStateWithLifecycle()
         val paired by store.paired.collectAsStateWithLifecycle()
         var scanning by remember { mutableStateOf(false) }
-        var pickingApps by remember { mutableStateOf(false) }
+        var page by rememberSaveable { mutableStateOf(Page.Home) }
         val allowedApps by settings.allowedApps.collectAsStateWithLifecycle()
         val dndOnConnect by settings.dndOnConnect.collectAsStateWithLifecycle()
         val ringCalls by settings.ringCalls.collectAsStateWithLifecycle()
+        val clipboardSync by settings.clipboardSync.collectAsStateWithLifecycle()
         val dndActive by DndStatus.active.collectAsStateWithLifecycle()
         val dndError by DndStatus.error.collectAsStateWithLifecycle()
         val enhancedReady by (application as LinkApp).bridge.ready.collectAsStateWithLifecycle()
@@ -104,66 +136,88 @@ class MainActivity : ComponentActivity() {
             else Toast.makeText(this, getString(R.string.need_camera), Toast.LENGTH_SHORT).show()
         }
 
-        Scaffold { padding ->
-            if (scanning) {
-                BackHandler { scanning = false }
-                Box(Modifier.fillMaxSize().padding(padding)) {
-                    QrScanner(
-                        modifier = Modifier.fillMaxSize(),
-                        onResult = { text ->
-                            scanning = false
-                            if (!pair(text)) Toast.makeText(this@MainActivity, getString(R.string.not_pairing_code), Toast.LENGTH_SHORT).show()
-                        },
-                    )
-                    Text(
-                        stringResource(R.string.scan_hint),
-                        modifier = Modifier.align(Alignment.BottomCenter).padding(32.dp),
-                        color = darkColorScheme().onSurface,
-                    )
+        val ui = SettingsUiState(
+            notificationAccess = listenerEnabled,
+            allowedCount = allowedApps.size,
+            dndOnConnect = dndOnConnect,
+            ringCalls = ringCalls,
+            dndAccess = dndAccess,
+            dndActive = dndActive,
+            dndError = dndError,
+            mediaAccess = mediaAccess,
+            allFilesAccess = allFilesAccess,
+            enhancedReady = enhancedReady,
+            clipboardSync = clipboardSync,
+            batteryOptimizationIgnored = batteryIgnored,
+            versionName = versionName,
+        )
+        val actions = UiActions(
+            onOpen = { page = it },
+            onScan = { cameraPermission.launch(Manifest.permission.CAMERA) },
+            onPairLink = ::pair,
+            onUnpair = {
+                store.unpair()
+                LinkService.stop(this)
+            },
+            onGrantMedia = {
+                mediaPermission.launch(arrayOf(
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.ACCESS_MEDIA_LOCATION,
+                ))
+            },
+            onDndOnConnectChange = settings::setDndOnConnect,
+            onRingCallsChange = settings::setRingCalls,
+            onClipboardChange = settings::setClipboardSync,
+            onToggleApp = settings::setAllowed,
+        )
+
+        if (scanning) {
+            BackHandler { scanning = false }
+            Box(Modifier.fillMaxSize().background(Color.Black).systemBarsPadding()) {
+                QrScanner(
+                    modifier = Modifier.fillMaxSize(),
+                    onResult = { text ->
+                        scanning = false
+                        if (!pair(text)) Toast.makeText(this@MainActivity, getString(R.string.not_pairing_code), Toast.LENGTH_SHORT).show()
+                    },
+                )
+                Text(
+                    stringResource(R.string.scan_hint),
+                    modifier = Modifier.align(Alignment.BottomCenter).padding(32.dp),
+                    color = darkColorScheme().onSurface,
+                )
+            }
+        } else {
+            // 没配对时回到首页（配对页只有首页的介绍）
+            val current = if (paired == null) Page.Home else page
+            current.parent?.let { parent -> BackHandler { page = parent } }
+            AnimatedContent(
+                targetState = current,
+                transitionSpec = {
+                    val deeper = targetState.depth() > initialState.depth()
+                    val slide = tween<IntOffset>(260)
+                    (slideInHorizontally(slide) { if (deeper) it / 4 else -it / 4 } + fadeIn(tween(220))) togetherWith
+                        (slideOutHorizontally(slide) { if (deeper) -it / 4 else it / 4 } + fadeOut(tween(160)))
+                },
+                label = "page",
+                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+            ) { target ->
+                val back = { page = target.parent ?: Page.Home }
+                when (target) {
+                    Page.Home -> HomeScreen(state, paired, ui, actions)
+                    Page.Notifications -> NotificationsPage(ui, actions, back)
+                    Page.Apps -> AppPickerScreen(allowedApps, settings::setAllowed, back)
+                    Page.Clipboard -> ClipboardPage(ui, actions, back)
+                    Page.Files -> FilesPage(ui, actions, back)
+                    Page.Mirror -> MirrorPage(ui, back)
+                    Page.Dnd -> DndPage(ui, actions, back)
+                    Page.KeepAlive -> KeepAlivePage(ui, back)
+                    Page.About -> AboutPage(paired, ui, actions, back)
                 }
-            } else if (pickingApps) {
-                BackHandler { pickingApps = false }
-                AppPickerScreen(
-                    allowed = allowedApps,
-                    onToggle = settings::setAllowed,
-                    onBack = { pickingApps = false },
-                    modifier = Modifier.padding(padding),
-                )
-            } else {
-                HomeScreen(
-                    state = state,
-                    paired = paired,
-                    settings = SettingsUiState(
-                        notificationAccess = listenerEnabled,
-                        allowedCount = allowedApps.size,
-                        dndOnConnect = dndOnConnect,
-                        ringCalls = ringCalls,
-                        dndAccess = dndAccess,
-                        dndActive = dndActive,
-                        dndError = dndError,
-                        mediaAccess = mediaAccess,
-                        allFilesAccess = allFilesAccess,
-                        enhancedReady = enhancedReady,
-                    ),
-                    onGrantMedia = {
-                        mediaPermission.launch(arrayOf(
-                            Manifest.permission.READ_MEDIA_IMAGES,
-                            Manifest.permission.READ_MEDIA_VIDEO,
-                            Manifest.permission.ACCESS_MEDIA_LOCATION,
-                        ))
-                    },
-                    onManageApps = { pickingApps = true },
-                    onDndOnConnectChange = settings::setDndOnConnect,
-                    onRingCallsChange = settings::setRingCalls,
-                    onScan = { cameraPermission.launch(Manifest.permission.CAMERA) },
-                    onPairLink = ::pair,
-                    onUnpair = {
-                        store.unpair()
-                        LinkService.stop(this)
-                    },
-                    modifier = Modifier.padding(padding),
-                )
             }
         }
     }
 }
+
+private fun Page.depth(): Int = if (parent == null) 0 else parent!!.depth() + 1

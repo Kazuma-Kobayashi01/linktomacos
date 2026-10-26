@@ -24,7 +24,7 @@ private const val TAG = "EnhancedBridge"
 const val ENHANCED_PORT = 47153
 
 /** App 需要的 shell 服务版本，和 ShellMain.VERSION 一致。服务进程重装 App 后不会自己重启，版本不对时要重新启动它。 */
-const val SHELL_VERSION = 4
+const val SHELL_VERSION = 5
 private const val TYPE_JSON = 1
 private const val TYPE_VIDEO = 2
 private const val TYPE_AUDIO = 3
@@ -67,6 +67,8 @@ class EnhancedBridge(context: Context) {
     val outdated: StateFlow<Boolean> = _outdated.asStateFlow()
 
     @Volatile var listener: ShellListener? = null
+    /** 手机上复制了文字（shell 服务在后台监听剪贴板）。 */
+    @Volatile var onClipboard: ((String) -> Unit)? = null
     @Volatile private var connection: Connection? = null
     private var server: ServerSocket? = null
 
@@ -121,7 +123,9 @@ class EnhancedBridge(context: Context) {
             conn.readLoop(
                 onVideo = { listener?.onVideo(it) },
                 onAudio = { listener?.onAudio(it) },
-                onEvent = { listener?.onEvent(it) },
+                onEvent = {
+                    if (it.optString("t") == "clip") onClipboard?.invoke(it.optString("text")) else listener?.onEvent(it)
+                },
             )
         } catch (e: Exception) {
             Log.d(TAG, "shell connection ended: $e")

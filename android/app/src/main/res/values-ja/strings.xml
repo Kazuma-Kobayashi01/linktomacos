@@ -86,6 +86,65 @@
     <string name="err_unknown_source">不明なダウンロード元です</string>
     <string name="err_cancelled">キャンセルしました</string>
     <string name="err_read_failed">読み込みに失敗しました</string>
+    <string name="more">その他</string>
+    <string name="switch_on">オン</string>
+    <string name="switch_off">オフ</string>
+    <string name="about_title">このアプリについて</string>
+    <string name="about_summary">スマートフォンと Mac をつなぎます：通知、クリップボード、写真とファイル、画面ミラーリング。</string>
+    <string name="about_version">バージョン</string>
+    <string name="about_license">ライセンス</string>
+    <string name="about_paired_mac">ペアリング済みの Mac</string>
+    <string name="unpair_confirm_title">ペアリングを解除しますか？</string>
+    <string name="unpair_confirm_body">“%1$s” への通知転送とクリップボード同期を停止します。再度接続するには QR コードのスキャンが必要です。</string>
+    <string name="intro1_title">Mac で通知と着信をチェック</string>
+    <string name="intro1_body">転送するアプリを選ぶと、新しい通知が Mac に届きます。着信も Mac でお知らせします。</string>
+    <string name="intro2_title">クリップボードを共有</string>
+    <string name="intro2_body">スマートフォンでコピーしたテキストを Mac でペースト。逆も同じです。</string>
+    <string name="intro3_title">画面ミラーリングとファイル閲覧</string>
+    <string name="intro3_body">Mac からこの端末を操作し、写真やファイルを閲覧。ドラッグするだけで保存できます。</string>
+    <string name="tile_clipboard">クリップボード</string>
+    <string name="tile_dnd">サイレント</string>
+    <string name="tile_mirror">ミラーリング</string>
+    <string name="tile_running">実行中</string>
+    <string name="tile_stopped">未起動</string>
+    <string name="row_notif_off">「通知へのアクセス」がオフです</string>
+    <string name="row_notif_none">転送するアプリが未選択です</string>
+    <string name="row_clip_realtime">リアルタイム同期</string>
+    <string name="row_clip_limited">オン。このアプリに戻ったときに同期します</string>
+    <string name="row_files_ok">許可済み</string>
+    <string name="row_files_missing">あと %1$d 件の許可が必要です</string>
+    <string name="row_mirror_running">実行中</string>
+    <string name="row_mirror_stopped">未実行</string>
+    <string name="row_dnd_need_access">「サイレントモードへのアクセス」が必要です</string>
+    <string name="row_dnd_on">Mac 接続時に自動でオン</string>
+    <string name="row_battery_suggest">バッテリー最適化をオフにすることをおすすめします</string>
+    <string name="notif_summary">転送するアプリを選ぶと、新しい通知が Mac に表示されます。</string>
+    <string name="notif_access_title">通知へのアクセス</string>
+    <string name="clip_title">クリップボード共有</string>
+    <string name="clip_summary">一方でコピーしたテキストを、もう一方でそのままペースト。</string>
+    <string name="clip_toggle">Mac とクリップボードのテキストを共有</string>
+    <string name="clip_toggle_sub">接続後にコピーしたテキストのみ共有します</string>
+    <string name="clip_mode_realtime">リアルタイム同期</string>
+    <string name="clip_mode_realtime_sub">ミラーリングサービスが動作中のため、バックグラウンドでコピーしたテキストもすぐに Mac に届きます</string>
+    <string name="clip_mode_limited">限定的な同期</string>
+    <string name="clip_mode_limited_sub">Android ではアプリがバックグラウンドでクリップボードを読めません。スマートフォンでコピーしたテキストは、このアプリに戻ると Mac に届きます。ミラーリングサービスを起動するとリアルタイムで同期します。</string>
+    <string name="clip_privacy">パスワードマネージャーが機密とマークした内容は送信されません。通信は暗号化された直接接続で、サーバーを経由しません。</string>
+    <string name="mirror_summary">セッションごとの承認なしで Mac からこの端末をミラーリング・操作でき、クリップボードもリアルタイムで同期します。</string>
+    <string name="mirror_howto_title">起動方法</string>
+    <string name="mirror_howto">1. USB ケーブルで端末と Mac を接続
+2. 端末で「USB デバッグ」を許可
+3. Mac の「ミラーリング」ページで拡張サービスを起動
+一度起動すればケーブルを抜いても、端末を再起動するまで動作し続けます。</string>
+    <string name="mirror_features">含まれる機能：実タッチ操作つき画面ミラーリング、独立ディスプレイ、音声転送、Mac のマイク、クリップボードのリアルタイム同期。</string>
+    <string name="dnd_summary">Mac に接続している間は端末を静かにし、切断すると元に戻します。</string>
+    <string name="dnd_access_title">サイレントモードへのアクセス</string>
+    <string name="dnd_calls_hint">着信時は Mac に通知が表示され、着信音が鳴ります。Mac の設定で調整できます。</string>
+    <string name="keepalive_summary">One UI はバックグラウンドのアプリを積極的に停止します。接続を安定させるため、次の手順に従ってください。</string>
+    <string name="battery_opt_title">バッテリー最適化</string>
+    <string name="keepalive_more">その他の設定</string>
+    <plurals name="apps_forwarding">
+        <item quantity="other">%1$d 個のアプリの通知を転送中</item>
+    </plurals>
     <plurals name="apps_selected">
         <item quantity="other">%1$d 個のアプリを選択中。新しい通知が Mac に表示されます</item>
     </plurals>

@@ -62,6 +62,7 @@ final class AppModel {
     let mirror = MirrorSession()
     private let notifications = NotificationPresenter()
     private let calls = CallAlerter()
+    private let clipboard = ClipboardSync()
     private var server: LinkServer?
     private var pairingStore: PairingStore?
     private var identity: LinkIdentity?
@@ -82,6 +83,10 @@ final class AppModel {
             options: [.userInitiatedAllowingIdleSystemSleep], reason: "Keep phone link alive")
         observeSleep()
         notifications.requestAuthorization()
+        clipboard.send = { [weak self] clip in
+            guard let self, let id = activeDevice?.id else { return }
+            server?.send(.clipboard(clip), to: id)
+        }
         mirror.remoteProvider = { [weak self] in self?.activeLibrary?.remote }
         mirror.preferredModel = { [weak self] in self?.activeDevice?.device.model }
         Task.detached(priority: .background) { ExportService.pruneCache() }
@@ -116,6 +121,7 @@ final class AppModel {
             serverState = .listening(port: port)
         case .connected(let device, let newlyPaired, let address):
             connected[device.deviceId] = ConnectedDevice(device: device)
+            clipboard.isActive = true
             let id = device.deviceId
             let remote = PhoneRemote { [weak server] message in server?.send(message, to: id) }
             registry.set(remote, for: id)?.close()
@@ -139,6 +145,8 @@ final class AppModel {
             notifications.remove(key: removed.key)
         case .message(let deviceId, .callState(let call)):
             calls.handle(call, from: connected[deviceId]?.device.name ?? String(localized: "手机"))
+        case .message(_, .clipboard(let clip)):
+            clipboard.receive(clip)
         case .message(let deviceId, let message):
             log.debug("unhandled \(message.typeName) from \(deviceId)")
         case .disconnected(let deviceId, let reason):
@@ -150,6 +158,7 @@ final class AppModel {
             // 手机离线后，Mac 上残留的手机通知已无法与手机同步，一并清掉；正在响的来电提示也停掉
             if connected.isEmpty { notifications.removeAll() }
             calls.stop()
+            clipboard.isActive = !connected.isEmpty
         case .rejected(let reason):
             lastRejection = reason
         }
@@ -187,6 +196,7 @@ final class AppModel {
 
     func prepareForQuit() async {
         calls.stop()
+        clipboard.isActive = false
         await server?.shutdown(reason: "quit")
     }
 

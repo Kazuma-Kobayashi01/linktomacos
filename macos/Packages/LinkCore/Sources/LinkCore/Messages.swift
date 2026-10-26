@@ -189,6 +189,27 @@ public struct CallState: Codable, Equatable, Sendable {
     public var isRinging: Bool { state == "ringing" }
 }
 
+/// 剪贴板文本（双向）：一端复制了文字就发给另一端，另一端写进自己的剪贴板。
+public struct ClipboardText: Codable, Equatable, Sendable {
+    /// 单条文本的上限（字符数），再大的文本一个协议帧装不下。
+    public static let maxCharacters = 200_000
+
+    public var text: String
+    public var timestamp: Int64
+
+    public init(text: String, timestamp: Int64 = 0) {
+        self.text = text; self.timestamp = timestamp
+    }
+
+    private enum CodingKeys: String, CodingKey { case text, timestamp }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        text = try c.decode(String.self, forKey: .text)
+        timestamp = try c.decodeIfPresent(Int64.self, forKey: .timestamp) ?? 0
+    }
+}
+
 /// 链路上的一条消息。JSON 中以 `type` 字段区分类型，其余字段平铺在同一层。
 public enum LinkMessage: Equatable, Sendable {
     case hello(Hello)
@@ -205,6 +226,7 @@ public enum LinkMessage: Equatable, Sendable {
     case mirrorInput(MirrorInput)
     case mirrorEvent(MirrorEvent)
     case callState(CallState)
+    case clipboard(ClipboardText)
     /// 二进制数据帧，属于 `streamId` 对应的文件流。不走 JSON，见 FrameCodec。
     case data(streamId: UInt32, bytes: Data)
     /// 本端版本不认识的消息类型，忽略即可，保证向前兼容。
@@ -233,6 +255,7 @@ extension LinkMessage: Codable {
         case "mirrorInput": self = .mirrorInput(try MirrorInput(from: decoder))
         case "mirrorEvent": self = .mirrorEvent(try MirrorEvent(from: decoder))
         case "callState": self = .callState(try CallState(from: decoder))
+        case "clipboard": self = .clipboard(try ClipboardText(from: decoder))
         default: self = .unknown(type: type)
         }
     }
@@ -255,6 +278,7 @@ extension LinkMessage: Codable {
         case .mirrorInput(let v): try v.encode(to: encoder)
         case .mirrorEvent(let v): try v.encode(to: encoder)
         case .callState(let v): try v.encode(to: encoder)
+        case .clipboard(let v): try v.encode(to: encoder)
         case .data, .unknown: break
         }
     }
@@ -275,6 +299,7 @@ extension LinkMessage: Codable {
         case .mirrorInput: "mirrorInput"
         case .mirrorEvent: "mirrorEvent"
         case .callState: "callState"
+        case .clipboard: "clipboard"
         case .data: "data"
         case .unknown(let type): type
         }

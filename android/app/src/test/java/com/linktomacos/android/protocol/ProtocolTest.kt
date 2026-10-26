@@ -116,6 +116,14 @@ class ProtocolTest {
     }
 
     @Test
+    fun clipboardTextRoundTripsWithSpecialCharacters() {
+        val clip = ClipboardText("第一行\n\"引号\" 😀\t末尾", 42)
+        assertEquals(clip, MessageCodec.decode(MessageCodec.encode(clip)))
+        // Swift 端不一定带 timestamp
+        assertEquals(ClipboardText("x", 0), MessageCodec.decode("""{"type":"clipboard","text":"x"}"""))
+    }
+
+    @Test
     fun unknownTypeIsTolerated() {
         assertEquals(Unknown("future"), MessageCodec.decode("""{"type":"future","x":1}"""))
     }

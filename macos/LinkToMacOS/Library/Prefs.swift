@@ -6,6 +6,7 @@ enum Prefs {
     static let showNotifications = "showPhoneNotifications"
     static let notificationSound = "notificationSound"
     static let showCallAlerts = "showCallAlerts"
+    static let syncClipboard = "syncClipboard"
     static let callRingtone = "callRingtone"
     /// 来电铃声用的系统提示音的名字（/System/Library/Sounds 里的文件名，不含扩展名）。
     static let callRingtoneName = "callRingtoneName"

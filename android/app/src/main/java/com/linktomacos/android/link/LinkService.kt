@@ -18,6 +18,7 @@ import com.linktomacos.android.MainActivity
 import com.linktomacos.android.R
 import com.linktomacos.android.data.PairedMac
 import com.linktomacos.android.data.isSamePairing
+import com.linktomacos.android.protocol.ClipboardText
 import com.linktomacos.android.protocol.DataChunk
 import com.linktomacos.android.protocol.DeviceStatus
 import com.linktomacos.android.protocol.Frames
@@ -210,6 +211,13 @@ class LinkService : Service() {
                     session.close()
                 }
             }
+            val clipboardJob = launch(Dispatchers.IO) {
+                try {
+                    (application as LinkApp).clipboard.attach(session::send)
+                } catch (e: IOException) {
+                    session.close()
+                }
+            }
             val remote = RemoteApi(this@LinkService, this, session::send, (application as LinkApp).bridge)
             val reader = async(Dispatchers.IO) { readLoop(session, remote) }
             try {
@@ -217,6 +225,7 @@ class LinkService : Service() {
             } finally {
                 statusJob.cancel()
                 notificationJob.cancel()
+                clipboardJob.cancel()
                 remote.cancelAll()
             }
         } catch (e: IOException) {
@@ -239,6 +248,7 @@ class LinkService : Service() {
                 is Ping -> session.send(Pong(message.t))
                 is Request -> remote.handle(message)
                 is MirrorInput -> remote.mirror.input(message)
+                is ClipboardText -> (application as LinkApp).clipboard.fromMac(message)
                 is DataChunk -> remote.mirror.onMicData(message)
                 is Goodbye -> {
                     Log.i(TAG, "goodbye from Mac: ${message.reason}")

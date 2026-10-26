@@ -24,6 +24,7 @@ private struct GeneralSettings: View {
     @AppStorage(Prefs.showNotifications) private var showNotifications = true
     @AppStorage(Prefs.notificationSound) private var notificationSound = true
     @AppStorage(Prefs.showCallAlerts) private var showCallAlerts = true
+    @AppStorage(Prefs.syncClipboard) private var syncClipboard = true
     @AppStorage(Prefs.callRingtone) private var callRingtone = true
     @AppStorage(Prefs.callRingtoneName) private var callRingtoneName = Prefs.defaultCallRingtoneName
     @State private var preview: NSSound?
@@ -45,6 +46,15 @@ private struct GeneralSettings: View {
                     Text(loginItemError).font(.caption).foregroundStyle(.red)
                 }
                 Toggle("启动时打开主窗口", isOn: $openMainWindow)
+            }
+
+            Section {
+                Toggle("和手机互通剪贴板文字", isOn: $syncClipboard)
+            } header: {
+                Text("剪贴板")
+            } footer: {
+                Text("在一端复制文字，另一端直接粘贴。只同步连接之后的复制；密码管理器标为隐藏的内容不会发送。手机要连着增强服务，后台复制才能同步。")
+                    .font(.caption).foregroundStyle(.secondary)
             }
 
             Section {

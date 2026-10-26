@@ -22,6 +22,10 @@ class LinkSettings(context: Context) {
     /** 免打扰期间来电仍然响铃。 */
     val ringCalls: StateFlow<Boolean> = _ringCalls.asStateFlow()
 
+    private val _clipboardSync = MutableStateFlow(prefs.getBoolean(KEY_CLIPBOARD, true))
+    /** 和 Mac 互通剪贴板文本。 */
+    val clipboardSync: StateFlow<Boolean> = _clipboardSync.asStateFlow()
+
     fun isAllowed(packageName: String) = packageName in _allowedApps.value
 
     fun setAllowed(packageName: String, allowed: Boolean) {
@@ -40,9 +44,15 @@ class LinkSettings(context: Context) {
         _ringCalls.value = enabled
     }
 
+    fun setClipboardSync(enabled: Boolean) {
+        prefs.edit { putBoolean(KEY_CLIPBOARD, enabled) }
+        _clipboardSync.value = enabled
+    }
+
     private companion object {
         const val KEY_APPS = "allowed_apps"
         const val KEY_DND = "dnd_on_connect"
         const val KEY_RING = "ring_calls"
+        const val KEY_CLIPBOARD = "clipboard_sync"
     }
 }

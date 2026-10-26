@@ -86,6 +86,65 @@
     <string name="err_unknown_source">未知的下載來源</string>
     <string name="err_cancelled">已取消</string>
     <string name="err_read_failed">讀取失敗</string>
+    <string name="more">更多</string>
+    <string name="switch_on">已打開</string>
+    <string name="switch_off">已關閉</string>
+    <string name="about_title">關於</string>
+    <string name="about_summary">連線手機和 Mac：通知、剪貼簿、相簿檔案、螢幕映象。</string>
+    <string name="about_version">版本</string>
+    <string name="about_license">開源許可</string>
+    <string name="about_paired_mac">已配對的 Mac</string>
+    <string name="unpair_confirm_title">取消配對？</string>
+    <string name="unpair_confirm_body">取消後不再向「%1$s」轉發通知和同步剪貼簿，需要重新掃描 QR Code 才能再次連線。</string>
+    <string name="intro1_title">在 Mac 上收通知、接來電提醒</string>
+    <string name="intro1_body">選擇要轉發的應用程式，新通知直接出現在 Mac 上；來電時 Mac 也會提醒你。</string>
+    <string name="intro2_title">剪貼簿互通</string>
+    <string name="intro2_body">在手機上覆制的文字，直接在 Mac 上貼上，反過來也一樣。</string>
+    <string name="intro3_title">螢幕映象，相簿檔案隨手取</string>
+    <string name="intro3_body">在 Mac 上操作手機，瀏覽相簿和檔案，拖一下就能儲存。</string>
+    <string name="tile_clipboard">剪貼簿</string>
+    <string name="tile_dnd">請勿打擾</string>
+    <string name="tile_mirror">映象</string>
+    <string name="tile_running">執行中</string>
+    <string name="tile_stopped">未啟動</string>
+    <string name="row_notif_off">未打開「通知存取權」</string>
+    <string name="row_notif_none">還沒選擇要轉發的應用程式</string>
+    <string name="row_clip_realtime">實時同步</string>
+    <string name="row_clip_limited">已打開，回到本應用程式時同步手機的拷貝</string>
+    <string name="row_files_ok">已授權</string>
+    <string name="row_files_missing">還需要授權 %1$d 項</string>
+    <string name="row_mirror_running">執行中</string>
+    <string name="row_mirror_stopped">未執行</string>
+    <string name="row_dnd_need_access">需要授予「「請勿打擾」權限」</string>
+    <string name="row_dnd_on">連線 Mac 時自動打開</string>
+    <string name="row_battery_suggest">建議關閉電池最佳化</string>
+    <string name="notif_summary">選擇要轉發的應用程式，它們的新通知會出現在 Mac 上。</string>
+    <string name="notif_access_title">通知存取權</string>
+    <string name="clip_title">剪貼簿互通</string>
+    <string name="clip_summary">在一臺裝置上覆制文字，在另一臺上直接貼上。</string>
+    <string name="clip_toggle">和 Mac 互通剪貼簿文字</string>
+    <string name="clip_toggle_sub">只同步連線之後的拷貝，只傳文字</string>
+    <string name="clip_mode_realtime">實時同步</string>
+    <string name="clip_mode_realtime_sub">映象服務在執行，手機背景拷貝的文字會立即傳給 Mac</string>
+    <string name="clip_mode_limited">有限同步</string>
+    <string name="clip_mode_limited_sub">Android 不允許應用程式在背景讀取剪貼簿。手機上覆制的文字，要回到本應用程式才會傳給 Mac；啟動映象服務後可以實時同步。</string>
+    <string name="clip_privacy">密碼管理器標為「敏感」的內容不會被髮送；傳輸使用加密連線，不經過任何伺服器。</string>
+    <string name="mirror_summary">讓 Mac 無需每次授權就能映象、操控手機，還能實時同步剪貼簿。</string>
+    <string name="mirror_howto_title">如何啟動</string>
+    <string name="mirror_howto">1. 用 USB 線連線手機和 Mac
+2. 手機上允許「USB 除錯」
+3. 在 Mac 的「投屏」頁點選「啟動增強服務」
+啟動一次後可以拔掉線，服務會一直執行到手機重啟。</string>
+    <string name="mirror_features">包含：螢幕映象和真實觸控、獨立顯示、音訊轉發、Mac 麥克風、剪貼簿實時同步。</string>
+    <string name="dnd_summary">連上 Mac 時手機自動靜音，減少打擾；斷開後自動恢復。</string>
+    <string name="dnd_access_title">「請勿打擾」權限</string>
+    <string name="dnd_calls_hint">來電時 Mac 會彈出提示並響鈴，可以在 Mac 的「設定」裡調整。</string>
+    <string name="keepalive_summary">One UI 會清理背景應用程式，按下面的步驟讓連線保持穩定。</string>
+    <string name="battery_opt_title">電池最佳化</string>
+    <string name="keepalive_more">其他設定</string>
+    <plurals name="apps_forwarding">
+        <item quantity="other">正在轉發 %1$d 個應用程式的通知</item>
+    </plurals>
     <plurals name="apps_selected">
         <item quantity="other">已選擇 %1$d 個應用程式，它們的新通知會顯示在 Mac 上</item>
     </plurals>

@@ -339,6 +339,11 @@ TRANSLATIONS = {
     '前往投屏页': ('Go to Mirroring', 'ミラーリングへ移動'),
     '来电': ('Incoming Call', '着信'),
     '未接来电': ('Missed Call', '不在着信'),
+    '剪贴板': ('Clipboard', 'クリップボード'),
+    '和手机互通剪贴板文字': ('Share clipboard text with your phone', 'スマートフォンとクリップボードのテキストを共有'),
+    '在一端复制文字，另一端直接粘贴。只同步连接之后的复制；密码管理器标为隐藏的内容不会发送。手机要连着增强服务，后台复制才能同步。': (
+        'Copy text on one device and paste it on the other. Only text copied after connecting is shared, and content that password managers mark as hidden is never sent. Copies made in the background on the phone sync only while the enhanced service is running.',
+        '一方でコピーしたテキストをもう一方でペーストできます。共有されるのは接続後にコピーしたテキストのみで、パスワードマネージャーが非表示とマークした内容は送信されません。スマートフォンのバックグラウンドでのコピーは、拡張サービスが動作中の場合のみ同期されます。'),
     '来电时在 Mac 上提示': ('Alert on this Mac for incoming calls', '着信時にこの Mac で通知する'),
     '来电时播放铃声': ('Play a ringtone for incoming calls', '着信時に着信音を鳴らす'),
     '铃声': ('Ringtone', '着信音'),

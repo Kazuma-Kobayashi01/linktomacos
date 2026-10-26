@@ -1570,6 +1570,34 @@
         }
       }
     },
+    "剪贴板": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剪贴板"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clipboard"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クリップボード"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剪貼簿"
+          }
+        }
+      }
+    },
     "历史": {
       "localizations": {
         "zh-Hans": {
@@ -2074,6 +2102,34 @@
         }
       }
     },
+    "和手机互通剪贴板文字": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "和手机互通剪贴板文字"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share clipboard text with your phone"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スマートフォンとクリップボードのテキストを共有"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "和手機互通剪貼簿文字"
+          }
+        }
+      }
+    },
     "唤醒手机屏幕": {
       "localizations": {
         "zh-Hans": {
@@ -2154,6 +2210,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "在 Mac 上顯示手機通知"
+          }
+        }
+      }
+    },
+    "在一端复制文字，另一端直接粘贴。只同步连接之后的复制；密码管理器标为隐藏的内容不会发送。手机要连着增强服务，后台复制才能同步。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在一端复制文字，另一端直接粘贴。只同步连接之后的复制；密码管理器标为隐藏的内容不会发送。手机要连着增强服务，后台复制才能同步。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy text on one device and paste it on the other. Only text copied after connecting is shared, and content that password managers mark as hidden is never sent. Copies made in the background on the phone sync only while the enhanced service is running."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一方でコピーしたテキストをもう一方でペーストできます。共有されるのは接続後にコピーしたテキストのみで、パスワードマネージャーが非表示とマークした内容は送信されません。スマートフォンのバックグラウンドでのコピーは、拡張サービスが動作中の場合のみ同期されます。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在一端拷貝文字，另一端直接貼上。只同步連線之後的拷貝；密碼管理器標為隱藏的內容不會傳送。手機要連著增強服務，後臺拷貝才能同步。"
           }
         }
       }

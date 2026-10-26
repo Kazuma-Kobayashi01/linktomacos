@@ -86,6 +86,65 @@
     <string name="err_unknown_source">未知的下载来源</string>
     <string name="err_cancelled">已取消</string>
     <string name="err_read_failed">读取失败</string>
+    <string name="more">更多</string>
+    <string name="switch_on">已开启</string>
+    <string name="switch_off">已关闭</string>
+    <string name="about_title">关于</string>
+    <string name="about_summary">连接手机和 Mac：通知、剪贴板、相册文件、屏幕镜像。</string>
+    <string name="about_version">版本</string>
+    <string name="about_license">开源许可</string>
+    <string name="about_paired_mac">已配对的 Mac</string>
+    <string name="unpair_confirm_title">取消配对？</string>
+    <string name="unpair_confirm_body">取消后不再向“%1$s”转发通知和同步剪贴板，需要重新扫码才能再次连接。</string>
+    <string name="intro1_title">在 Mac 上收通知、接来电提醒</string>
+    <string name="intro1_body">选择要转发的应用，新通知直接出现在 Mac 上；来电时 Mac 也会提醒你。</string>
+    <string name="intro2_title">剪贴板互通</string>
+    <string name="intro2_body">在手机上复制的文字，直接在 Mac 上粘贴，反过来也一样。</string>
+    <string name="intro3_title">屏幕镜像，相册文件随手取</string>
+    <string name="intro3_body">在 Mac 上操作手机，浏览相册和文件，拖一下就能保存。</string>
+    <string name="tile_clipboard">剪贴板</string>
+    <string name="tile_dnd">免打扰</string>
+    <string name="tile_mirror">镜像</string>
+    <string name="tile_running">运行中</string>
+    <string name="tile_stopped">未启动</string>
+    <string name="row_notif_off">未开启“通知使用权”</string>
+    <string name="row_notif_none">还没选择要转发的应用</string>
+    <string name="row_clip_realtime">实时同步</string>
+    <string name="row_clip_limited">已开启，回到本应用时同步手机的复制</string>
+    <string name="row_files_ok">已授权</string>
+    <string name="row_files_missing">还需要授权 %1$d 项</string>
+    <string name="row_mirror_running">运行中</string>
+    <string name="row_mirror_stopped">未运行</string>
+    <string name="row_dnd_need_access">需要授予“勿扰权限”</string>
+    <string name="row_dnd_on">连接 Mac 时自动开启</string>
+    <string name="row_battery_suggest">建议关闭电池优化</string>
+    <string name="notif_summary">选择要转发的应用，它们的新通知会出现在 Mac 上。</string>
+    <string name="notif_access_title">通知使用权</string>
+    <string name="clip_title">剪贴板互通</string>
+    <string name="clip_summary">在一台设备上复制文字，在另一台上直接粘贴。</string>
+    <string name="clip_toggle">和 Mac 互通剪贴板文字</string>
+    <string name="clip_toggle_sub">只同步连接之后的复制，只传文字</string>
+    <string name="clip_mode_realtime">实时同步</string>
+    <string name="clip_mode_realtime_sub">镜像服务在运行，手机后台复制的文字会立即传给 Mac</string>
+    <string name="clip_mode_limited">有限同步</string>
+    <string name="clip_mode_limited_sub">Android 不允许应用在后台读取剪贴板。手机上复制的文字，要回到本应用才会传给 Mac；启动镜像服务后可以实时同步。</string>
+    <string name="clip_privacy">密码管理器标为“敏感”的内容不会被发送；传输使用加密连接，不经过任何服务器。</string>
+    <string name="mirror_summary">让 Mac 无需每次授权就能镜像、操控手机，还能实时同步剪贴板。</string>
+    <string name="mirror_howto_title">如何启动</string>
+    <string name="mirror_howto">1. 用 USB 线连接手机和 Mac
+2. 手机上允许“USB 调试”
+3. 在 Mac 的“投屏”页点击“启动增强服务”
+启动一次后可以拔掉线，服务会一直运行到手机重启。</string>
+    <string name="mirror_features">包含：屏幕镜像和真实触控、独立显示、音频转发、Mac 麦克风、剪贴板实时同步。</string>
+    <string name="dnd_summary">连上 Mac 时手机自动静音，减少打扰；断开后自动恢复。</string>
+    <string name="dnd_access_title">勿扰权限</string>
+    <string name="dnd_calls_hint">来电时 Mac 会弹出提示并响铃，可以在 Mac 的“设置”里调整。</string>
+    <string name="keepalive_summary">One UI 会清理后台应用，按下面的步骤让连接保持稳定。</string>
+    <string name="battery_opt_title">电池优化</string>
+    <string name="keepalive_more">其他设置</string>
+    <plurals name="apps_forwarding">
+        <item quantity="other">正在转发 %1$d 个应用的通知</item>
+    </plurals>
     <plurals name="apps_selected">
         <item quantity="other">已选择 %1$d 个应用，它们的新通知会显示在 Mac 上</item>
     </plurals>

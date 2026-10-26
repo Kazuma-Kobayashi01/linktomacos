@@ -20,7 +20,7 @@ import java.lang.reflect.Field;
  */
 public final class ShellMain {
     /** 服务的版本。改了服务的行为就要加 1：App 发现连上来的服务版本不对，会要求重新启动它（EnhancedBridge.SHELL_VERSION 要同步）。 */
-    static final int VERSION = 4;
+    static final int VERSION = 5;
 
     private ShellMain() {}
 
@@ -30,6 +30,7 @@ public final class ShellMain {
         boolean selftest = false;
         boolean audioSelftest = false;
         boolean micSelftest = false;
+        boolean clipSelftest = false;
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
                 case "--port": port = Integer.parseInt(args[++i]); break;
@@ -37,6 +38,7 @@ public final class ShellMain {
                 case "--selftest": selftest = true; break;
                 case "--audio-selftest": audioSelftest = true; break;
                 case "--mic-selftest": micSelftest = true; break;
+                case "--clip-selftest": clipSelftest = true; break;
                 default: break;
             }
         }
@@ -55,6 +57,10 @@ public final class ShellMain {
             }
             if (micSelftest) {
                 System.exit(MicProbe.run() ? 0 : 1);
+                return;
+            }
+            if (clipSelftest) {
+                System.exit(clipSelftest() ? 0 : 1);
                 return;
             }
             if (finalSecret == null) {
@@ -90,6 +96,7 @@ public final class ShellMain {
             ScreenMirror mirror = null;
             AudioCapture audio = null;
             MicInjector mic = null;
+            ClipboardWatcher clipboard = null;
             boolean screenOff = false;
             try {
                 link = Link.connect(port, secret);
@@ -146,6 +153,26 @@ public final class ShellMain {
                         case "input":
                             injector.handle(command);
                             break;
+                        case "clip": {
+                            // App 开关剪贴板互通：on=true 开始监听手机上的复制
+                            try {
+                                if (clipboard == null) clipboard = new ClipboardWatcher(link);
+                                if (command.optBoolean("on", false)) clipboard.start(); else clipboard.stop();
+                            } catch (Throwable t) {
+                                Log.e("clipboard unavailable", t);
+                                link.sendJson(new JSONObject().put("t", "clipError").put("message", String.valueOf(t)));
+                            }
+                            break;
+                        }
+                        case "clipSet":
+                            try {
+                                if (clipboard == null) clipboard = new ClipboardWatcher(link);
+                                String text = command.optString("text", "");
+                                if (!text.isEmpty()) clipboard.set(text);
+                            } catch (Throwable t) {
+                                Log.e("clipboard write failed", t);
+                            }
+                            break;
                         case "screen":
                             screenOff = !command.optBoolean("on", true);
                             if (mirror != null) mirror.setScreenOff(screenOff);
@@ -163,6 +190,7 @@ public final class ShellMain {
                 if (mirror != null) mirror.stop();
                 if (audio != null) audio.stop();
                 if (link != null) stopMic(link, mic);
+                if (clipboard != null) clipboard.stop();
                 if (screenOff) Hidden.setPanelPower(true); // 无论如何都要把物理屏幕还给用户
                 if (link != null) link.close();
             }
@@ -194,6 +222,22 @@ public final class ShellMain {
         link.micSink = null;
         if (injector != null) injector.stop();
         return null;
+    }
+
+    /** 检查剪贴板读取是否可行。只读，不写入，也不打印剪贴板内容，只报告长度。 */
+    private static boolean clipSelftest() {
+        try {
+            ClipboardWatcher watcher = new ClipboardWatcher(null);
+            Log.d("OK   clipboard readable from shell uid, current text length: " + watcher.peekLength());
+            watcher.start();
+            watcher.stop();
+            Log.d("OK   clipboard listener register/unregister");
+            Log.d("selftest PASSED");
+            return true;
+        } catch (Throwable t) {
+            Log.e("FAIL clipboard", t);
+            return false;
+        }
     }
 
     /** 检查所有要用到的系统接口。只读，不创建虚拟显示器，不注入任何事件。 */

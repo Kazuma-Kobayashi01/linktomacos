@@ -59,6 +59,15 @@ import Testing
         #expect(try JSONDecoder().decode(LinkMessage.self, from: data) == .callState(call))
     }
 
+    @Test func clipboardRoundTripsAndToleratesMissingTimestamp() throws {
+        let clip = ClipboardText(text: "第一行\n\"引号\" 😀\t末尾", timestamp: 42)
+        let data = try JSONEncoder().encode(LinkMessage.clipboard(clip))
+        #expect(try JSONDecoder().decode(LinkMessage.self, from: data) == .clipboard(clip))
+        // Android 端也可能不带 timestamp
+        let bare = try JSONDecoder().decode(LinkMessage.self, from: Data(#"{"type":"clipboard","text":"x"}"#.utf8))
+        #expect(bare == .clipboard(.init(text: "x")))
+    }
+
     @Test func unknownTypeIsTolerated() throws {
         let message = try JSONDecoder().decode(LinkMessage.self, from: Data(#"{"type":"future","x":1}"#.utf8))
         #expect(message == .unknown(type: "future"))

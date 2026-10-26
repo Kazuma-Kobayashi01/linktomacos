@@ -56,6 +56,7 @@ Mac 窗口 ⇄（本协议，加密连接）⇄ 手机 App ⇄（127.0.0.1:47153
 | `mirrorInput` | Mac → 手机，无响应。`k`：`t` 触摸（`a` 0 按下 1 抬起 2 移动，`x`/`y` 为 0…1 的相对位置）、`s` 滚轮（`h`/`v`）、`key`（`a` 0/1，`c` Android 键值，`m` 修饰键）、`text`、`cmd`（back / home / recents / notifications / wake / power / sync / screenOff / screenOn） |
 | `mirrorEvent` | 手机 → Mac。`event`：`resized`（旋转或尺寸变化，带新的 `width`/`height`）、`error`、`stopped` |
 | `callState` | 手机 → Mac，无响应，不是请求。`{state, name?, timestamp}`。`state`：`ringing`（来电响铃）、`offhook`（通话中，接通或拨出）、`idle`（空闲，通话结束）。`name` 是来电的联系人名或号码，取自手机上的来电通知，拿不到时为空；响铃期间可能再发一次带名字的 `ringing`。Mac 据此弹出来电提示、播放铃声，不转发通话的声音 |
+| `clipboard` | 双向，无响应，不是请求。`{text, timestamp?}`。一端复制了文字就发给另一端，对方写进自己的剪贴板。文本上限 200 000 个字符；刚连上时不发送已有的剪贴板内容，只同步之后的复制。收到的文本要记下来，不能再当作本机新复制的回传。Mac 端跳过带 `org.nspasteboard.ConcealedType` / `TransientType` 的内容，手机端跳过标为敏感（`EXTRA_IS_SENSITIVE`）的内容 |
 
 视频包走二进制数据帧（见上），内容：`[标志 1 字节][pts 8 字节大端，微秒][H.264 Annex-B 数据]`。标志位 1 = 配置包（SPS/PPS），2 = 关键帧。
 音频包格式相同：`[标志 1 字节][pts 8 字节大端，微秒][一个 Opus 包]`，48 kHz 立体声，每包 20 ms，约 128 kbps；标志位 1 = 配置（Opus 头，播放时可以忽略）。音频积压超过约 100 个包时手机丢最旧的，不会拖慢视频。
@@ -66,6 +67,7 @@ Mac 窗口 ⇄（本协议，加密连接）⇄ 手机 App ⇄（127.0.0.1:47153
 ### 手机 App ↔ shell 服务（127.0.0.1:47153）
 
 帧：`[类型 1 字节][长度 4 字节大端][内容]`，类型 1 = JSON，类型 2 = 视频包，类型 3 = 音频包（格式同上），类型 4 = Mac 麦克风的 PCM（App → 服务，没有头）。`start` 指令带 `mic` 时，服务注册一个只匹配麦克风录音的回环音频策略，把类型 4 的数据写进去。`start` 指令带 `audio` 时，shell 用 REMOTE_SUBMIX 录系统混音并编码成 Opus。
+剪贴板：App 发 `{t:"clip", on:true|false}` 让服务开始或停止监听手机剪贴板，服务在手机上复制文字时发 `{t:"clip", text}`；App 发 `{t:"clipSet", text}` 让服务写入手机剪贴板。普通 App 在后台读不了剪贴板（Android 10 起），shell 身份可以；服务不可用时 App 只能在回到前台时读一次。
 握手是挑战应答：shell 服务连上后发 `hello{nonce}`，App 回 `auth{mac = HMAC-SHA256(secret, nonce)}`，验证通过后 shell 发 `ready`。
 密钥不上线，所以即使别的 App 抢先监听了这个端口，也无法冒充 App 控制 shell 服务。
 shell 的 `hello` 里带 `v`（服务版本）。App 要求的版本不同就认为服务过期（见上面的 `outdated`）；改了服务的行为要同时加大 `ShellMain.VERSION` 和 `SHELL_VERSION`。

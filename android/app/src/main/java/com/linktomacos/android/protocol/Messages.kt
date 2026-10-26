@@ -148,6 +148,15 @@ data class CallState(
     val timestamp: Long,
 ) : LinkMessage
 
+/**
+ * 剪贴板文本（双向）。一端复制了文字就发给另一端，另一端写进自己的剪贴板。
+ * 文本上限见 [CLIPBOARD_MAX_CHARS]，超过的不发送。
+ */
+@Serializable
+data class ClipboardText(val text: String, val timestamp: Long = 0) : LinkMessage
+
+const val CLIPBOARD_MAX_CHARS = 200_000
+
 /** 本端版本不认识的消息类型，忽略即可。 */
 data class Unknown(val type: String) : LinkMessage
 
@@ -173,6 +182,7 @@ object MessageCodec {
             is MirrorInput -> "mirrorInput" to json.encodeToJsonElement(message)
             is MirrorEvent -> "mirrorEvent" to json.encodeToJsonElement(message)
             is CallState -> "callState" to json.encodeToJsonElement(message)
+            is ClipboardText -> "clipboard" to json.encodeToJsonElement(message)
             is DataChunk -> error("data chunks are binary frames, see Frames")
             is Unknown -> error("cannot send unknown message ${message.type}")
         }
@@ -196,6 +206,7 @@ object MessageCodec {
             "mirrorInput" -> json.decodeFromJsonElement<MirrorInput>(obj)
             "mirrorEvent" -> json.decodeFromJsonElement<MirrorEvent>(obj)
             "callState" -> json.decodeFromJsonElement<CallState>(obj)
+            "clipboard" -> json.decodeFromJsonElement<ClipboardText>(obj)
             else -> Unknown(type ?: "")
         }
     }
