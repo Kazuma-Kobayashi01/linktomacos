@@ -128,7 +128,8 @@ You get, in `output/`:
 
 ```bash
 # Mac: unzip, move "Link to macOS.app" to /Applications, then right-click → Open the first time
-# Android: with the phone connected over USB (uninstall a debug build first, the signatures differ)
+# Android: with the phone connected over USB. It installs over a debug build too, because both use the debug key,
+# so pairing and permissions are kept. A build signed with a different key must be uninstalled first.
 adb install -r output/Link-to-macOS-android-arm64-v8a.apk
 ```
 

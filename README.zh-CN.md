@@ -128,7 +128,8 @@ scripts/build-release.sh            # 两个都构建；也可以：scripts/buil
 
 ```bash
 # Mac：解压，把“Link to macOS.app”拖进“应用程序”，第一次右键 → 打开
-# Android：手机用 USB 连着（调试版要先卸载，签名不同）
+# Android：手机用 USB 连着。可以直接覆盖安装在调试版上（两者用同一把调试密钥），配对和权限都保留；
+# 如果以前装的是别的密钥签名的版本，要先卸载
 adb install -r output/Link-to-macOS-android-arm64-v8a.apk
 ```
 
