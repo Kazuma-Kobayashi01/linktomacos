@@ -68,6 +68,19 @@ import Testing
         #expect(bare == .clipboard(.init(text: "x")))
     }
 
+    @Test func airSendMessagesRoundTrip() throws {
+        let offer = LinkMessage.airOffer(.init(id: "abc", files: [.init(name: "照片 1.jpg", size: 1234, mime: "image/jpeg"), .init(name: "a.pdf", size: 5)]))
+        let push = LinkMessage.airPush(.init(streamId: airStreamBase + 3, name: "报告.pdf", size: 99, mime: "application/pdf"))
+        let text = LinkMessage.airText(.init(text: "https://example.com"))
+        for message in [offer, push, text] {
+            let data = try JSONEncoder().encode(message)
+            #expect(try JSONDecoder().decode(LinkMessage.self, from: data) == message)
+        }
+        // Android 端可能不带 mime
+        let bare = try JSONDecoder().decode(LinkMessage.self, from: Data(#"{"type":"airOffer","id":"x","files":[{"name":"a","size":1}]}"#.utf8))
+        #expect(bare == .airOffer(.init(id: "x", files: [.init(name: "a", size: 1)])))
+    }
+
     @Test func unknownTypeIsTolerated() throws {
         let message = try JSONDecoder().decode(LinkMessage.self, from: Data(#"{"type":"future","x":1}"#.utf8))
         #expect(message == .unknown(type: "future"))
@@ -131,5 +144,70 @@ import Testing
         let second = try LinkIdentity.loadOrCreate(in: dir, commonName: "test")
         #expect(first.fingerprint == second.fingerprint)
         #expect(first.fingerprint.count == 64)
+    }
+}
+
+
+@Suite struct RelayTests {
+    final class Box<T>: @unchecked Sendable {
+        private let lock = NSLock()
+        private var items: [T] = []
+        func append(_ item: T) { lock.withLock { items.append(item) } }
+        var all: [T] { lock.withLock { items } }
+    }
+
+    private func wait(_ condition: @escaping () -> Bool) async -> Bool {
+        for _ in 0..<100 {
+            if condition() { return true }
+            try? await Task.sleep(for: .milliseconds(20))
+        }
+        return false
+    }
+
+    @Test func relaysBothWaysAndRoutesHelperTraffic() async throws {
+        let path = NSTemporaryDirectory() + "linktomacos-relay-test-\(UUID().uuidString.prefix(8)).sock"
+        let server = RelayServer(path: path, token: "secret")
+        let fromHelper = Box<LinkMessage>()
+        let changes = Box<Bool>()
+        server.onFromHelper = { fromHelper.append($0) }
+        server.onClientChange = { changes.append($0) }
+        try await server.start()
+
+        // 令牌不对：连得上，但不会被当成助手
+        let bad = RelayClient(path: path, token: "wrong")
+        try await bad.connect()
+        try await Task.sleep(for: .milliseconds(150))
+        #expect(!server.hasClient)
+        bad.close()
+
+        let client = RelayClient(path: path, token: "secret")
+        let fromMain = Box<LinkMessage>()
+        client.onMessage = { fromMain.append($0) }
+        try await client.connect()
+        #expect(await wait { server.hasClient })
+        #expect(changes.all == [true])
+
+        // 助手 → 主程序
+        client.send(.request(RPCRequest(id: relayRequestIdBase + 1, method: "mirrorStatus", params: .object([:]))))
+        client.send(.mirrorInput(.command("back")))
+        #expect(await wait { fromHelper.all.count == 2 })
+
+        // 手机 → 助手：编号够大的响应、登记过的数据流、投屏事件转给助手；别的留给主程序
+        let mine = LinkMessage.response(RPCResponse(id: 5, ok: true, result: .null))
+        #expect(server.routeFromPhone(mine) == false)
+        let helperResponse = LinkMessage.response(RPCResponse(
+            id: relayRequestIdBase + 1, ok: true, result: .object(["streamId": .int(7), "audioStreamId": .int(8)])))
+        #expect(server.routeFromPhone(helperResponse))
+        #expect(server.routeFromPhone(.data(streamId: 7, bytes: Data([1, 2, 3]))))
+        #expect(server.routeFromPhone(.data(streamId: 99, bytes: Data([9]))) == false)
+        #expect(server.routeFromPhone(.mirrorEvent(MirrorEvent(event: "resized", width: 100, height: 200))))
+        #expect(await wait { fromMain.all.count == 3 })
+        #expect(fromMain.all[1] == .data(streamId: 7, bytes: Data([1, 2, 3])))
+
+        client.close()
+        #expect(await wait { changes.all == [true, false] })
+        // 助手断开后，投屏事件不再转发
+        #expect(server.routeFromPhone(.mirrorEvent(MirrorEvent(event: "stopped"))) == false)
+        await server.shutdown()
     }
 }

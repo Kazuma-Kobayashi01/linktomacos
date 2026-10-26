@@ -67,11 +67,14 @@ public enum DownloadSource: Sendable, Hashable {
     case media(id: Int64)
     /// 相对于手机内部存储根目录的路径，如 `Download/a.pdf`。
     case file(path: String)
+    /// AirSend：手机分享出来的文件，`offer` 是清单 id，`index` 是清单里的序号。
+    case airsend(offer: String, index: Int)
 
     var params: JSONValue {
         switch self {
         case .media(let id): .object(["source": "media", "id": .int(id)])
         case .file(let path): .object(["source": "file", "path": .string(path)])
+        case .airsend(let offer, let index): .object(["source": "airsend", "offer": .string(offer), "index": .int(Int64(index))])
         }
     }
 }

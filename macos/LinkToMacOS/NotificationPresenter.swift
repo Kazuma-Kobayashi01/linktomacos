@@ -64,6 +64,18 @@ final class NotificationPresenter: NSObject, UNUserNotificationCenterDelegate {
         return try? UNNotificationAttachment(identifier: "icon", url: copy, options: nil)
     }
 
+    /// 点 AirSend 的通知：收到文件在访达里显示，收到链接就打开。
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        let info = response.notification.request.content.userInfo
+        await MainActor.run {
+            if let path = info["airsendReveal"] as? String {
+                NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: path)])
+            } else if let link = (info["airsendOpen"] as? String).flatMap(URL.init(string:)) {
+                NSWorkspace.shared.open(link)
+            }
+        }
+    }
+
     // 本 App 是菜单栏常驻程序，视为前台，必须显式允许在前台弹出横幅
     func userNotificationCenter(
         _ center: UNUserNotificationCenter, willPresent notification: UNNotification

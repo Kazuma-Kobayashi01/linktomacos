@@ -25,6 +25,7 @@ private struct GeneralSettings: View {
     @AppStorage(Prefs.notificationSound) private var notificationSound = true
     @AppStorage(Prefs.showCallAlerts) private var showCallAlerts = true
     @AppStorage(Prefs.syncClipboard) private var syncClipboard = true
+    @AppStorage(Prefs.showAirSendProgress) private var showAirSendProgress = true
     @AppStorage(Prefs.callRingtone) private var callRingtone = true
     @AppStorage(Prefs.callRingtoneName) private var callRingtoneName = Prefs.defaultCallRingtoneName
     @State private var preview: NSSound?
@@ -54,6 +55,15 @@ private struct GeneralSettings: View {
                 Text("剪贴板")
             } footer: {
                 Text("在一端复制文字，另一端直接粘贴。只同步连接之后的复制；密码管理器标为隐藏的内容不会发送。手机要连着增强服务，后台复制才能同步。")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+
+            Section {
+                Toggle("接收文件时显示进度窗口", isOn: $showAirSendProgress)
+            } header: {
+                Text("AirSend")
+            } footer: {
+                Text("手机发来的文件保存在“下载/AirSend”。关闭后不弹窗口，传完时只发一条通知。")
                     .font(.caption).foregroundStyle(.secondary)
             }
 
@@ -123,16 +133,27 @@ private struct MirrorSettings: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
 
-            Section("adb 工具") {
+            Section {
                 LabeledContent("路径") {
                     Text(session.adbPath?.path ?? String(localized: "未找到"))
                         .foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle).textSelection(.enabled)
+                }
+                if let adb = session.adbPath {
+                    LabeledContent("来源") {
+                        (AdbLauncher.isBundled(adb) ? Text("App 内置") : Text("自己选择或本机已安装"))
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 HStack {
                     Spacer()
                     Button("恢复自动查找") { session.resetAdb() }
                     Button("选择 adb…") { chooseAdb(session) }
                 }
+            } header: {
+                Text("adb 工具")
+            } footer: {
+                Text("App 自带 adb，不用另外安装 Android 工具；想用自己的版本，可以手动选择。")
+                    .font(.caption).foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)

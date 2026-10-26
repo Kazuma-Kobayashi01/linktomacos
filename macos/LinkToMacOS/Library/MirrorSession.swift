@@ -293,6 +293,21 @@ final class MirrorSession {
         remoteProvider()?.sendInput(input)
     }
 
+    /// 在手机上按一下实体键（Android 键值）：音量、媒体键等。
+    func press(keyCode: Int) {
+        send(MirrorInput(k: "key", a: 0, c: keyCode, m: 0))
+        send(MirrorInput(k: "key", a: 1, c: keyCode, m: 0))
+    }
+
+    /// 把一段文字输入到手机当前的输入框里。
+    func type(_ text: String) {
+        guard !text.isEmpty else { return }
+        send(MirrorInput(k: "text", text: text))
+    }
+
+    /// 投屏窗口置顶（浮在其他窗口上面）。
+    var alwaysOnTop = false
+
     private func handle(_ event: MirrorEvent) {
         switch event.event {
         case "resized":
@@ -312,3 +327,16 @@ final class MirrorSession {
         statusMessage = message
     }
 }
+
+#if DEBUG
+extension MirrorSession {
+    /// 调试用：直接设置状态，用于离屏渲染投屏页和投屏窗口。
+    func debugApply(serviceReady: Bool?, devices: [AdbDevice], phase: Phase = .idle, videoSize: CGSize = .zero) {
+        self.serviceReady = serviceReady
+        self.devices = devices
+        self.phase = phase
+        self.videoSize = videoSize
+        self.adbPath = AdbLauncher.bundled ?? URL(fileURLWithPath: "/usr/local/bin/adb")
+    }
+}
+#endif

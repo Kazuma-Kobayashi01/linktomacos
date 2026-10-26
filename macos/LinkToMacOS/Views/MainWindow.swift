@@ -7,6 +7,7 @@ enum SidebarItem: Hashable {
     case library
     case videos
     case apps
+    case airsend
     case album(Int64)
     /// 相对于手机内部存储根目录的文件夹。
     case files(String)
@@ -26,13 +27,13 @@ struct MainWindow: View {
             DetailRouter(item: selection ?? .overview)
                 .id(selection)
         }
-        .frame(minWidth: 900, minHeight: 580)
+        .frame(minWidth: 1000, minHeight: 600)
         .onAppear {
             // 菜单栏常驻程序：打开窗口时才出现在 Dock 里
-            NSApp.setActivationPolicy(.regular)
+            model.setMainWindowVisible(true)
             NSApp.activate()
         }
-        .onDisappear { NSApp.setActivationPolicy(.accessory) }
+        .onDisappear { model.setMainWindowVisible(false) }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             // 用户可能刚在手机上授了权，回到 Mac 时刷新
             Task { await model.activeLibrary?.refreshOverview() }
@@ -77,6 +78,8 @@ private struct DetailView: View {
                 PhotosView(library: library, title: Text("视频"), album: nil, kind: .video)
             case .apps:
                 AppsView(library: library)
+            case .airsend:
+                AirSendView()
             case .album(let id):
                 PhotosView(library: library, title: library.albums.first { $0.id == id }.map { Text(verbatim: $0.name) } ?? Text("相簿"), album: id, kind: .all)
             case .files(let path):
@@ -113,6 +116,7 @@ private struct SidebarView: View {
                     Label("概览", systemImage: "gauge.with.dots.needle.67percent").tag(SidebarItem.overview)
                     if model.activeLibrary != nil {
                         Label("投屏", systemImage: "rectangle.on.rectangle").tag(SidebarItem.mirror)
+                        Label("AirSend", systemImage: "paperplane").tag(SidebarItem.airsend)
                     }
                 }
             }

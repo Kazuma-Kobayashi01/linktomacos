@@ -15,8 +15,17 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 CJK = re.compile(r'[一-鿿]')
 
 
-def extracted_keys():
-    pattern = os.path.join(ROOT, 'macos/build/Intermediates.noindex/LinkToMacOS.build/Debug/LinkToMacOS.build/Objects-normal/arm64/*.stringsdata')
+# 各编译目标的源码目录（Shared 同时编进主程序和小组件）
+TARGET_DIRS = {
+    'LinkToMacOS': ['LinkToMacOS', 'Shared'],
+    'AirSendShare': ['AirSendShare'],
+    'LinkWidget': ['LinkWidget', 'Shared'],
+    'LinkMirror': ['LinkMirror'],
+}
+
+
+def extracted_keys(target='LinkToMacOS'):
+    pattern = os.path.join(ROOT, f'macos/build/Intermediates.noindex/LinkToMacOS.build/Debug/{target}.build/Objects-normal/arm64/*.stringsdata')
     keys = collections.OrderedDict()
     for path in sorted(glob.glob(pattern)):
         for table, items in json.load(open(path)).get('tables', {}).items():
@@ -27,18 +36,19 @@ def extracted_keys():
     return list(keys)
 
 
-def code_literals():
+def code_literals(target='LinkToMacOS'):
     literals = collections.OrderedDict()
-    for root, _, files in os.walk(os.path.join(ROOT, 'macos/LinkToMacOS')):
-        for name in files:
-            if not name.endswith('.swift'):
-                continue
-            for number, line in enumerate(open(os.path.join(root, name), encoding='utf-8'), 1):
-                if line.strip().startswith('//'):
+    for directory in TARGET_DIRS[target]:
+        for root, _, files in os.walk(os.path.join(ROOT, 'macos', directory)):
+            for name in files:
+                if not name.endswith('.swift'):
                     continue
-                for match in re.finditer(r'"((?:[^"\\]|\\.)*)"', line):
-                    if CJK.search(match.group(1)):
-                        literals.setdefault(match.group(1), f'{name}:{number}')
+                for number, line in enumerate(open(os.path.join(root, name), encoding='utf-8'), 1):
+                    if line.strip().startswith('//'):
+                        continue
+                    for match in re.finditer(r'"((?:[^"\\]|\\.)*)"', line):
+                        if CJK.search(match.group(1)):
+                            literals.setdefault(match.group(1), f'{name}:{number}')
     return literals
 
 
@@ -49,7 +59,8 @@ def normalize(text):
 
 
 if __name__ == '__main__':
-    keys = extracted_keys()
+    target = sys.argv[1] if len(sys.argv) > 1 else 'LinkToMacOS'
+    keys = extracted_keys(target)
     normalized = {normalize(k) for k in keys}
-    missing = [[where, text] for text, where in code_literals().items() if normalize(text) not in normalized]
+    missing = [[where, text] for text, where in code_literals(target).items() if normalize(text) not in normalized]
     json.dump({'keys': [k for k in keys if CJK.search(k)], 'missing': missing}, sys.stdout, ensure_ascii=False, indent=1)

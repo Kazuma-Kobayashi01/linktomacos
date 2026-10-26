@@ -20,7 +20,7 @@ final class VideoDecoder: @unchecked Sendable {
     private var lastRequest = Date.distantPast
 
     init() {
-        layer.videoGravity = .resizeAspect
+        layer.videoGravity = .resize  // 窗口比例已锁定成手机比例，画面正好充满边框；不留黑边
         layer.backgroundColor = NSColor.black.cgColor
     }
 

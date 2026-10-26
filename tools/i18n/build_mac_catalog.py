@@ -67,12 +67,23 @@ def main():
     absent = [k for k in keys if k not in TRANSLATIONS]
     if absent:
         sys.exit('缺少翻译：\n' + '\n'.join(f'  {k!r}' for k in absent))
-    unused = [k for k in TRANSLATIONS if k not in keys]
+    unused = [k for k in TRANSLATIONS if k not in keys]  # 扩展用的 key 也会出现在这里，提示即可
     if unused:
         print('提示：翻译表里有这些 key 已不再使用：', unused)
 
     write(os.path.join(RESOURCES, 'Localizable.xcstrings'),
           {k: entry(k, *TRANSLATIONS[k], manual=k in MANUAL_KEYS) for k in keys})
+
+    # 扩展（共享菜单、桌面小组件）各有自己的字符串表，翻译共用同一张表
+    for target in ('AirSendShare', 'LinkWidget', 'LinkMirror'):
+        sub = json.loads(subprocess.check_output([sys.executable, os.path.join(ROOT, 'tools/i18n/mac_keys.py'), target]))
+        if sub['missing']:
+            sys.exit(f'{target} 有中文字符串没有被编译器提取：\n' + '\n'.join(f'  {w} | {t}' for w, t in sub['missing']))
+        sub_keys = list(dict.fromkeys(sub['keys']))
+        absent = [k for k in sub_keys if k not in TRANSLATIONS]
+        if absent:
+            sys.exit(f'{target} 缺少翻译：\n' + '\n'.join(f'  {k!r}' for k in absent))
+        write(os.path.join(ROOT, 'macos', target, 'Localizable.xcstrings'), {k: entry(k, *TRANSLATIONS[k]) for k in sub_keys})
 
     # 系统权限说明和显示名称
     plist = {

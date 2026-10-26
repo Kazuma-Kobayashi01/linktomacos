@@ -57,6 +57,9 @@ Mac 窗口 ⇄（本协议，加密连接）⇄ 手机 App ⇄（127.0.0.1:47153
 | `mirrorEvent` | 手机 → Mac。`event`：`resized`（旋转或尺寸变化，带新的 `width`/`height`）、`error`、`stopped` |
 | `callState` | 手机 → Mac，无响应，不是请求。`{state, name?, timestamp}`。`state`：`ringing`（来电响铃）、`offhook`（通话中，接通或拨出）、`idle`（空闲，通话结束）。`name` 是来电的联系人名或号码，取自手机上的来电通知，拿不到时为空；响铃期间可能再发一次带名字的 `ringing`。Mac 据此弹出来电提示、播放铃声，不转发通话的声音 |
 | `clipboard` | 双向，无响应，不是请求。`{text, timestamp?}`。一端复制了文字就发给另一端，对方写进自己的剪贴板。文本上限 200 000 个字符；刚连上时不发送已有的剪贴板内容，只同步之后的复制。收到的文本要记下来，不能再当作本机新复制的回传。Mac 端跳过带 `org.nspasteboard.ConcealedType` / `TransientType` 的内容，手机端跳过标为敏感（`EXTRA_IS_SENSITIVE`）的内容 |
+| `airOffer` | 手机 → Mac，无响应。`{id, files:[{name, size, mime}]}`。AirSend：手机分享出一批文件的清单。Mac 用 `download` 请求逐个来取：`{source:"airsend", offer:id, index}`，沿用普通下载的流程（`streamId`、数据帧、`streamEnd`）。手机在分享时就打开了文件描述符（分享页面关闭后系统给的权限会失效，描述符还能读），清单 10 分钟后或全部取完就作废 |
+| `airPush` | Mac → 手机，无响应。`{streamId, name, size, mime}`。AirSend：Mac 推一个文件给手机，紧跟 `streamId` 的数据帧，最后是同一个 `streamId` 的 `streamEnd`。Mac 分配的 `streamId` 从 `0x40000000` 起，和手机分配的不冲突；Mac 逐块等待写入完成，不把整个文件堆在内存里。手机存进“下载/AirSend” |
+| `airText` | 双向，无响应。`{text}`。AirSend：一段文字或链接。接收方放进剪贴板并弹通知，是链接时点通知打开 |
 
 视频包走二进制数据帧（见上），内容：`[标志 1 字节][pts 8 字节大端，微秒][H.264 Annex-B 数据]`。标志位 1 = 配置包（SPS/PPS），2 = 关键帧。
 音频包格式相同：`[标志 1 字节][pts 8 字节大端，微秒][一个 Opus 包]`，48 kHz 立体声，每包 20 ms，约 128 kbps；标志位 1 = 配置（Opus 头，播放时可以忽略）。音频积压超过约 100 个包时手机丢最旧的，不会拖慢视频。

@@ -95,6 +95,12 @@ public final class LinkServer: @unchecked Sendable {
         lock.withLock { sessions[deviceId] }?.writeAndFlush(message, promise: nil)
     }
 
+    /// 和 `send` 一样，但等数据真正写进套接字缓冲区才返回。发大文件时逐块等待，就不会把整个文件堆在内存里。
+    public func sendAwaiting(_ message: LinkMessage, to deviceId: String) async throws {
+        guard let channel = lock.withLock({ sessions[deviceId] }) else { throw ChannelError.ioOnClosedChannel }
+        try await channel.writeAndFlush(message).get()
+    }
+
     public var connectedDeviceIds: [String] {
         lock.withLock { Array(sessions.keys) }
     }

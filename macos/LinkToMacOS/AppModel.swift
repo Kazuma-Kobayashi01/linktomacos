@@ -12,6 +12,17 @@ struct ConnectedDevice: Identifiable {
     var id: String { device.deviceId }
 }
 
+/// 一个带锁的值，可以在任意线程读写。
+final class LockedValue<T>: @unchecked Sendable {
+    private let lock = NSLock()
+    private var stored: T
+    init(_ value: T) { stored = value }
+    var value: T {
+        get { lock.withLock { stored } }
+        set { lock.withLock { stored = newValue } }
+    }
+}
+
 /// 连接线程要同步把数据帧交给对应手机的 PhoneRemote，所以单独放一个带锁的表。
 final class RemoteRegistry: @unchecked Sendable {
     private let lock = NSLock()
@@ -58,11 +69,20 @@ final class AppModel {
     var sidebarSelection: SidebarItem? = .overview
 
     private let registry = RemoteRegistry()
+    /// 当前活动手机的 id，网络线程上转发投屏消息时要用，所以单独放一个带锁的盒子。
+    private let activeDeviceId = LockedValue<String?>(nil)
+    private let serverBox = LockedValue<LinkServer?>(nil)
 
     let mirror = MirrorSession()
     private let notifications = NotificationPresenter()
     private let calls = CallAlerter()
     private let clipboard = ClipboardSync()
+    let airSend = AirSendService()
+    /// 投屏助手：独立的 App，自己的 Dock 图标和窗口。
+    let mirrorHelper = MirrorHelper()
+    private let widget = WidgetPublisher()
+    /// 由菜单栏图标视图交给我们，用来从 AppDelegate（比如点了小组件）打开窗口。
+    var openWindowAction: ((String) -> Void)?
     private var server: LinkServer?
     private var pairingStore: PairingStore?
     private var identity: LinkIdentity?
@@ -87,8 +107,25 @@ final class AppModel {
             guard let self, let id = activeDevice?.id else { return }
             server?.send(.clipboard(clip), to: id)
         }
+        airSend.deviceName = { [weak self] in self?.activeDevice?.device.name }
+        airSend.remote = { [weak self] in self?.activeLibrary?.remote }
+        airSend.send = { [weak self] message in
+            guard let self, let id = activeDevice?.id else { return }
+            server?.send(message, to: id)
+        }
+        airSend.sendAwaiting = { [weak self] message in
+            guard let self, let id = activeDevice?.id, let server else { throw CancellationError() }
+            try await server.sendAwaiting(message, to: id)
+        }
+        airSend.startWatchingOutbox()
         mirror.remoteProvider = { [weak self] in self?.activeLibrary?.remote }
         mirror.preferredModel = { [weak self] in self?.activeDevice?.device.model }
+        // 投屏助手发来的请求和输入，转给当前手机
+        mirrorHelper.forwardToPhone = { [serverBox, activeDeviceId] message in
+            guard let id = activeDeviceId.value, let server = serverBox.value else { return }
+            server.send(message, to: id)
+        }
+        Task { await mirrorHelper.startRelay() }
         Task.detached(priority: .background) { ExportService.pruneCache() }
         Task { await startServer() }
     }
@@ -101,11 +138,14 @@ final class AppModel {
             self.identity = identity
             self.pairingStore = store
             self.server = server
+            serverBox.value = server
             pairedDevices = store.pairedDevices
             for device in pairedDevices { monitors[device.deviceId] = DeviceMonitor(device: device, directory: Self.supportDirectory) }
             // 文件数据量大，在连接线程上直接交给 PhoneRemote，不经过主线程
-            server.setInboundHook { [registry] deviceId, message in
-                registry.remote(for: deviceId)?.handle(message) ?? false
+            // 属于投屏助手的消息（响应、视频、音频、投屏事件）先转给助手
+            server.setInboundHook { [registry, relay = mirrorHelper.relay] deviceId, message in
+                if relay.routeFromPhone(message) { return true }
+                return registry.remote(for: deviceId)?.handle(message) ?? false
             }
             try await server.start()
             for await event in server.events { handle(event) }
@@ -122,6 +162,7 @@ final class AppModel {
         case .connected(let device, let newlyPaired, let address):
             connected[device.deviceId] = ConnectedDevice(device: device)
             clipboard.isActive = true
+            activeDeviceId.value = activeDevice?.id
             let id = device.deviceId
             let remote = PhoneRemote { [weak server] message in server?.send(message, to: id) }
             registry.set(remote, for: id)?.close()
@@ -135,9 +176,12 @@ final class AppModel {
             let monitor = monitors[id] ?? DeviceMonitor(device: device, directory: Self.supportDirectory)
             monitors[id] = monitor
             monitor.attach(remote: remote, device: device, address: address)
+            widget.publish(monitor, force: true)
+            airSend.processOutbox()
         case .message(let deviceId, .deviceStatus(let status)):
             connected[deviceId]?.status = status
             monitors[deviceId]?.update(status)
+            widget.publish(monitors[deviceId])
         case .message(let deviceId, .notification(let notification)):
             guard Prefs.bool(Prefs.showNotifications, default: true) else { break }
             notifications.post(notification, from: connected[deviceId]?.device.name ?? String(localized: "手机"))
@@ -145,6 +189,10 @@ final class AppModel {
             notifications.remove(key: removed.key)
         case .message(let deviceId, .callState(let call)):
             calls.handle(call, from: connected[deviceId]?.device.name ?? String(localized: "手机"))
+        case .message(let deviceId, .airOffer(let offer)):
+            airSend.receive(offer, from: connected[deviceId]?.device.name ?? String(localized: "手机"))
+        case .message(let deviceId, .airText(let text)):
+            airSend.receive(text: text.text, from: connected[deviceId]?.device.name ?? String(localized: "手机"))
         case .message(_, .clipboard(let clip)):
             clipboard.receive(clip)
         case .message(let deviceId, let message):
@@ -155,13 +203,39 @@ final class AppModel {
             registry.remove(deviceId)?.close()
             libraries[deviceId] = nil
             monitors[deviceId]?.detach()
+            widget.publish(monitors[deviceId], force: true)
             // 手机离线后，Mac 上残留的手机通知已无法与手机同步，一并清掉；正在响的来电提示也停掉
             if connected.isEmpty { notifications.removeAll() }
             calls.stop()
             clipboard.isActive = !connected.isEmpty
+            activeDeviceId.value = activeDevice?.id
+            if connected.isEmpty { mirrorHelper.phoneDisconnected() }
         case .rejected(let reason):
             lastRejection = reason
         }
+    }
+
+    /// 开始投屏（可以带一个要先打开的应用）：交给投屏助手 App。
+    func startMirror(app: PhoneApp? = nil) {
+        guard let device = activeDevice?.device else { return }
+        let target = app.map { (package: $0.package, label: $0.label) }
+        mirrorHelper.start(
+            params: MirrorHelper.params(session: mirror, deviceName: device.name, model: device.model, app: target),
+            app: target)
+    }
+
+    // MARK: Dock
+
+    /// 菜单栏常驻程序：主窗口开着时才出现在 Dock 里。投屏有自己的助手 App，它的 Dock 图标和这里无关。
+    func setMainWindowVisible(_ visible: Bool) {
+        NSApp.setActivationPolicy(visible ? .regular : .accessory)
+    }
+
+    /// 打开主窗口并切到 `item`（小组件、菜单命令都走这里）。
+    func showMainWindow(_ item: SidebarItem? = nil) {
+        if let item { sidebarSelection = item }
+        openWindowAction?(WindowID.main)
+        NSApp.activate()
     }
 
     // MARK: - 配对
@@ -182,8 +256,8 @@ final class AppModel {
 
     func unpair(_ device: PairedDevice) {
         // 正在投这台手机的屏，先停掉（会把手机屏幕还原）
-        if activeDevice?.id == device.deviceId, mirror.isRunning || mirror.isBusy {
-            Task { await mirror.stop() }
+        if activeDevice?.id == device.deviceId, mirrorHelper.isRunning {
+            mirrorHelper.stop()
         }
         server?.send(.goodbye(reason: "unpaired"), to: device.deviceId)
         pairingStore?.remove(deviceId: device.deviceId)
@@ -197,6 +271,7 @@ final class AppModel {
     func prepareForQuit() async {
         calls.stop()
         clipboard.isActive = false
+        await mirrorHelper.shutdown()
         await server?.shutdown(reason: "quit")
     }
 
@@ -209,3 +284,14 @@ final class AppModel {
         })
     }
 }
+
+#if DEBUG
+extension AppModel {
+    /// 调试用：装一台在线的示例手机，用于离屏渲染菜单栏面板等界面。
+    func installSampleDevice() {
+        let monitor = DeviceMonitor.sample(online: true)
+        monitors["sample"] = monitor
+        connected["sample"] = ConnectedDevice(device: DeviceMonitor.sampleDevice(), status: monitor.status)
+    }
+}
+#endif

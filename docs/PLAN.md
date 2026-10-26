@@ -206,7 +206,12 @@ C0 之后的决定：系统电话做成**通话提示**，由 Mac 播放提示�
 
 - **手机界面（已做）：** 参考了“连接到 Windows”的结构（介绍轮播 → 主页设备卡片 → 快捷项 → 功能入口 → 功能介绍页），视觉和插图自己画，全部 Material 3、动态取色、深色适配。没配对时是三页介绍加配对入口；配对后主页是连接状态卡片、三个快捷开关（剪贴板、免打扰、镜像服务）和一组功能入口，每项有独立的功能页（折叠大标题、小插图、一句话说明、设置）；需要处理的项目（缺权限等）用警示色标出。图标是自带的线性图标，不引入 material-icons-extended。
 - **剪贴板互通（已做）：** 协议新增 `clipboard{text, timestamp?}`（双向，文本上限 20 万字符，只同步连接之后的复制）。Android 10 起普通 App 在后台读不了剪贴板，所以手机 → Mac 靠 shell 增强服务监听（它用 shell 身份调系统剪贴板服务，和 scrcpy 同样的做法），没有增强服务时只在 App 回到前台那一刻读一次；Mac → 手机写剪贴板不受限制。防回声：两端都记住最近收发的文本。隐私：Mac 端跳过 `org.nspasteboard.ConcealedType` / `TransientType`，手机端跳过 `EXTRA_IS_SENSITIVE`；手机和 Mac 各有一个开关，默认开。增强服务版本升到 5。
-- **待用户真机验证：** 新界面的观感；剪贴板双向（先在增强服务运行时，再在没有时）；`--clip-selftest`（只读，不打印内容）。
+- **下拉面板磁贴（已做）：** `LinkTileService`，亮着 = 已连接，副标题是 Mac 的名字，其余状态显示“未配对 / 连接中 / 未连接 / 被拒绝”；点一下打开应用，长按也打开应用。主页有“添加到下拉面板”入口，调系统的 `requestAddTileService` 弹一次添加提示，加过之后入口隐藏。只在面板展开时监听状态。
+- **AirSend（已做，待真机验证）：** 协议 `airOffer`（手机 → Mac 清单，Mac 用 `download` + `source=airsend` 拉）、`airPush`（Mac → 手机，推流）、`airText`。手机：`AirSendShareActivity`（透明、无界面）进系统分享面板的应用列表；`ShortcutManagerCompat` 动态分享快捷方式（`res/xml/shortcuts.xml` 声明 share-target）让 Mac 的名字出现在分享面板最上面一排（直接分享）；收到的文件存 `MediaStore.Downloads` 的 `Download/AirSend`，文字进剪贴板。Mac：`AirSendService`（收、发、历史、通知）、AirSend 页面（拖放、选文件、发剪贴板文字）、菜单栏入口、`AirSendShare` 共享扩展（系统“共享”菜单）。共享扩展必须沙盒化（实测不沙盒系统不认），通过沙盒临时例外写主程序的收件目录 `~/Library/Application Support/LinkToMacOS/AirSend/outbox`（实测临时例外在 ad-hoc 签名下有效），主程序监听该目录；文件直接引用原路径，只有没有路径的内容才拷贝。
+- **macOS 小组件（已做，待真机验证）：** `LinkWidget` 扩展（沙盒，临时例外只读 `~/Library/Application Support/LinkToMacOS/widget/`），主程序把快照写进去并 `WidgetCenter.reloadAllTimelines()`（1 分钟节流，连接/断开立即刷新）。不需要 App Group，所以免费账号也能用。已注册到 pluginkit；离屏渲染小/中/大 × 浅/深 × 在线/离线/无数据都看过；能否在小组件图库里出现，要你在桌面上“编辑小组件”确认。点击打开 `linktomacos://overview`。
+- **adb 打进 App 包（已做）：** `scripts/bundle-adb.sh` 在构建阶段把本机 Platform-Tools 的 adb 取 arm64 部分复制到 `Contents/Helpers/adb` 并重新签名（9.6 MB，不进 git，不自己下载），`AdbLauncher` 查找顺序：手动选择 → 内置 → 本机。设置里显示来源。没有本机 adb 时构建会失败并说明办法。没有另开 adb 服务端口：USB 设备同一时刻只能被一个 adb 服务占用，另开端口反而看不到设备。
+- **投屏助手（独立 App，已做，待真机验证）：** 投屏窗口拆成第二个 App“Link to macOS Mirror”（`LinkMirror` 目标，放在主程序包的 `Contents/Helpers/` 里，自己的 Dock 图标，纯手机）。它不直接连手机：主程序里有本机中继 `RelayServer`（Unix 套接字 `$TMPDIR/linktomacos-relay-<uid>.sock`，权限 0600，助手启动参数带一次性令牌），助手的 `PhoneRemote` 用从 2³⁰ 起的请求编号，主程序按编号和已登记的数据流把手机发来的响应、视频、音频、投屏事件转给助手，助手的请求、输入、麦克风数据经中继转给手机。主程序的投屏页负责设置步骤和“开始”，点开始就启动助手并把模式、画质等设置交给它（助手是另一个 App，用户默认值不共用）。助手窗口关闭或投屏结束就自己退出；主程序退出或崩溃，助手也退出；助手意外退出，主程序补发一次 `mirrorStop`。已用真实的助手程序验证：连上中继、带令牌握手、断开后自行退出；真正的投屏链路要真机验证。
+- **待用户真机验证：** 新界面的观感；磁贴添加和显示；剪贴板双向（先在增强服务运行时，再在没有时）；`--clip-selftest`（只读，不打印内容）。
 
 ## 下一阶段提纲（2026-10-26，构思中）
 

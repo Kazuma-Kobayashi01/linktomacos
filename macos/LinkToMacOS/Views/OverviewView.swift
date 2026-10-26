@@ -9,6 +9,9 @@ struct OverviewView: View {
     @State private var range: HistoryRange = .sixHours
     @State private var confirmingUnpair = false
 
+    /// 内容区固定宽度：窗口再宽也不拉伸，卡片比例始终一致。
+    static let contentWidth: CGFloat = 720
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
@@ -18,15 +21,18 @@ struct OverviewView: View {
                 }
 
                 Section {
-                    Grid(horizontalSpacing: 16, verticalSpacing: 16) {
-                        GridRow {
-                            BatteryTile(status: monitor.status)
-                            StorageTile(storage: monitor.storage)
+                    VStack(spacing: 16) {
+                        Grid(horizontalSpacing: 16, verticalSpacing: 16) {
+                            GridRow {
+                                BatteryTile(status: monitor.status)
+                                StorageTile(storage: monitor.storage)
+                            }
+                            GridRow {
+                                MemoryTile(status: monitor.status, info: monitor.info)
+                                NetworkTile(status: monitor.status)
+                            }
                         }
-                        GridRow {
-                            MemoryTile(status: monitor.status, info: monitor.info)
-                            NetworkTile(status: monitor.status)
-                        }
+                        StorageCard(storage: monitor.storage)
                     }
                 } header: {
                     SectionHeader("状态")
@@ -48,23 +54,13 @@ struct OverviewView: View {
                 }
 
                 Section {
-                    ViewThatFits(in: .horizontal) {
-                        HStack(alignment: .top, spacing: 16) {
-                            DeviceInfoCard(monitor: monitor, onUnpair: { confirmingUnpair = true })
-                                .frame(minWidth: 360, maxWidth: .infinity)
-                            StorageCard(storage: monitor.storage).frame(width: 360)
-                        }
-                        VStack(spacing: 16) {
-                            DeviceInfoCard(monitor: monitor, onUnpair: { confirmingUnpair = true })
-                            StorageCard(storage: monitor.storage)
-                        }
-                    }
+                    DeviceInfoCard(monitor: monitor, onUnpair: { confirmingUnpair = true })
                 } header: {
                     SectionHeader("详细信息")
                 }
             }
-            .padding(24)
-            .frame(maxWidth: 1100)
+            .frame(width: Self.contentWidth)
+            .padding(.vertical, 24)
             .frame(maxWidth: .infinity)
         }
         .background(Color(nsColor: .windowBackgroundColor))
@@ -238,151 +234,207 @@ private struct OfflineBanner: View {
     }
 }
 
-/// 手机插图：深色机身、渐变屏幕、打孔摄像头，在线时屏幕亮起。
-private struct PhoneGlyph: View {
+/// 写实的手机：金属中框、黑色玻璃面板、打孔摄像头、右侧按键，屏幕是锁屏（实时时间、日期、电量）。
+/// 离线时屏幕熄灭。比例接近 Galaxy S23 Ultra（直角感较强的大圆角）。
+private struct PhoneRender: View {
     let online: Bool
     let battery: Int?
+    let charging: Bool
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(LinearGradient(colors: [Color(white: 0.28), Color(white: 0.12)], startPoint: .top, endPoint: .bottom))
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(screen)
-                .padding(4)
-            VStack {
-                Circle().fill(Color.black.opacity(0.85)).frame(width: 6, height: 6).padding(.top, 9)
-                Spacer()
-                if online, let battery {
-                    HStack(spacing: 3) {
-                        Image(systemName: "bolt.fill").imageScale(.small)
-                        Text("\(battery)%").monospacedDigit()
-                    }
-                    .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(.white.opacity(0.95))
-                    .padding(.bottom, 12)
-                }
-            }
+            sideButtons
+            // 金属中框：左右两侧亮、中间暗，像拉丝金属的反光
+            RoundedRectangle(cornerRadius: 15, style: .continuous)
+                .fill(LinearGradient(stops: [
+                    .init(color: Color(white: 0.66), location: 0),
+                    .init(color: Color(white: 0.36), location: 0.12),
+                    .init(color: Color(white: 0.50), location: 0.5),
+                    .init(color: Color(white: 0.32), location: 0.88),
+                    .init(color: Color(white: 0.60), location: 1),
+                ], startPoint: .leading, endPoint: .trailing))
+            // 黑色玻璃面板
+            RoundedRectangle(cornerRadius: 13.5, style: .continuous)
+                .fill(Color.black)
+                .padding(1.6)
+            screen
+                .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
+                .padding(4.2)
+            // 玻璃的斜向高光
+            RoundedRectangle(cornerRadius: 13.5, style: .continuous)
+                .fill(LinearGradient(colors: [.white.opacity(0.12), .clear, .clear], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .padding(1.6)
+                .allowsHitTesting(false)
         }
-        .frame(width: 66, height: 132)
-        .shadow(color: .black.opacity(0.25), radius: 8, y: 4)
+        .frame(width: 96, height: 200)
+        .shadow(color: .black.opacity(0.30), radius: 12, x: 0, y: 7)
     }
 
-    private var screen: LinearGradient {
-        online
-            ? LinearGradient(colors: [Color(red: 0.36, green: 0.55, blue: 1.0), Color(red: 0.62, green: 0.35, blue: 0.95)],
-                             startPoint: .topLeading, endPoint: .bottomTrailing)
-            : LinearGradient(colors: [Color(white: 0.22), Color(white: 0.16)], startPoint: .top, endPoint: .bottom)
+    /// 音量键和电源键，贴在机身右侧，只露出一条边。
+    private var sideButtons: some View {
+        VStack(spacing: 6) {
+            Capsule().fill(Color(white: 0.42)).frame(width: 3, height: 26)
+            Capsule().fill(Color(white: 0.42)).frame(width: 3, height: 14)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+        .padding(.top, 46)
+        .offset(x: 1.6)
+    }
+
+    @ViewBuilder
+    private var screen: some View {
+        ZStack {
+            if online {
+                // 壁纸：深蓝到紫到粉的渐变，加两团柔光
+                LinearGradient(colors: [
+                    Color(red: 0.08, green: 0.13, blue: 0.38),
+                    Color(red: 0.34, green: 0.20, blue: 0.60),
+                    Color(red: 0.88, green: 0.46, blue: 0.56),
+                ], startPoint: .top, endPoint: .bottom)
+                Circle().fill(Color(red: 0.42, green: 0.58, blue: 1).opacity(0.55))
+                    .frame(width: 90, height: 90).blur(radius: 18).offset(x: -24, y: 36)
+                Circle().fill(Color(red: 1, green: 0.56, blue: 0.62).opacity(0.5))
+                    .frame(width: 70, height: 70).blur(radius: 16).offset(x: 26, y: 70)
+                lockScreen
+            } else {
+                Color(white: 0.05)
+            }
+            // 打孔摄像头
+            Circle()
+                .fill(Color.black)
+                .overlay(Circle().stroke(Color(white: 0.22), lineWidth: 0.6))
+                .frame(width: 5.5, height: 5.5)
+                .frame(maxHeight: .infinity, alignment: .top)
+                .padding(.top, 5)
+        }
+    }
+
+    private var lockScreen: some View {
+        TimelineView(.everyMinute) { context in
+            VStack(spacing: 1) {
+                Text(context.date, format: .dateTime.weekday(.abbreviated).month(.abbreviated).day())
+                    .font(.system(size: 6.5, weight: .medium))
+                    .opacity(0.9)
+                Text(context.date, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits))
+                    .font(.system(size: 26, weight: .light, design: .rounded))
+                    .monospacedDigit()
+                Spacer(minLength: 0)
+                if let battery {
+                    HStack(spacing: 2) {
+                        if charging { Image(systemName: "bolt.fill") }
+                        Text(verbatim: "\(battery)%")
+                    }
+                    .font(.system(size: 7.5, weight: .semibold))
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(.white.opacity(0.18), in: Capsule())
+                }
+                // 底部的手势条
+                Capsule().fill(.white.opacity(0.75)).frame(width: 26, height: 2).padding(.top, 6)
+            }
+            .foregroundStyle(.white)
+            .padding(.top, 17)
+            .padding(.bottom, 5)
+        }
     }
 }
 
+/// 顶部卡片：左边是手机，右边是名字、型号和“关于本机”式的参数表，最下面是连接状态。
 private struct HeroCard: View {
     let monitor: DeviceMonitor
     let onRefresh: () -> Void
     let onUnpair: () -> Void
 
     var body: some View {
-        HStack(alignment: .center, spacing: 22) {
-            PhoneGlyph(online: monitor.isOnline, battery: monitor.status?.batteryLevel)
+        HStack(alignment: .center, spacing: 30) {
+            PhoneRender(online: monitor.isOnline, battery: monitor.status?.batteryLevel, charging: monitor.status?.charging ?? false)
+                .padding(.leading, 6)
 
-            VStack(alignment: .leading, spacing: 10) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(monitor.name).font(.system(size: 26, weight: .bold)).lineLimit(1)
-                    Text(subtitle).font(.title3).foregroundStyle(.secondary).lineLimit(1)
+            VStack(alignment: .leading, spacing: 14) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(monitor.name)
+                        .font(.system(size: 24, weight: .bold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
+                    Text(subtitle).font(.callout).foregroundStyle(.secondary).lineLimit(1)
                 }
-
-                HStack(spacing: 8) {
-                    if monitor.isOnline {
-                        Pill(systemImage: nil, text: String(localized: "已连接"), tint: .green, dot: .green)
-                        if let address = monitor.address {
-                            Pill(systemImage: "network", text: address)
-                        }
-                        if let since = monitor.connectedSince {
-                            TimelineView(.periodic(from: .now, by: 30)) { context in
-                                Pill(systemImage: "link", text: Format.duration(context.date.timeIntervalSince(since)))
-                            }
-                        }
-                    } else {
-                        Pill(systemImage: nil, text: String(localized: "离线"), dot: .gray)
-                    }
-                    if monitor.isOnline, let uptime = monitor.status?.uptime {
-                        Pill(systemImage: "power", text: String(localized: "开机 \(Format.duration(TimeInterval(uptime) / 1000))"))
-                    }
-                }
-
-                if let info = monitor.info {
-                    ChipRow(info: info)
-                }
+                SpecGrid(monitor: monitor)
+                statusRow
             }
-
             Spacer(minLength: 0)
-
+        }
+        .padding(24)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .overlay(alignment: .topTrailing) {
             Menu {
                 Button("刷新设备信息", systemImage: "arrow.clockwise", action: onRefresh)
                     .disabled(!monitor.isOnline)
                 Divider()
                 Button("取消配对…", systemImage: "link.badge.minus", role: .destructive, action: onUnpair)
             } label: {
-                Image(systemName: "ellipsis.circle").font(.title2)
+                Image(systemName: "ellipsis.circle").font(.title3).foregroundStyle(.secondary)
             }
             .menuStyle(.borderlessButton)
             .menuIndicator(.hidden)
             .fixedSize()
             .help("更多操作")
-            .frame(maxHeight: .infinity, alignment: .top)
+            .padding(14)
         }
-        .padding(22)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color(nsColor: .controlBackgroundColor))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(LinearGradient(
-                            colors: [Color.accentColor.opacity(monitor.isOnline ? 0.16 : 0.06), .clear],
-                            startPoint: .topLeading, endPoint: .bottomTrailing))
+        .card(padding: 0)
+    }
+
+    private var statusRow: some View {
+        HStack(spacing: 8) {
+            if monitor.isOnline {
+                Pill(systemImage: nil, text: String(localized: "已连接"), tint: .green, dot: .green)
+                if let since = monitor.connectedSince {
+                    TimelineView(.periodic(from: .now, by: 30)) { context in
+                        Pill(systemImage: "link", text: Format.duration(context.date.timeIntervalSince(since)))
+                    }
                 }
-                .shadow(color: .black.opacity(0.07), radius: 10, y: 3)
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .strokeBorder(Color(nsColor: .separatorColor).opacity(0.5), lineWidth: 0.5)
-        }
-    }
-
-    private var subtitle: String {
-        if let info = monitor.info {
-            return "\(info.manufacturer.capitalized) \(info.model) · Android \(info.androidVersion)"
-        }
-        return monitor.model
-    }
-}
-
-/// 处理器：品牌色徽标 + 完整名称，下面一行是厂商、核心数和架构。
-private struct ChipRow: View {
-    let info: DeviceInfo
-
-    var body: some View {
-        HStack(spacing: 10) {
-            if let chip = ChipCatalog.lookup(info) {
-                ChipBadge(vendor: chip.vendor, size: 28)
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(chip.name).font(.callout.weight(.semibold)).lineLimit(1)
-                    Text(detail(chip)).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                if let uptime = monitor.status?.uptime {
+                    Pill(systemImage: "power", text: String(localized: "开机 \(Format.duration(TimeInterval(uptime) / 1000))"))
                 }
             } else {
-                ChipBadge(vendor: .other, size: 28)
-                Text(detail(nil)).font(.callout).foregroundStyle(.secondary).lineLimit(1)
+                Pill(systemImage: nil, text: String(localized: "离线"), dot: .gray)
             }
         }
     }
 
-    private func detail(_ chip: ChipInfo?) -> String {
-        var parts: [String] = []
-        if let vendor = chip?.vendor.displayName, !vendor.isEmpty { parts.append(vendor) }
-        parts.append(String(localized: "\(info.cpuCores) 核"))
-        parts.append(info.abi)
-        return parts.joined(separator: " · ")
+    private var subtitle: String {
+        if let info = monitor.info { return "\(info.manufacturer.capitalized) \(info.model)" }
+        return monitor.model
+    }
+}
+
+/// 参数表：标签右对齐、灰色，数值左对齐，和“关于本机”一样。
+private struct SpecGrid: View {
+    let monitor: DeviceMonitor
+
+    var body: some View {
+        Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: 12, verticalSpacing: 5) {
+            if let info = monitor.info {
+                row("处理器", ChipCatalog.lookup(info)?.name ?? info.abi)
+                row("内存", Format.memory(info.memoryTotal))
+            }
+            if let total = monitor.storage?.total ?? monitor.status?.storageTotal, total > 0 {
+                row("存储", Format.bytes(total))
+            }
+            if let info = monitor.info {
+                row("系统版本", "Android \(info.androidVersion)")
+            }
+            if monitor.isOnline, let address = monitor.address {
+                row("IP 地址", address)
+            }
+        }
+        .font(.callout)
+    }
+
+    private func row(_ label: LocalizedStringKey, _ value: String) -> some View {
+        GridRow {
+            Text(label).foregroundStyle(.secondary).gridColumnAlignment(.trailing)
+            Text(value).lineLimit(1).truncationMode(.middle).textSelection(.enabled)
+        }
     }
 }
 

@@ -165,13 +165,17 @@ private extension JSONDecoder {
 #if DEBUG
 extension DeviceMonitor {
     /// 调试用：一台带示例数据的手机，用于离屏渲染主页（见 SnapshotRenderer）。
+    static func sampleDevice() -> PairedDevice {
+        try! JSONValue.object([
+            "deviceId": "sample", "name": "Galaxy S23 Ultra", "model": "SM-S9180",
+            "certificateFingerprint": "", "pairedAt": .double(Date().addingTimeInterval(-86400).timeIntervalSinceReferenceDate),
+        ]).decoded(PairedDevice.self)
+    }
+
     static func sample(online: Bool = true) -> DeviceMonitor {
         func decode<T: Decodable>(_ value: JSONValue) -> T { try! value.decoded(T.self) }
         let now = Date()
-        let device: PairedDevice = decode(.object([
-            "deviceId": "sample", "name": "Galaxy S23 Ultra", "model": "SM-S9180",
-            "certificateFingerprint": "", "pairedAt": .double(now.addingTimeInterval(-86400).timeIntervalSinceReferenceDate),
-        ]))
+        let device = sampleDevice()
         let monitor = DeviceMonitor(device: device, directory: FileManager.default.temporaryDirectory.appendingPathComponent("linktomacos-sample"))
         let infoFields: [String: JSONValue] = [
             "manufacturer": "samsung", "brand": "samsung", "model": "SM-S9180", "device": "dm3q", "androidVersion": "15",

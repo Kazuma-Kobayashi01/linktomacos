@@ -210,6 +210,68 @@ public struct ClipboardText: Codable, Equatable, Sendable {
     }
 }
 
+/// AirSend 提供的一个文件。
+public struct AirFile: Codable, Equatable, Sendable {
+    public var name: String
+    public var size: Int64
+    public var mime: String
+
+    public init(name: String, size: Int64, mime: String = "") {
+        self.name = name; self.size = size; self.mime = mime
+    }
+
+    private enum CodingKeys: String, CodingKey { case name, size, mime }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        name = try c.decode(String.self, forKey: .name)
+        size = try c.decode(Int64.self, forKey: .size)
+        mime = try c.decodeIfPresent(String.self, forKey: .mime) ?? ""
+    }
+}
+
+/// AirSend：手机 → Mac 的文件清单。Mac 自己用 `download` 请求（`DownloadSource.airsend`）逐个来取。
+public struct AirOffer: Codable, Equatable, Sendable {
+    public var id: String
+    public var files: [AirFile]
+
+    public init(id: String, files: [AirFile]) {
+        self.id = id; self.files = files
+    }
+}
+
+/// AirSend：Mac → 手机的一个文件。紧跟着是 `streamId` 的数据帧，最后是同一个 streamId 的 `streamEnd`。
+/// Mac 分配的 streamId 从 `airStreamBase` 起，不会和手机分配的冲突。
+public struct AirPush: Codable, Equatable, Sendable {
+    public var streamId: Int
+    public var name: String
+    public var size: Int64
+    public var mime: String
+
+    public init(streamId: Int, name: String, size: Int64, mime: String = "") {
+        self.streamId = streamId; self.name = name; self.size = size; self.mime = mime
+    }
+
+    private enum CodingKeys: String, CodingKey { case streamId, name, size, mime }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        streamId = try c.decode(Int.self, forKey: .streamId)
+        name = try c.decode(String.self, forKey: .name)
+        size = try c.decode(Int64.self, forKey: .size)
+        mime = try c.decodeIfPresent(String.self, forKey: .mime) ?? ""
+    }
+}
+
+public let airStreamBase = 0x4000_0000
+
+/// AirSend：一段文字或链接（双向）。接收方放进剪贴板并提示。
+public struct AirText: Codable, Equatable, Sendable {
+    public var text: String
+
+    public init(text: String) { self.text = text }
+}
+
 /// 链路上的一条消息。JSON 中以 `type` 字段区分类型，其余字段平铺在同一层。
 public enum LinkMessage: Equatable, Sendable {
     case hello(Hello)
@@ -227,6 +289,9 @@ public enum LinkMessage: Equatable, Sendable {
     case mirrorEvent(MirrorEvent)
     case callState(CallState)
     case clipboard(ClipboardText)
+    case airOffer(AirOffer)
+    case airPush(AirPush)
+    case airText(AirText)
     /// 二进制数据帧，属于 `streamId` 对应的文件流。不走 JSON，见 FrameCodec。
     case data(streamId: UInt32, bytes: Data)
     /// 本端版本不认识的消息类型，忽略即可，保证向前兼容。
@@ -256,6 +321,9 @@ extension LinkMessage: Codable {
         case "mirrorEvent": self = .mirrorEvent(try MirrorEvent(from: decoder))
         case "callState": self = .callState(try CallState(from: decoder))
         case "clipboard": self = .clipboard(try ClipboardText(from: decoder))
+        case "airOffer": self = .airOffer(try AirOffer(from: decoder))
+        case "airPush": self = .airPush(try AirPush(from: decoder))
+        case "airText": self = .airText(try AirText(from: decoder))
         default: self = .unknown(type: type)
         }
     }
@@ -279,6 +347,9 @@ extension LinkMessage: Codable {
         case .mirrorEvent(let v): try v.encode(to: encoder)
         case .callState(let v): try v.encode(to: encoder)
         case .clipboard(let v): try v.encode(to: encoder)
+        case .airOffer(let v): try v.encode(to: encoder)
+        case .airPush(let v): try v.encode(to: encoder)
+        case .airText(let v): try v.encode(to: encoder)
         case .data, .unknown: break
         }
     }
@@ -300,6 +371,9 @@ extension LinkMessage: Codable {
         case .mirrorEvent: "mirrorEvent"
         case .callState: "callState"
         case .clipboard: "clipboard"
+        case .airOffer: "airOffer"
+        case .airPush: "airPush"
+        case .airText: "airText"
         case .data: "data"
         case .unknown(let type): type
         }

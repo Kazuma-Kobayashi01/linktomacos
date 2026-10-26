@@ -7,6 +7,8 @@ enum Prefs {
     static let notificationSound = "notificationSound"
     static let showCallAlerts = "showCallAlerts"
     static let syncClipboard = "syncClipboard"
+    /// 收到手机发来的 AirSend 文件时，弹出带进度条的窗口。
+    static let showAirSendProgress = "showAirSendProgress"
     static let callRingtone = "callRingtone"
     /// 来电铃声用的系统提示音的名字（/System/Library/Sounds 里的文件名，不含扩展名）。
     static let callRingtoneName = "callRingtoneName"

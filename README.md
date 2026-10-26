@@ -40,6 +40,8 @@ English | [简体中文](README.zh-CN.md)
 | 🔊 | **Sound & microphone** | The phone's sound plays on the Mac speakers (Opus). Your Mac microphone, with echo cancellation, becomes the phone's microphone for apps (voice messages, VoIP calls). |
 | 📞 | **Call alerts** | An incoming call pops up a notification on the Mac and plays a ringtone you pick from the system sounds. A call that ends unanswered leaves a "Missed call" notice. Alerts only: the call audio stays on the phone. |
 | 📋 | **Clipboard** | Copy text on one device, paste on the other. Phone → Mac is instant while the enhanced service is running (Android doesn't let normal apps read the clipboard in the background); otherwise it syncs when you open the app. Content that password managers mark as sensitive is never sent. |
+| 📤 | **AirSend** | AirDrop-style, one tap. On the phone it's in the system **Share** sheet — as your Mac's name in the top row and as *AirSend* in the app list — and files, photos, links and text land in `Downloads/AirSend` on the Mac. On the Mac it's in the system **Share** menu (right-click a file in Finder → Share → AirSend), on the AirSend page (drag & drop) and in the menu bar. |
+| 🧩 | **Widget & Quick Settings** | A native macOS widget (small, medium, large) with the phone's battery, storage, memory, network and a 24-hour battery curve. On Android a Quick Settings tile shows the connection at a glance. |
 | 📊 | **Overview** | Battery, storage, memory and network at a glance, 1/6/24-hour history charts, device details and a storage breakdown. |
 | ⌨️ | **Feels native** | Menu bar app, settings window (⌘,), a Go menu (⌘1–⌘7), a Screen Mirroring menu, ⌘R to refresh. |
 | 🌍 | **Four languages** | English, 简体中文, 繁體中文 (Taiwan; the Android app also has Hong Kong) and 日本語, on both sides. |
@@ -104,7 +106,7 @@ scripts/                  build-release.sh
 
 - **Mac:** macOS 15 or later. The release build is Apple silicon (arm64). Building from source needs Xcode with the Swift 6 toolchain and [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`).
 - **Phone:** Android 15 or later (min SDK 35). Developed and tested on a Samsung Galaxy S23 Ultra (One UI 7).
-- **For mirroring:** `adb` on the Mac (Android Studio ships it, or `brew install android-platform-tools`), a USB cable once, and **USB debugging** turned on. On Samsung phones also turn off **Auto Blocker**, otherwise USB debugging commands are blocked.
+- **For mirroring:** a USB cable once and **USB debugging** turned on. `adb` is built into the Mac app (a copy of Google's Platform-Tools build; no separate install). On Samsung phones also turn off **Auto Blocker**, otherwise USB debugging commands are blocked.
 - **Network:** the phone and the Mac on the same Wi‑Fi, or the Mac connected to the phone's hotspot.
 
 > The app is signed ad hoc, because it is built without an Apple developer account. The Android package is signed with the debug key. Both are meant for personal use.

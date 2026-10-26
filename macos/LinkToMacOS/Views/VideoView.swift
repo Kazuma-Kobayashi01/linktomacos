@@ -7,21 +7,21 @@ import SwiftUI
 struct VideoView: NSViewRepresentable {
     let decoder: VideoDecoder
     let videoSize: CGSize
-    /// 窗口里视频下方其他内容（导航栏）的高度，计算窗口比例时要算进去。
-    var chromeHeight: CGFloat = 0
+    /// 窗口里画面以外占的固定尺寸（手机边框、右侧按键栏），计算窗口比例时要算进去。
+    var chrome: CGSize = .zero
     let onInput: (MirrorInput) -> Void
 
     func makeNSView(context: Context) -> VideoNSView {
         let view = VideoNSView(layer: decoder.layer)
         view.onInput = onInput
-        view.chromeHeight = chromeHeight
+        view.chrome = chrome
         view.videoSize = videoSize
         return view
     }
 
     func updateNSView(_ view: VideoNSView, context: Context) {
         view.onInput = onInput
-        view.chromeHeight = chromeHeight
+        view.chrome = chrome
         view.videoSize = videoSize
     }
 }
@@ -36,7 +36,7 @@ final class VideoNSView: NSView {
             updateWindowAspect(animated: oldValue != .zero)
         }
     }
-    var chromeHeight: CGFloat = 0
+    var chrome: CGSize = .zero
     private var dragging = false
 
     init(layer videoLayer: AVSampleBufferDisplayLayer) {
@@ -66,38 +66,43 @@ final class VideoNSView: NSView {
 
     // MARK: 窗口比例
 
+    /// 投屏窗口没有标题栏和边框（内容铺满整个窗口），所以这里一律按窗口外框（frame）计算，不用 contentRect。
     private func updateWindowAspect(animated: Bool) {
         guard let window, videoSize.width > 0, videoSize.height > 0 else { return }
         let aspect = videoSize.width / videoSize.height
-        window.contentMinSize = aspect >= 1
-            ? NSSize(width: 360 * aspect, height: 360 + chromeHeight)
-            : NSSize(width: 240, height: 240 / aspect + chromeHeight)
+        // 右侧工具栏大约 400pt 高，窗口不能比它矮
+        let minHeight = max(400, chrome.height + 360)
+        window.minSize = aspect >= 1
+            ? NSSize(width: (minHeight - chrome.height) * aspect + chrome.width, height: minHeight)
+            : NSSize(width: 240 + chrome.width, height: max(minHeight, 240 / aspect + chrome.height))
 
         // 画面保持长边不变，旋转时横竖互换；不超出屏幕
-        let current = window.contentRect(forFrameRect: window.frame).size
-        var long = max(current.width, current.height - chromeHeight)
+        let current = window.frame.size
+        var long = max(current.width - chrome.width, current.height - chrome.height)
         if current.width < 10 { long = 780 }
         var video = aspect >= 1 ? NSSize(width: long, height: long / aspect) : NSSize(width: long * aspect, height: long)
         if let visible = (window.screen ?? NSScreen.main)?.visibleFrame {
-            let scale = min(1, (visible.width - 40) / video.width, (visible.height - 120 - chromeHeight) / video.height)
+            let scale = min(1, (visible.width - 40 - chrome.width) / video.width, (visible.height - 60 - chrome.height) / video.height)
             video = NSSize(width: video.width * scale, height: video.height * scale)
         }
-        let target = NSSize(width: video.width, height: video.height + chromeHeight)
-        window.contentAspectRatio = target
+        let target = NSSize(width: video.width + chrome.width, height: video.height + chrome.height)
+        window.aspectRatio = target
         if abs(target.width - current.width) > 2 || abs(target.height - current.height) > 2 {
-            var frame = window.frameRect(forContentRect: NSRect(origin: .zero, size: target))
-            frame.origin = NSPoint(x: window.frame.minX, y: window.frame.maxY - frame.height)
+            let frame = NSRect(x: window.frame.minX, y: window.frame.maxY - target.height, width: target.width, height: target.height)
             window.setFrame(frame, display: true, animate: animated)
         }
     }
 
-    /// 窗口比例只能是一个固定比值，而导航栏高度是固定的点数，所以窗口宽度变了要按新宽度重算一次比例。
+    /// 窗口比例只能是一个固定比值，而边框和工具栏是固定的点数，所以窗口宽度变了要按新宽度重算一次比例。
     private func keepAspectRatio() {
-        guard chromeHeight > 0, let window, bounds.width > 0, videoSize.width > 0, videoSize.height > 0 else { return }
-        let want = NSSize(width: bounds.width, height: bounds.width * videoSize.height / videoSize.width + chromeHeight)
-        let have = window.contentAspectRatio
+        guard chrome != .zero, let window, videoSize.width > 0, videoSize.height > 0 else { return }
+        let content = window.frame.size
+        let videoWidth = content.width - chrome.width
+        guard videoWidth > 0 else { return }
+        let want = NSSize(width: content.width, height: videoWidth * videoSize.height / videoSize.width + chrome.height)
+        let have = window.aspectRatio
         guard have.height > 0, abs(have.width / have.height - want.width / want.height) > 0.0005 else { return }
-        window.contentAspectRatio = want
+        window.aspectRatio = want
     }
 
     // MARK: 坐标换算

@@ -37,9 +37,19 @@ enum AdbLauncher {
     static let serviceClass = "com.linktomacos.android.shell.ShellMain"
     static let logPath = "/data/local/tmp/linktomacos-shell.log"
 
+    /// App 包里自带的 adb（构建时由 scripts/bundle-adb.sh 放进去）。
+    static var bundled: URL? {
+        let url = Bundle.main.bundleURL.appendingPathComponent("Contents/Helpers/adb")
+        return FileManager.default.isExecutableFile(atPath: url.path) ? url : nil
+    }
+
+    static func isBundled(_ url: URL) -> Bool { url.standardizedFileURL == bundled?.standardizedFileURL }
+
+    /// 查找顺序：用户手动选的 → 包里自带的 → 本机已安装的。
     static func locate() -> URL? {
         var candidates: [String] = []
         if let saved = UserDefaults.standard.string(forKey: defaultsKey) { candidates.append(saved) }
+        if let bundled { candidates.append(bundled.path) }
         let env = ProcessInfo.processInfo.environment
         for key in ["ANDROID_HOME", "ANDROID_SDK_ROOT"] {
             if let root = env[key] { candidates.append(root + "/platform-tools/adb") }

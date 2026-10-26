@@ -18,7 +18,7 @@ struct AppsView: View {
 
     private var errorMessage: String? {
         if case .failed(let message) = session.phase { return message }
-        return session.launchError
+        return model.mirrorHelper.launchError ?? session.launchError
     }
 
     var body: some View {
@@ -87,7 +87,7 @@ struct AppsView: View {
 
     @ViewBuilder
     private var statusBar: some View {
-        if session.phase == .startingMirror {
+        if model.mirrorHelper.isLaunching {
             HStack(spacing: 8) { ProgressView().controlSize(.small); Text("正在连接…") }
                 .padding(.horizontal, 14).padding(.vertical, 8)
                 .background(.regularMaterial, in: .capsule)
@@ -102,11 +102,9 @@ struct AppsView: View {
         }
     }
 
+    /// 在投屏里打开应用：已经在投屏就开在当前画面里，否则启动投屏助手并打开它。
     private func open(_ app: PhoneApp) {
-        guard !session.isBusy else { return }
-        Task {
-            await session.open(app)
-            if session.isRunning { openWindow(id: WindowID.mirror) }
-        }
+        guard !model.mirrorHelper.isLaunching else { return }
+        model.startMirror(app: app)
     }
 }

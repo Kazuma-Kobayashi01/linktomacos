@@ -29,6 +29,34 @@
         }
       }
     },
+    "%lld 个项目": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 个项目"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld items"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 個の項目"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 個項目"
+          }
+        }
+      }
+    },
     "%lld 核": {
       "localizations": {
         "zh-Hans": {
@@ -225,62 +253,6 @@
         }
       }
     },
-    "4. 用数据线连接电脑，手机弹出“允许 USB 调试吗？”时点允许。": {
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "4. 用数据线连接电脑，手机弹出“允许 USB 调试吗？”时点允许。"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "4. Connect the phone to this Mac with a USB cable. When the phone asks “Allow USB debugging?”, tap Allow."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "4. USB ケーブルでスマートフォンを Mac に接続します。「USB デバッグを許可しますか？」と表示されたら許可をタップします。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "4. 用傳輸線連接電腦，手機跳出「允許 USB 偵錯嗎？」時點選允許。"
-          }
-        }
-      }
-    },
-    "5. 点击“启动增强服务”。启动成功后可以拔掉数据线。": {
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5. 点击“启动增强服务”。启动成功后可以拔掉数据线。"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5. Click “Start Enhanced Service”. Once it has started, you can unplug the cable."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5. 「拡張サービスを起動」をクリックします。起動したらケーブルを外せます。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5. 點選「啟動增強服務」。啟動成功後即可拔掉傳輸線。"
-          }
-        }
-      }
-    },
     "6 小时": {
       "localizations": {
         "zh-Hans": {
@@ -309,6 +281,118 @@
         }
       }
     },
+    "AirSend：发送文件到手机…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirSend：发送文件到手机…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirSend: Send Files to Phone…"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirSend：スマートフォンにファイルを送信…"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirSend：傳送檔案到手機…"
+          }
+        }
+      }
+    },
+    "App 内置": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App 内置"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Built into the app"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アプリに内蔵"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App 內建"
+          }
+        }
+      }
+    },
+    "App 自带 adb，不用另外安装 Android 工具；想用自己的版本，可以手动选择。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App 自带 adb，不用另外安装 Android 工具；想用自己的版本，可以手动选择。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app includes adb, so you don’t need to install the Android tools separately. You can still choose your own version."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アプリに adb が含まれているため、Android ツールを別途インストールする必要はありません。自分のバージョンを手動で選ぶこともできます。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App 自帶 adb，不用另外安裝 Android 工具；想用自己的版本，可以手動選擇。"
+          }
+        }
+      }
+    },
+    "IP 地址": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IP 地址"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IP Address"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IP アドレス"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IP 地址"
+          }
+        }
+      }
+    },
     "Link to macOS 版本": {
       "localizations": {
         "zh-Hans": {
@@ -333,34 +417,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Link to macOS 版本"
-          }
-        }
-      }
-    },
-    "USB 连接的手机": {
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "USB 连接的手机"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Phone on USB"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "USB 接続のスマートフォン"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "以 USB 連接的手機"
           }
         }
       }
@@ -473,6 +529,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "上層資料夾（⌘↑）"
+          }
+        }
+      }
+    },
+    "上一首": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上一首"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous Track"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "前のトラック"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上一首"
+          }
+        }
+      }
+    },
+    "下一首": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下一首"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next Track"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "次のトラック"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下一首"
           }
         }
       }
@@ -757,6 +869,146 @@
         }
       }
     },
+    "从 Mac 发到手机": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从 Mac 发到手机"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From Mac to Phone"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mac から端末へ"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "從 Mac 發到手機"
+          }
+        }
+      }
+    },
+    "从“%@”收到 %lld 个文件": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从“%@”收到 %lld 个文件"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Received %2$lld files from “%1$@”"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” から %lld 個のファイルを受信しました"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "從「%@」收到 %lld 個檔案"
+          }
+        }
+      }
+    },
+    "从“%@”收到 1 个文件": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从“%@”收到 1 个文件"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Received 1 file from “%@”"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” から 1 個のファイルを受信しました"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "從「%@」收到 1 個檔案"
+          }
+        }
+      }
+    },
+    "从“%@”收到文字（已拷贝）": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从“%@”收到文字（已拷贝）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Received text from “%@” (copied)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” からテキストを受信しました（コピー済み）"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "從「%@」收到文字（已拷貝）"
+          }
+        }
+      }
+    },
+    "从手机发到 Mac": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从手机发到 Mac"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From Phone to Mac"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "端末から Mac へ"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "從手機發到 Mac"
+          }
+        }
+      }
+    },
     "传输失败": {
       "localizations": {
         "zh-Hans": {
@@ -785,6 +1037,34 @@
         }
       },
       "extractionState": "manual"
+    },
+    "传输过的文件会显示在这里。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "传输过的文件会显示在这里。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transferred files show up here."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "転送したファイルはここに表示されます。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "傳輸過的檔案會顯示在這裡。"
+          }
+        }
+      }
     },
     "信号": {
       "localizations": {
@@ -1006,6 +1286,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "充電器"
+          }
+        }
+      }
+    },
+    "先做一次设置": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "先做一次设置"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One-Time Setup"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最初に一度だけ設定"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "先做一次設定"
           }
         }
       }
@@ -1682,6 +1990,62 @@
         }
       }
     },
+    "发送": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发送"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "送信"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "傳送"
+          }
+        }
+      }
+    },
+    "发送剪贴板文字": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发送剪贴板文字"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send Clipboard Text"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クリップボードのテキストを送信"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "傳送剪貼簿文字"
+          }
+        }
+      }
+    },
     "取消": {
       "localizations": {
         "zh-Hans": {
@@ -2046,34 +2410,6 @@
         }
       }
     },
-    "启动增强服务": {
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "启动增强服务"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Start Enhanced Service"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "拡張サービスを起動"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "啟動增強服務"
-          }
-        }
-      }
-    },
     "启动时打开主窗口": {
       "localizations": {
         "zh-Hans": {
@@ -2270,30 +2606,114 @@
         }
       }
     },
-    "在手机里新建一个独立的显示器，应用开在上面，手机自己的屏幕不受影响，可以关掉或锁屏。窗口比例固定为手机比例，可以等比缩放。": {
+    "在手机上点“分享”，选 AirSend 或最上面一排的 Mac 名字。文件会存进“下载/AirSend”。": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "在手机里新建一个独立的显示器，应用开在上面，手机自己的屏幕不受影响，可以关掉或锁屏。窗口比例固定为手机比例，可以等比缩放。"
+            "value": "在手机上点“分享”，选 AirSend 或最上面一排的 Mac 名字。文件会存进“下载/AirSend”。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Creates a separate display inside the phone and opens apps on it. The phone’s own screen is unaffected and can be turned off or locked. The window keeps the phone’s aspect ratio and scales proportionally."
+            "value": "On the phone tap Share, then pick AirSend or your Mac’s name in the top row. Files are saved to Downloads/AirSend."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "スマートフォン内に独立したディスプレイを作り、アプリをその上で開きます。スマートフォン本体の画面には影響せず、オフやロックにできます。ウィンドウの縦横比はスマートフォンと同じに固定され、比率を保ったまま拡大・縮小できます。"
+            "value": "端末で「共有」をタップし、AirSend または上段の Mac の名前を選びます。ファイルは「Downloads/AirSend」に保存されます。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "在手機裡建立一個獨立的顯示器，應用程式開在上面，手機本身的螢幕不受影響，可以關閉或鎖定。視窗比例固定為手機比例，可以等比例縮放。"
+            "value": "在手機上點「分享」，選 AirSend 或最上面一排的 Mac 名字。檔案會存進「下載/AirSend」。"
+          }
+        }
+      }
+    },
+    "在手机里新开一块屏幕，手机自己可以锁屏、关屏。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在手机里新开一块屏幕，手机自己可以锁屏、关屏。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens a separate screen inside the phone. The phone’s own screen can stay locked or off."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "端末の中に別の画面を作ります。端末自体の画面はロックしたりオフにしたりできます。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在手機裡新開一塊螢幕，手機自己可以鎖屏、關屏。"
+          }
+        }
+      }
+    },
+    "在访达中显示": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在访达中显示"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show in Finder"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finder で表示"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在Finder中顯示"
+          }
+        }
+      }
+    },
+    "在访达里右键文件，选“共享 → AirSend”，或者直接拖到上面。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在访达里右键文件，选“共享 → AirSend”，或者直接拖到上面。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In Finder, right-click a file and choose Share → AirSend, or just drop it above."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finder でファイルを右クリックして「共有 → AirSend」を選ぶか、上にドロップします。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在Finder裡右鍵檔案，選「共享 → AirSend」，或者直接拖到上面。"
           }
         }
       }
@@ -2350,34 +2770,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "型號"
-          }
-        }
-      }
-    },
-    "增强服务": {
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "增强服务"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enhanced Service"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "拡張サービス"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "增強服務"
           }
         }
       }
@@ -2466,34 +2858,6 @@
         }
       }
     },
-    "增强服务运行在手机上，让投屏不需要每次授权，并且能真实地点按和滑动。用数据线连接电脑启动一次，之后拔掉也一直有效，直到手机重启。": {
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "增强服务运行在手机上，让投屏不需要每次授权，并且能真实地点按和滑动。用数据线连接电脑启动一次，之后拔掉也一直有效，直到手机重启。"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The enhanced service runs on your phone. It lets mirroring skip the approval prompt and use real taps and swipes. Start it once with a USB cable; it keeps working after you unplug until the phone restarts."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "拡張サービスはスマートフォン上で動作し、毎回の許可なしで、実際のタップやスワイプでミラーリングできるようにします。USB ケーブルで一度起動すれば、ケーブルを外しても、スマートフォンを再起動するまで動作し続けます。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "增強服務執行在手機上，讓螢幕鏡像不必每次授權，並能真實地點按和滑動。用傳輸線連接電腦啟動一次，之後拔掉也持續有效，直到手機重新開機。"
-          }
-        }
-      }
-    },
     "增强服务需要更新": {
       "localizations": {
         "zh-Hans": {
@@ -2518,6 +2882,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "增強服務需要更新"
+          }
+        }
+      }
+    },
+    "声音": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "声音"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sound"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サウンド"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "聲音"
           }
         }
       }
@@ -2830,6 +3222,34 @@
         }
       }
     },
+    "完成设置": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成设置"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finish Setup"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定を完了"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成設定"
+          }
+        }
+      }
+    },
     "尚未配对手机": {
       "localizations": {
         "zh-Hans": {
@@ -2914,6 +3334,90 @@
         }
       }
     },
+    "已发送": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已发送"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sent"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "送信済み"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已傳送"
+          }
+        }
+      }
+    },
+    "已发送到“%@”": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已发送到“%@”"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sent to “%@”"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” に送信しました"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已傳送到「%@」"
+          }
+        }
+      }
+    },
+    "已取消": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已取消"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelled"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キャンセルしました"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已取消"
+          }
+        }
+      }
+    },
     "已损坏": {
       "localizations": {
         "zh-Hans": {
@@ -2938,6 +3442,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "已損毀"
+          }
+        }
+      }
+    },
+    "已接收": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已接收"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Received"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "受信済み"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已接收"
           }
         }
       }
@@ -3022,6 +3554,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "已連線"
+          }
+        }
+      }
+    },
+    "已连接 %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已连接 %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connected: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続済み：%@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已連線 %@"
           }
         }
       }
@@ -3362,6 +3922,34 @@
         }
       }
     },
+    "怎么打开？": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "怎么打开？"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How?"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "方法を見る"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "怎麼打開？"
+          }
+        }
+      }
+    },
     "总容量": {
       "localizations": {
         "zh-Hans": {
@@ -3502,34 +4090,6 @@
         }
       }
     },
-    "手机上的增强服务": {
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "手机上的增强服务"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Service on Phone"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "スマートフォン上のサービス"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "手機上的增強服務"
-          }
-        }
-      }
-    },
     "手机上的增强服务还是旧版本。用数据线连接电脑，在“投屏”页重新启动一次。": {
       "localizations": {
         "zh-Hans": {
@@ -3554,6 +4114,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "手機上的增強服務還是舊版本。用傳輸線連接電腦，在「螢幕鏡像」頁面重新啟動一次。"
+          }
+        }
+      }
+    },
+    "手机发来的文件保存在“下载/AirSend”。关闭后不弹窗口，传完时只发一条通知。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手机发来的文件保存在“下载/AirSend”。关闭后不弹窗口，传完时只发一条通知。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Files from your phone are saved in Downloads/AirSend. When this is off, no window appears and you get a single notification when they arrive."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スマートフォンから届いたファイルは「ダウンロード/AirSend」に保存されます。オフにするとウインドウは表示されず、受信完了時に通知のみが届きます。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手機發來的檔案儲存在「下載/AirSend」。關閉後不彈視窗，傳完時只發一條通知。"
           }
         }
       }
@@ -3643,6 +4231,34 @@
         }
       }
     },
+    "手机已经设置好，可以开始投屏了": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手机已经设置好，可以开始投屏了"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your phone is set up and ready to mirror."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "端末の設定が完了しました。ミラーリングを開始できます。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手機已經設定好，可以開始投屏了"
+          }
+        }
+      }
+    },
     "手机未授予相册读取权限，图片、视频、音频的占用暂时无法统计。": {
       "localizations": {
         "zh-Hans": {
@@ -3695,6 +4311,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "手機未連線"
+          }
+        }
+      }
+    },
+    "手机没有连接。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手机没有连接。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The phone isn’t connected."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スマートフォンが接続されていません。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手機沒有連線。"
           }
         }
       }
@@ -3812,6 +4456,34 @@
         }
       }
     },
+    "打开 Link to macOS 配对后，这里会显示手机的状态。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 Link to macOS 配对后，这里会显示手机的状态。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pair a phone in Link to macOS and its status shows up here."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Link to macOS でペアリングすると、ここにスマートフォンの状態が表示されます。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打開 Link to macOS 配對後，這裡會顯示手機的狀態。"
+          }
+        }
+      }
+    },
     "打开主窗口": {
       "localizations": {
         "zh-Hans": {
@@ -3864,34 +4536,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "打開應用程式"
-          }
-        }
-      }
-    },
-    "打开应用…": {
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "打开应用…"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open App…"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "アプリを開く…"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "打開應用程式…"
           }
         }
       }
@@ -3952,6 +4596,62 @@
         }
       }
     },
+    "打开手机的 USB 调试": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开手机的 USB 调试"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn on USB debugging on your phone"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "端末の USB デバッグをオンにする"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打開手機的 USB 除錯"
+          }
+        }
+      }
+    },
+    "打开接收文件夹": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开接收文件夹"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Received Folder"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "受信フォルダを開く"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打開接收資料夾"
+          }
+        }
+      }
+    },
     "打开文件夹": {
       "localizations": {
         "zh-Hans": {
@@ -4004,6 +4704,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "打開登入項目設定"
+          }
+        }
+      }
+    },
+    "找不到投屏助手。请重新安装 Link to macOS。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "找不到投屏助手。请重新安装 Link to macOS。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The mirroring helper wasn’t found. Please reinstall Link to macOS."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ミラーリングヘルパーが見つかりません。Link to macOS を再インストールしてください。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "找不到投屏助手。請重新安裝 Link to macOS。"
           }
         }
       }
@@ -4064,30 +4792,58 @@
         }
       }
     },
-    "把手机屏幕原样显示在电脑上，窗口比例固定为手机比例。可以操控桌面和应用，手机屏幕默认关闭。": {
+    "把手机屏幕原样显示在 Mac 上，可以操控桌面和应用。": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "把手机屏幕原样显示在电脑上，窗口比例固定为手机比例。可以操控桌面和应用，手机屏幕默认关闭。"
+            "value": "把手机屏幕原样显示在 Mac 上，可以操控桌面和应用。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Shows the phone screen as-is on your Mac, with the window keeping the phone’s aspect ratio. You can control the home screen and apps; the phone’s own screen is turned off by default."
+            "value": "Shows the phone screen as-is on your Mac, so you can control the home screen and apps."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "スマートフォンの画面をそのまま Mac に表示し、ウィンドウの縦横比はスマートフォンと同じに固定されます。ホーム画面やアプリを操作でき、スマートフォン本体の画面は既定でオフになります。"
+            "value": "端末の画面をそのまま Mac に表示し、ホーム画面やアプリを操作できます。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "把手機螢幕原樣顯示在電腦上，視窗比例固定為手機比例。可以操作主畫面和應用程式，手機螢幕預設會關閉。"
+            "value": "把手機螢幕原樣顯示在 Mac 上，可以操控桌面和應用。"
+          }
+        }
+      }
+    },
+    "把文件拖到这里，发给手机": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把文件拖到这里，发给手机"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drop files here to send them to your phone"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイルをここにドロップしてスマートフォンに送信"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把檔案拖到這裡，發給手機"
           }
         }
       }
@@ -4144,6 +4900,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "螢幕鏡像發生錯誤"
+          }
+        }
+      }
+    },
+    "投屏助手没有启动。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "投屏助手没有启动。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The mirroring helper didn’t start."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ミラーリングヘルパーが起動しませんでした。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "投屏助手沒有啟動。"
+          }
+        }
+      }
+    },
+    "投屏在“Link to macOS Mirror”里进行，它有自己的 Dock 图标和窗口。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "投屏在“Link to macOS Mirror”里进行，它有自己的 Dock 图标和窗口。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mirroring runs in “Link to macOS Mirror”, which has its own Dock icon and window."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ミラーリングは「Link to macOS Mirror」で行われます。独自の Dock アイコンとウインドウがあります。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "投屏在「Link to macOS Mirror」裡進行，它有自己的 Dock 圖示和視窗。"
           }
         }
       }
@@ -4372,6 +5184,62 @@
         }
       }
     },
+    "接收失败": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接收失败"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn’t Receive"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "受信に失敗しました"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接收失敗"
+          }
+        }
+      }
+    },
+    "接收文件时显示进度窗口": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接收文件时显示进度窗口"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show a progress window when receiving files"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイル受信時に進行状況ウインドウを表示"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接收檔案時顯示進度視窗"
+          }
+        }
+      }
+    },
     "搜索应用": {
       "localizations": {
         "zh-Hans": {
@@ -4424,6 +5292,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "播放"
+          }
+        }
+      }
+    },
+    "播放 / 暂停": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "播放 / 暂停"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play / Pause"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再生 / 一時停止"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "播放 / 暫停"
           }
         }
       }
@@ -4508,6 +5404,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "故障"
+          }
+        }
+      }
+    },
+    "数据不足": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "数据不足"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not Enough Data"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "データ不足"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "資料不足"
           }
         }
       }
@@ -4733,6 +5657,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "無法載入"
+          }
+        }
+      }
+    },
+    "无法压缩文件夹": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法压缩文件夹"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn’t compress the folder"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フォルダを圧縮できません"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法壓縮資料夾"
           }
         }
       }
@@ -5045,6 +5997,62 @@
         }
       }
     },
+    "最近": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近"
+          }
+        }
+      }
+    },
+    "最近 24 小时电量": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近 24 小时电量"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Battery, Last 24 Hours"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "過去 24 時間のバッテリー"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近 24 小時電量"
+          }
+        }
+      }
+    },
     "最近一次连接被拒绝：%@": {
       "localizations": {
         "zh-Hans": {
@@ -5241,34 +6249,6 @@
         }
       }
     },
-    "未检测到": {
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未检测到"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Not detected"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "検出されません"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未檢測到"
-          }
-        }
-      }
-    },
     "未知": {
       "localizations": {
         "zh-Hans": {
@@ -5326,30 +6306,30 @@
       },
       "extractionState": "manual"
     },
-    "未运行": {
+    "来源": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "未运行"
+            "value": "来源"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Not Running"
+            "value": "Source"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "停止中"
+            "value": "提供元"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "未執行"
+            "value": "來源"
           }
         }
       }
@@ -5434,6 +6414,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "來電時播放鈴聲"
+          }
+        }
+      }
+    },
+    "松开发送到手机": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "松开发送到手机"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Release to Send to Phone"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ドロップしてスマートフォンに送信"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "鬆開傳送到手機"
           }
         }
       }
@@ -5550,30 +6558,86 @@
         }
       }
     },
-    "正在启动…": {
+    "正在从“%@”接收文件": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在启动…"
+            "value": "正在从“%@”接收文件"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Starting…"
+            "value": "Receiving Files from “%@”"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "起動中…"
+            "value": "“%@” からファイルを受信中"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在啟動…"
+            "value": "正在從「%@」接收檔案"
+          }
+        }
+      }
+    },
+    "正在投屏": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在投屏"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mirroring Now"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ミラーリング中"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在投屏"
+          }
+        }
+      }
+    },
+    "正在设置…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在设置…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setting up…"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定中…"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在設定…"
           }
         }
       }
@@ -5630,6 +6694,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "沒有符合的應用程式"
+          }
+        }
+      }
+    },
+    "没有找到 adb。可以在设置里手动选择。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有找到 adb。可以在设置里手动选择。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "adb wasn’t found. You can choose it manually in Settings."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "adb が見つかりません。設定で手動で選択できます。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沒有找到 adb。可以在設定裡手動選擇。"
           }
         }
       }
@@ -5746,6 +6838,34 @@
         }
       }
     },
+    "没能发送到手机": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没能发送到手机"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn’t Send to Phone"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スマートフォンに送信できませんでした"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沒能傳送到手機"
+          }
+        }
+      }
+    },
     "流畅（适合热点）": {
       "localizations": {
         "zh-Hans": {
@@ -5770,6 +6890,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "流暢（適合行動熱點）"
+          }
+        }
+      }
+    },
+    "清除已完成": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除已完成"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear Finished"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完了したものを消去"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除已完成"
           }
         }
       }
@@ -5854,34 +7002,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "版本 %@"
-          }
-        }
-      }
-    },
-    "版本过旧，需要重新启动": {
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "版本过旧，需要重新启动"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Outdated — restart needed"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "古いバージョン — 再起動が必要"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "版本過舊，需要重新啟動"
           }
         }
       }
@@ -6138,6 +7258,62 @@
         }
       }
     },
+    "电源键": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "电源键"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Power Button"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "電源ボタン"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "電源鍵"
+          }
+        }
+      }
+    },
+    "电源键：锁屏 / 唤醒手机": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "电源键：锁屏 / 唤醒手机"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Power button: lock or wake the phone"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "電源ボタン：ロック / スリープ解除"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "電源鍵：鎖屏 / 喚醒手機"
+          }
+        }
+      }
+    },
     "电量": {
       "localizations": {
         "zh-Hans": {
@@ -6306,6 +7482,34 @@
         }
       }
     },
+    "离线 · %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "离线 · %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline · %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オフライン · %@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "離線 · %@"
+          }
+        }
+      }
+    },
     "种类": {
       "localizations": {
         "zh-Hans": {
@@ -6362,86 +7566,114 @@
         }
       }
     },
-    "端口 %lld": {
+    "窗口": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "端口 %lld"
+            "value": "窗口"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Port %lld"
+            "value": "Window"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ポート %lld"
+            "value": "ウインドウ"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "連接埠 %lld"
+            "value": "視窗"
           }
         }
       }
     },
-    "第一次使用": {
+    "窗口置顶": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "第一次使用"
+            "value": "窗口置顶"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "First-Time Setup"
+            "value": "Keep on Top"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "初回の設定"
+            "value": "常に手前に表示"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "第一次使用"
+            "value": "視窗置頂"
           }
         }
       }
     },
-    "等待手机授权": {
+    "端口": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "等待手机授权"
+            "value": "端口"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Waiting for approval on phone"
+            "value": "Port"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "スマートフォンでの許可待ち"
+            "value": "ポート"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "等待手機授權"
+            "value": "連接埠"
+          }
+        }
+      }
+    },
+    "等 %lld 个项目": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "等 %lld 个项目"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "and %lld items"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ほか %lld 個の項目"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "等 %lld 個項目"
           }
         }
       }
@@ -6470,6 +7702,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "等待狀態…"
+          }
+        }
+      }
+    },
+    "粘贴 Mac 剪贴板里的文字": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "粘贴 Mac 剪贴板里的文字"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste Text from Mac Clipboard"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mac のクリップボードのテキストを貼り付け"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "貼上 Mac 剪貼簿裡的文字"
           }
         }
       }
@@ -6582,6 +7842,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "網路"
+          }
+        }
+      }
+    },
+    "自己选择或本机已安装": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自己选择或本机已安装"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chosen by you or installed on this Mac"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手動で選択、またはこの Mac にインストール済み"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自己選擇或本機已安裝"
           }
         }
       }
@@ -6866,6 +8154,34 @@
         }
       }
     },
+    "设置好之后，投屏不用每次在手机上确认，还能直接点按和滑动。以后拔掉数据线也不影响。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置好之后，投屏不用每次在手机上确认，还能直接点按和滑动。以后拔掉数据线也不影响。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Once this is done, mirroring no longer asks for approval on the phone, and you can tap and swipe directly. Unplugging the cable afterwards is fine."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定が済むと、ミラーリングのたびに端末で確認する必要がなくなり、直接タップやスワイプもできます。その後ケーブルを抜いても問題ありません。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定好之後，投屏不用每次在手機上確認，還能直接點按和滑動。以後拔掉資料線也不影響。"
+          }
+        }
+      }
+    },
     "试听": {
       "localizations": {
         "zh-Hans": {
@@ -7034,6 +8350,34 @@
         }
       }
     },
+    "请在手机弹出的“允许 USB 调试吗？”里点“允许”。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请在手机弹出的“允许 USB 调试吗？”里点“允许”。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the phone, tap Allow when asked “Allow USB debugging?”."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "端末に表示される「USB デバッグを許可しますか？」で「許可」をタップしてください。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請在手機彈出的「允許 USB 除錯嗎？」裡點「允許」。"
+          }
+        }
+      }
+    },
     "请确认手机和这台 Mac 在同一个网络，并且手机上的 Link to macOS 正在运行。": {
       "localizations": {
         "zh-Hans": {
@@ -7058,6 +8402,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "請確認手機和這台 Mac 在同一個網路，並且手機上的 Link to macOS 正在執行。"
+          }
+        }
+      }
+    },
+    "调大音量": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "调大音量"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volume Up"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音量を上げる"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "調大音量"
+          }
+        }
+      }
+    },
+    "调小音量": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "调小音量"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volume Down"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音量を下げる"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "調小音量"
           }
         }
       }
@@ -7230,34 +8630,6 @@
         }
       }
     },
-    "运行中": {
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "运行中"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Running"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "動作中"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "執行中"
-          }
-        }
-      }
-    },
     "返回": {
       "localizations": {
         "zh-Hans": {
@@ -7370,6 +8742,34 @@
         }
       }
     },
+    "还没有连接过手机": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有连接过手机"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Phone Connected Yet"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだスマートフォンが接続されていません"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "還沒有連線過手機"
+          }
+        }
+      }
+    },
     "还没有配对手机": {
       "localizations": {
         "zh-Hans": {
@@ -7426,6 +8826,34 @@
         }
       }
     },
+    "还没检测到手机，请用数据线连接。": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没检测到手机，请用数据线连接。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No phone detected yet. Connect it with a USB cable."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "端末が検出されていません。USB ケーブルで接続してください。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "還沒檢測到手機，請用資料線連線。"
+          }
+        }
+      }
+    },
     "这些设置在下次开始投屏时生效。": {
       "localizations": {
         "zh-Hans": {
@@ -7450,6 +8878,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "這些設定會在下次開始螢幕鏡像時生效。"
+          }
+        }
+      }
+    },
+    "连接数据线，并在手机上点“允许”": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "连接数据线，并在手机上点“允许”"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect the cable and tap Allow on the phone"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ケーブルを接続し、端末で「許可」をタップ"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "連線資料線，並在手機上點「允許」"
           }
         }
       }
@@ -7618,6 +9074,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "選擇應用程式並開始…"
+          }
+        }
+      }
+    },
+    "选择文件…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择文件…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose Files…"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイルを選択…"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選擇檔案…"
           }
         }
       }
@@ -8042,6 +9526,34 @@
         }
       }
     },
+    "静音": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "静音"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mute"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ミュート"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "靜音"
+          }
+        }
+      }
+    },
     "音乐": {
       "localizations": {
         "zh-Hans": {
@@ -8150,6 +9662,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "高畫質"
+          }
+        }
+      }
+    },
+    "高级": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高级"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Advanced"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "詳細設定"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高階"
           }
         }
       }

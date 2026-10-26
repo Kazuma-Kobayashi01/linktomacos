@@ -25,8 +25,27 @@ targets:
     platform: macOS
     sources:
       - LinkToMacOS
+      - Shared
     dependencies:
       - package: LinkCore
+      - target: AirSendShare
+      - target: LinkWidget
+      - target: LinkMirror
+        embed: false
+        link: false
+    postBuildScripts:
+      - name: Bundle adb
+        script: '"$SRCROOT/../scripts/bundle-adb.sh" "$CODESIGNING_FOLDER_PATH"'
+        basedOnDependencyAnalysis: false
+      - name: Embed Mirror helper
+        # 投屏助手是一个独立的 App（自己的 Dock 图标），放进主程序包里，由主程序启动
+        script: |
+          HELPER="$BUILT_PRODUCTS_DIR/Link to macOS Mirror.app"
+          DEST="$CODESIGNING_FOLDER_PATH/Contents/Helpers"
+          mkdir -p "$DEST"
+          rm -rf "$DEST/Link to macOS Mirror.app"
+          ditto "$HELPER" "$DEST/Link to macOS Mirror.app"
+        basedOnDependencyAnalysis: false
     info:
       path: LinkToMacOS/Info.plist
       properties:
@@ -39,11 +58,119 @@ targets:
         NSLocalNetworkUsageDescription: Used to find and connect to your Android phone on the local network.
         NSBonjourServices:
           - _linktomacos._tcp
+        # 小组件点击后用 linktomacos://overview 打开概览页
+        CFBundleURLTypes:
+          - CFBundleURLName: com.linktomacos.mac
+            CFBundleURLSchemes: [linktomacos]
         NSBluetoothAlwaysUsageDescription: Used to make and answer phone calls from this Mac over Bluetooth.
         NSMicrophoneUsageDescription: Used to send your voice to the phone while mirroring, and when making or answering phone calls on this Mac.
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.linktomacos.mac
+        ENABLE_APP_SANDBOX: NO
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+        SWIFT_EMIT_LOC_STRINGS: YES
+        LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  # 系统“共享”菜单里的 AirSend。不连手机，只把内容交给主程序（见 ShareViewController）
+  AirSendShare:
+    type: app-extension
+    platform: macOS
+    sources:
+      - AirSendShare
+    entitlements:
+      path: AirSendShare/AirSendShare.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        # 沙盒例外：只能写主程序的收件目录（自己签名自己用，不上架，可以用临时例外）
+        com.apple.security.temporary-exception.files.home-relative-path.read-write:
+          - /Library/Application Support/LinkToMacOS/AirSend/
+    info:
+      path: AirSendShare/Info.plist
+      properties:
+        CFBundleDisplayName: AirSend
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleLocalizations: [en, zh-Hans, zh-Hant, ja]
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShareViewController
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsFileWithMaxCount: 50
+              NSExtensionActivationSupportsImageWithMaxCount: 50
+              NSExtensionActivationSupportsMovieWithMaxCount: 50
+              NSExtensionActivationSupportsText: true
+              NSExtensionActivationSupportsWebURLWithMaxCount: 10
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.linktomacos.mac.share
+        PRODUCT_NAME: AirSend
+        ENABLE_APP_SANDBOX: YES
+        SWIFT_EMIT_LOC_STRINGS: YES
+        LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+  # 桌面小组件：手机状态。数据由主程序写进共享目录（见 WidgetSnapshot）
+  LinkWidget:
+    type: app-extension
+    platform: macOS
+    sources:
+      - LinkWidget
+      - Shared
+    entitlements:
+      path: LinkWidget/LinkWidget.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        # 沙盒例外：只读主程序写的快照目录（自己签名自己用，不上架）
+        com.apple.security.temporary-exception.files.home-relative-path.read-only:
+          - /Library/Application Support/LinkToMacOS/widget/
+    info:
+      path: LinkWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Link to macOS
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleLocalizations: [en, zh-Hans, zh-Hant, ja]
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.linktomacos.mac.widget
+        PRODUCT_NAME: LinkWidget
+        ENABLE_APP_SANDBOX: YES
+        SWIFT_EMIT_LOC_STRINGS: YES
+        LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+  # 投屏助手：独立的 App，有自己的 Dock 图标（纯手机）和窗口。不直接连手机，经本机中继交给主程序转发
+  LinkMirror:
+    type: application
+    platform: macOS
+    sources:
+      - LinkMirror
+      - path: LinkToMacOS/Library/MirrorSession.swift
+      - path: LinkToMacOS/Library/VideoDecoder.swift
+      - path: LinkToMacOS/Library/AudioPlayer.swift
+      - path: LinkToMacOS/Library/AppIconLoader.swift
+      - path: LinkToMacOS/Library/AsyncLimiter.swift
+      - path: LinkToMacOS/Library/AdbLauncher.swift
+      - path: LinkToMacOS/Views/MirrorWindow.swift
+      - path: LinkToMacOS/Views/VideoView.swift
+      - path: LinkToMacOS/Views/AppLauncherView.swift
+    dependencies:
+      - package: LinkCore
+    info:
+      path: LinkMirror/Info.plist
+      properties:
+        CFBundleDisplayName: Link to macOS Mirror
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleLocalizations: [en, zh-Hans, zh-Hant, ja]
+        LSApplicationCategoryType: public.app-category.utilities
+        LSMultipleInstancesProhibited: true
+        NSPrincipalClass: NSApplication
+        NSMicrophoneUsageDescription: Used to send your voice to the phone while mirroring.
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.linktomacos.mac.mirror
+        PRODUCT_NAME: "Link to macOS Mirror"
         ENABLE_APP_SANDBOX: NO
         SWIFT_EMIT_LOC_STRINGS: YES
         LOCALIZATION_PREFERS_STRING_CATALOGS: YES

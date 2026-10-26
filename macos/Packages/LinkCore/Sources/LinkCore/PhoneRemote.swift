@@ -129,7 +129,10 @@ public final class PhoneRemote: @unchecked Sendable {
 
     public typealias VideoHandler = @Sendable (Data) -> Void
 
-    public init(send: @escaping Send) {
+    /// `firstRequestId`：请求编号从这里开始。投屏助手（另一个进程）经主程序转发请求，用很大的起始编号，
+    /// 这样主程序一看响应的编号就知道该转给谁，不会和自己的请求撞号。
+    public init(firstRequestId: Int = 1, send: @escaping Send) {
+        self.nextId = firstRequestId
         self.send = send
     }
 

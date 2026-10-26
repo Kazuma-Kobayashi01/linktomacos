@@ -421,6 +421,22 @@ All of the following are licensed under the **Apache License 2.0**.
 | kotlinx.coroutines (Android) | 1.11.0 | <https://github.com/Kotlin/kotlinx.coroutines> |
 | Kotlin standard library | 2.4.21 | <https://github.com/JetBrains/kotlin> |
 
+## Bundled tool / 随 Mac 应用分发的工具
+
+### adb (Android Debug Bridge)
+
+The Mac app bundles `adb` from Google's [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools)
+(`Contents/Helpers/adb`, arm64 only), so that you don't have to install the Android tools separately. `adb` is part of the
+Android Open Source Project and is licensed under the Apache License 2.0 (see `LICENSES/Apache-2.0.txt`); the Platform-Tools
+`NOTICE.txt`, which lists the licenses of everything linked into it, is copied to `Contents/Resources/adb-NOTICE.txt`.
+The binary is not stored in this repository: `scripts/bundle-adb.sh` copies it from the Platform-Tools installed on the build
+machine at build time.
+
+Mac 应用里附带了 Google [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools) 的 `adb`
+（`Contents/Helpers/adb`，仅 arm64），这样你不用另外安装 Android 工具。adb 属于 Android 开源项目，使用 Apache License 2.0
+（见 `LICENSES/Apache-2.0.txt`）；Platform-Tools 自带的 `NOTICE.txt` 列出了它链接的所有组件的许可证，已复制到
+`Contents/Resources/adb-NOTICE.txt`。二进制文件不放在本仓库里：`scripts/bundle-adb.sh` 在构建时从构建机上已安装的 Platform-Tools 复制。
+
 ## Not distributed with the app / 不随应用分发
 
 These are used only while developing and are not part of the apps: JUnit 4 (EPL-1.0) for the Android unit tests,

@@ -1,0 +1,62 @@
+{
+  "sourceLanguage": "zh-Hans",
+  "strings": {
+    "已交给 Link to macOS": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已交给 Link to macOS"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Handed off to Link to macOS"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Link to macOS に渡しました"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已交給 Link to macOS"
+          }
+        }
+      }
+    },
+    "正在交给 Link to macOS…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在交给 Link to macOS…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Handing off to Link to macOS…"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Link to macOS に渡しています…"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在交給 Link to macOS…"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

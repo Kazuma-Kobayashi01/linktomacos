@@ -7,15 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0126CC02336172E493C47E5B /* LinkCore in Frameworks */ = {isa = PBXBuildFile; productRef = EA2562F5704869008A9F2DAC /* LinkCore */; };
+		047D73673001F3ABAD6CC890 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2CDAD632404ADB69674EF09 /* ShareViewController.swift */; };
+		05F37224DB4F9B54564C5668 /* AdbLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22C929BEDB25B8EF6321E1C /* AdbLauncher.swift */; };
+		0BF3AAFCB6B6B8E5AA67BC32 /* MirrorSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A05341C96CF1DB0B62E5001D /* MirrorSession.swift */; };
+		1147A19C3C72E318F9A4BDBB /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9842A3D1DDBD7AB331BA7E1 /* WidgetSnapshot.swift */; };
 		15C0E57825F03EB724D04E57 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286E95ABFAB14A0896D4E69F /* AudioPlayer.swift */; };
 		19CDE9BB0113A246FC59CE76 /* AppIconLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C562F19C5C0E67A24F4704D /* AppIconLoader.swift */; };
 		1AFDCBC16EFF98958165DB0E /* PhotoViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9B2AA38B48A4F0E39B461B /* PhotoViewer.swift */; };
 		29747915284789C2968ED6FE /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345D2C85657B1E9D8BE72CCD /* ExportService.swift */; };
 		2F48051D80E3D63E1932CD51 /* ClipboardSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266697DFA48B789E4DF0CB0C /* ClipboardSync.swift */; };
+		33149370D701633C725AA7FB /* VideoDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F8DD6D43D12E0046A075F0 /* VideoDecoder.swift */; };
+		348BA7ED6D87F4DCD165F862 /* AsyncLimiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BB2205100C4B2E66F5FBA8 /* AsyncLimiter.swift */; };
 		3DC167DFDCF86D89BEEFACA7 /* MediaListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4C3ACE6D79D7C454BB6FE1 /* MediaListModel.swift */; };
 		48418F1CBBE1894CC3590423 /* ChipCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D37955067F827C31A03E49 /* ChipCatalog.swift */; };
 		49E29FEFB7AE3E244695C0F4 /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91B14E80BE438C1A18CF0E7 /* FilesView.swift */; };
+		4ABD07054CF4A7F64CFF655C /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0F257270791F5F677A99E16A /* Localizable.xcstrings */; };
+		4C85B02B5FBCC4AA6E1D715A /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9842A3D1DDBD7AB331BA7E1 /* WidgetSnapshot.swift */; };
+		5099FE4C015C6B996AD293A5 /* LinkWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC6CCCDF81FDB6A4EB46815 /* LinkWidget.swift */; };
 		5541DD8C0025767EC9E7EF28 /* ShortcutMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A89571C8DE26E7C36927056 /* ShortcutMonitor.swift */; };
+		57000FDDB50B01B26337397A /* WidgetPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1AA2D2A0EEEE4D49ECEFE98 /* WidgetPublisher.swift */; };
 		57691892276A4DCF9550E2DC /* AppLauncherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC810B2F4FE60C4CE0B6DF /* AppLauncherView.swift */; };
 		57E4739436D3545E2B4AF9C0 /* AppCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529D3A7CD4EDC1266AE05FDB /* AppCommands.swift */; };
 		5B97DDF7917E928D19EF377D /* OverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C459FAC39164EBE7F45669CF /* OverviewView.swift */; };
@@ -23,32 +34,92 @@
 		6330FD5ED486693E9C9D69D6 /* DeviceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B635FA1ACC2DC0797057C7EB /* DeviceMonitor.swift */; };
 		65CE3F6DAD21AC4C04F75870 /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8921C7061B6EAD1EA8964A0F /* PairingView.swift */; };
 		6CA143D2840698F02AC04799 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 66AB3B974C5A0824FBD6F716 /* InfoPlist.xcstrings */; };
+		6FC99F76C1C37A19503E32D5 /* LinkWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CF440323C64E17D7D50D7B42 /* LinkWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		700CE447C1E22D6291057E42 /* PhoneLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958F12EEA72978ECCAEF8947 /* PhoneLibrary.swift */; };
 		7103CBA32DDC97F86E93E0DC /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE57E9CEDEDA4EFD9AF9157 /* MainWindow.swift */; };
+		75D7A39E92E80163AE8CFE0B /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286E95ABFAB14A0896D4E69F /* AudioPlayer.swift */; };
 		7C47858599E62ED3908F9251 /* Prefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77771B63D6DDC5287DEF09E7 /* Prefs.swift */; };
 		7FFCDB75A8A5EB7E7E99EE36 /* NotificationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88CE2CA5F29B1DAEEFD0CD1 /* NotificationPresenter.swift */; };
 		87DB2019C9D8523C1C911D3A /* MirrorWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D37D3579269C3CDE6913D0E /* MirrorWindow.swift */; };
+		8DE7CA45CCB9E5704B1E467C /* WidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FEE9C068E50A0D7FA5EDF5 /* WidgetViews.swift */; };
 		93B6F4ABD9FE7787E57EC69D /* PhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534209D9416859E7EA4D09C9 /* PhotosView.swift */; };
+		950AFD4BFCB4E861463C9777 /* AirSendProgressWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF663EB318A9D8D6B483292 /* AirSendProgressWindow.swift */; };
 		959CE4EBE7D4E715CDEB868B /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D4EAFA984DEE9ACA3DD303 /* MenuView.swift */; };
 		965160FAC8BAC158B9AB6D90 /* CallAlerter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E237F10BF4EC2F41B09A7B31 /* CallAlerter.swift */; };
 		96967D2F860540FDBC5B1B8C /* LinkToMacOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FE64467621FBACC20CC343 /* LinkToMacOSApp.swift */; };
+		9FDE8DCA8F327B9A05BEC79A /* AppLauncherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABC810B2F4FE60C4CE0B6DF /* AppLauncherView.swift */; };
+		A05FDFB5134E7D706262D174 /* AppIconLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C562F19C5C0E67A24F4704D /* AppIconLoader.swift */; };
 		A1EC946C25F585B470E36107 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A79E5307B246AA4C9044A12 /* AppModel.swift */; };
 		A21D417D625892A08C19A597 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 238E1140EBFBFF6E1D739FC9 /* Assets.xcassets */; };
 		A55474D50A2AA641038AC2C5 /* AppsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24447DF380887D7D4E23E00 /* AppsView.swift */; };
+		A693B8C9CB149273FC2B60FC /* MirrorWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D37D3579269C3CDE6913D0E /* MirrorWindow.swift */; };
+		AAE85FD5F173C423606CB40B /* AirSendShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5B443085F20006E568A71BEC /* AirSendShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AC05E61F39D88FD9803CDBB8 /* MirrorSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A05341C96CF1DB0B62E5001D /* MirrorSession.swift */; };
+		B0B67C3CC8C9149DFCC962BD /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 7CF8357E760ACFFDA157C666 /* Localizable.xcstrings */; };
+		B40D1D3C2EF67C4B9B822912 /* AirSendService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1116473A1E5140B74114B78 /* AirSendService.swift */; };
 		B5B1ED34F692A7591FA01ADE /* AdbLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22C929BEDB25B8EF6321E1C /* AdbLauncher.swift */; };
 		B68D5378C98004A2A36F74D2 /* SnapshotRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320D982DF762A33A3BC24C23 /* SnapshotRenderer.swift */; };
 		BC67320CE66125BD7982949D /* VideoDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F8DD6D43D12E0046A075F0 /* VideoDecoder.swift */; };
+		C51F2E75EC3B10A3922198F0 /* AirSendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0ACCB2DFA082F9FAA541D3E /* AirSendView.swift */; };
+		C9312530EAEC3EA754DD676A /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA06F1C6A5008C9689C9541 /* main.swift */; };
 		D5D096FEAC72444D1A0AB8EA /* MirrorPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C572D2BAC392C6F5594E7843 /* MirrorPage.swift */; };
 		D9A8485AC53393109728B2C4 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233F96C3E85599A7D082A39B /* VideoView.swift */; };
+		DCB1B99F2849527F33219F0B /* MirrorHelperDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3C4C6C6EC792DB8F4AB2B94 /* MirrorHelperDelegate.swift */; };
+		DD5B3C339759C06745955F80 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233F96C3E85599A7D082A39B /* VideoView.swift */; };
 		EAE59B3721E2E23FA9168209 /* LinkCore in Frameworks */ = {isa = PBXBuildFile; productRef = D4694ECA312A86FA63627D66 /* LinkCore */; };
+		EB72BA09500C62D114333AE8 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = FE0F517F6CD4A6D0B9DF21D9 /* Localizable.xcstrings */; };
+		EF16CFDE6AE18257DEE14044 /* AsyncLimiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BB2205100C4B2E66F5FBA8 /* AsyncLimiter.swift */; };
+		EF56470D4F099D6450A93F45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E2B6AB248AE9E0E8B782C43 /* Assets.xcassets */; };
+		F2E5DD64F99C27BBBC8FEED0 /* MirrorHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8B486A16F544290D488D21 /* MirrorHelper.swift */; };
 		F5F419FE1B8C7F34B306772B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA537BD578C6E92B8991F8AF /* SettingsView.swift */; };
+		FF7585DCF657B258AE6A466D /* WidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FEE9C068E50A0D7FA5EDF5 /* WidgetViews.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		275B8ED6B9A4C3076F5FD4EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B7A8AA3A6D268214A578804B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EBFE3A70F68A709FE14175CF;
+			remoteInfo = AirSendShare;
+		};
+		5EE861DE81A78E17DAB54DF4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B7A8AA3A6D268214A578804B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9F30573BBE047E34A2F171B9;
+			remoteInfo = LinkMirror;
+		};
+		8CAC3E0613BBD64519613615 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B7A8AA3A6D268214A578804B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2EEB5F2A25903B3A21FB4C2C;
+			remoteInfo = LinkWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		232744CA99C111D237850249 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AAE85FD5F173C423606CB40B /* AirSendShare.appex in Embed Foundation Extensions */,
+				6FC99F76C1C37A19503E32D5 /* LinkWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0B4C3ACE6D79D7C454BB6FE1 /* MediaListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaListModel.swift; sourceTree = "<group>"; };
+		0F257270791F5F677A99E16A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		17E1BBD393B231FBF5D148C3 /* LinkToMacOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LinkToMacOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A79E5307B246AA4C9044A12 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		1A8B486A16F544290D488D21 /* MirrorHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MirrorHelper.swift; sourceTree = "<group>"; };
 		233F96C3E85599A7D082A39B /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		238E1140EBFBFF6E1D739FC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		266697DFA48B789E4DF0CB0C /* ClipboardSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardSync.swift; sourceTree = "<group>"; };
@@ -57,33 +128,55 @@
 		320D982DF762A33A3BC24C23 /* SnapshotRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotRenderer.swift; sourceTree = "<group>"; };
 		345D2C85657B1E9D8BE72CCD /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
 		3CE57E9CEDEDA4EFD9AF9157 /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
+		49A486F028F2DDBB62045F20 /* AirSendShare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirSendShare.entitlements; sourceTree = "<group>"; };
+		4CF663EB318A9D8D6B483292 /* AirSendProgressWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirSendProgressWindow.swift; sourceTree = "<group>"; };
 		529D3A7CD4EDC1266AE05FDB /* AppCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCommands.swift; sourceTree = "<group>"; };
 		534209D9416859E7EA4D09C9 /* PhotosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosView.swift; sourceTree = "<group>"; };
+		53BB2205100C4B2E66F5FBA8 /* AsyncLimiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncLimiter.swift; sourceTree = "<group>"; };
+		5B443085F20006E568A71BEC /* AirSendShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AirSendShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C9B2AA38B48A4F0E39B461B /* PhotoViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewer.swift; sourceTree = "<group>"; };
 		66AB3B974C5A0824FBD6F716 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		6ABC810B2F4FE60C4CE0B6DF /* AppLauncherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLauncherView.swift; sourceTree = "<group>"; };
 		77771B63D6DDC5287DEF09E7 /* Prefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prefs.swift; sourceTree = "<group>"; };
+		7CF8357E760ACFFDA157C666 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		8921C7061B6EAD1EA8964A0F /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
+		8D2260CCDF0A43E8287FE5B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8E350553F9EDCEC9BE7E1D71 /* LinkCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LinkCore; path = Packages/LinkCore; sourceTree = SOURCE_ROOT; };
 		958F12EEA72978ECCAEF8947 /* PhoneLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneLibrary.swift; sourceTree = "<group>"; };
 		9A89571C8DE26E7C36927056 /* ShortcutMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutMonitor.swift; sourceTree = "<group>"; };
 		9D37D3579269C3CDE6913D0E /* MirrorWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MirrorWindow.swift; sourceTree = "<group>"; };
+		9DA06F1C6A5008C9689C9541 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		9E2B6AB248AE9E0E8B782C43 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A05341C96CF1DB0B62E5001D /* MirrorSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MirrorSession.swift; sourceTree = "<group>"; };
+		A2CDAD632404ADB69674EF09 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		A8399B0E7E1E5C919B5D37BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A91B14E80BE438C1A18CF0E7 /* FilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesView.swift; sourceTree = "<group>"; };
+		B0ACCB2DFA082F9FAA541D3E /* AirSendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirSendView.swift; sourceTree = "<group>"; };
 		B0D4EAFA984DEE9ACA3DD303 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		B1AA2D2A0EEEE4D49ECEFE98 /* WidgetPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPublisher.swift; sourceTree = "<group>"; };
 		B635FA1ACC2DC0797057C7EB /* DeviceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceMonitor.swift; sourceTree = "<group>"; };
+		C1116473A1E5140B74114B78 /* AirSendService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirSendService.swift; sourceTree = "<group>"; };
 		C22C929BEDB25B8EF6321E1C /* AdbLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdbLauncher.swift; sourceTree = "<group>"; };
 		C459FAC39164EBE7F45669CF /* OverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverviewView.swift; sourceTree = "<group>"; };
 		C572D2BAC392C6F5594E7843 /* MirrorPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MirrorPage.swift; sourceTree = "<group>"; };
+		CF440323C64E17D7D50D7B42 /* LinkWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LinkWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		D24447DF380887D7D4E23E00 /* AppsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsView.swift; sourceTree = "<group>"; };
+		D3C4C6C6EC792DB8F4AB2B94 /* MirrorHelperDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MirrorHelperDelegate.swift; sourceTree = "<group>"; };
+		D533C63FE9DFDB1400F2639A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D5FEE9C068E50A0D7FA5EDF5 /* WidgetViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetViews.swift; sourceTree = "<group>"; };
 		DA537BD578C6E92B8991F8AF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		DCE0667667EE9B0C7752EB8A /* LinkWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkWidget.entitlements; sourceTree = "<group>"; };
 		E237F10BF4EC2F41B09A7B31 /* CallAlerter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallAlerter.swift; sourceTree = "<group>"; };
 		E2D37955067F827C31A03E49 /* ChipCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChipCatalog.swift; sourceTree = "<group>"; };
+		E42048F45982B2A68A9C19F3 /* LinkMirror.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LinkMirror.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E520050EC0B69FA7C3579667 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		E556CC239883C6CAD9EE7EE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E7F8DD6D43D12E0046A075F0 /* VideoDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDecoder.swift; sourceTree = "<group>"; };
 		E88CE2CA5F29B1DAEEFD0CD1 /* NotificationPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPresenter.swift; sourceTree = "<group>"; };
+		EFC6CCCDF81FDB6A4EB46815 /* LinkWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkWidget.swift; sourceTree = "<group>"; };
 		F4FE64467621FBACC20CC343 /* LinkToMacOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkToMacOSApp.swift; sourceTree = "<group>"; };
+		F9842A3D1DDBD7AB331BA7E1 /* WidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshot.swift; sourceTree = "<group>"; };
+		FE0F517F6CD4A6D0B9DF21D9 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,9 +188,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C33EE988FD5795E1F91DB657 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0126CC02336172E493C47E5B /* LinkCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		05B747DEC2D0FBC97DA6ABDF /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				F9842A3D1DDBD7AB331BA7E1 /* WidgetSnapshot.swift */,
+				D5FEE9C068E50A0D7FA5EDF5 /* WidgetViews.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		17537AEBEDA4ED8BB15AB575 /* LinkToMacOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -119,7 +229,9 @@
 			isa = PBXGroup;
 			children = (
 				C22C929BEDB25B8EF6321E1C /* AdbLauncher.swift */,
+				C1116473A1E5140B74114B78 /* AirSendService.swift */,
 				2C562F19C5C0E67A24F4704D /* AppIconLoader.swift */,
+				53BB2205100C4B2E66F5FBA8 /* AsyncLimiter.swift */,
 				286E95ABFAB14A0896D4E69F /* AudioPlayer.swift */,
 				E237F10BF4EC2F41B09A7B31 /* CallAlerter.swift */,
 				E2D37955067F827C31A03E49 /* ChipCatalog.swift */,
@@ -127,18 +239,33 @@
 				B635FA1ACC2DC0797057C7EB /* DeviceMonitor.swift */,
 				345D2C85657B1E9D8BE72CCD /* ExportService.swift */,
 				0B4C3ACE6D79D7C454BB6FE1 /* MediaListModel.swift */,
+				1A8B486A16F544290D488D21 /* MirrorHelper.swift */,
 				A05341C96CF1DB0B62E5001D /* MirrorSession.swift */,
 				958F12EEA72978ECCAEF8947 /* PhoneLibrary.swift */,
 				77771B63D6DDC5287DEF09E7 /* Prefs.swift */,
 				320D982DF762A33A3BC24C23 /* SnapshotRenderer.swift */,
 				E7F8DD6D43D12E0046A075F0 /* VideoDecoder.swift */,
+				B1AA2D2A0EEEE4D49ECEFE98 /* WidgetPublisher.swift */,
 			);
 			path = Library;
+			sourceTree = "<group>";
+		};
+		4D4098FFB425EE7B5290CD75 /* AirSendShare */ = {
+			isa = PBXGroup;
+			children = (
+				49A486F028F2DDBB62045F20 /* AirSendShare.entitlements */,
+				A8399B0E7E1E5C919B5D37BD /* Info.plist */,
+				0F257270791F5F677A99E16A /* Localizable.xcstrings */,
+				A2CDAD632404ADB69674EF09 /* ShareViewController.swift */,
+			);
+			path = AirSendShare;
 			sourceTree = "<group>";
 		};
 		6CB38A9046BB18D83579FED9 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4CF663EB318A9D8D6B483292 /* AirSendProgressWindow.swift */,
+				B0ACCB2DFA082F9FAA541D3E /* AirSendView.swift */,
 				529D3A7CD4EDC1266AE05FDB /* AppCommands.swift */,
 				6ABC810B2F4FE60C4CE0B6DF /* AppLauncherView.swift */,
 				D24447DF380887D7D4E23E00 /* AppsView.swift */,
@@ -168,9 +295,23 @@
 		91039389B9DAD091CF0FA7E2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				5B443085F20006E568A71BEC /* AirSendShare.appex */,
+				E42048F45982B2A68A9C19F3 /* LinkMirror.app */,
 				17E1BBD393B231FBF5D148C3 /* LinkToMacOS.app */,
+				CF440323C64E17D7D50D7B42 /* LinkWidget.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9D5ABBA71E5B1A7A258BB3B8 /* LinkWidget */ = {
+			isa = PBXGroup;
+			children = (
+				8D2260CCDF0A43E8287FE5B3 /* Info.plist */,
+				DCE0667667EE9B0C7752EB8A /* LinkWidget.entitlements */,
+				EFC6CCCDF81FDB6A4EB46815 /* LinkWidget.swift */,
+				7CF8357E760ACFFDA157C666 /* Localizable.xcstrings */,
+			);
+			path = LinkWidget;
 			sourceTree = "<group>";
 		};
 		B198055F78937A4A330BCC4F /* Packages */ = {
@@ -184,15 +325,49 @@
 		C2735D9AE12FC0F8695E6F24 = {
 			isa = PBXGroup;
 			children = (
+				4D4098FFB425EE7B5290CD75 /* AirSendShare */,
+				E0B0C896D290EC53BB01C0D5 /* LinkMirror */,
 				17537AEBEDA4ED8BB15AB575 /* LinkToMacOS */,
+				9D5ABBA71E5B1A7A258BB3B8 /* LinkWidget */,
 				B198055F78937A4A330BCC4F /* Packages */,
+				05B747DEC2D0FBC97DA6ABDF /* Shared */,
 				91039389B9DAD091CF0FA7E2 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		E0B0C896D290EC53BB01C0D5 /* LinkMirror */ = {
+			isa = PBXGroup;
+			children = (
+				9E2B6AB248AE9E0E8B782C43 /* Assets.xcassets */,
+				D533C63FE9DFDB1400F2639A /* Info.plist */,
+				FE0F517F6CD4A6D0B9DF21D9 /* Localizable.xcstrings */,
+				9DA06F1C6A5008C9689C9541 /* main.swift */,
+				D3C4C6C6EC792DB8F4AB2B94 /* MirrorHelperDelegate.swift */,
+			);
+			path = LinkMirror;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2EEB5F2A25903B3A21FB4C2C /* LinkWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 917F837FF4C077AE60A95799 /* Build configuration list for PBXNativeTarget "LinkWidget" */;
+			buildPhases = (
+				50BB163245853A84AB8E405C /* Sources */,
+				702B7B0896530010D4FB1BAE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LinkWidget;
+			packageProductDependencies = (
+			);
+			productName = LinkWidget;
+			productReference = CF440323C64E17D7D50D7B42 /* LinkWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		51010E86DD1B8BC0980700D5 /* LinkToMacOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C207108E300EA33033987490 /* Build configuration list for PBXNativeTarget "LinkToMacOS" */;
@@ -200,10 +375,16 @@
 				B911248A26E2E8F3C780C000 /* Sources */,
 				FA0B61101CF9748C2126F8B1 /* Resources */,
 				52E82287E6756A06C24BDD34 /* Frameworks */,
+				232744CA99C111D237850249 /* Embed Foundation Extensions */,
+				0B60DAE48EBC1546F19319A4 /* Bundle adb */,
+				0A46B99CF3FB2F3CD02121F9 /* Embed Mirror helper */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				2E1F96EF8C6C877D420B59EE /* PBXTargetDependency */,
+				D6A0B467D68D2B0403FE6341 /* PBXTargetDependency */,
+				352F22EE2A83566E03DEA225 /* PBXTargetDependency */,
 			);
 			name = LinkToMacOS;
 			packageProductDependencies = (
@@ -212,6 +393,44 @@
 			productName = LinkToMacOS;
 			productReference = 17E1BBD393B231FBF5D148C3 /* LinkToMacOS.app */;
 			productType = "com.apple.product-type.application";
+		};
+		9F30573BBE047E34A2F171B9 /* LinkMirror */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 63444BA86EBA8FE5F75F0D6C /* Build configuration list for PBXNativeTarget "LinkMirror" */;
+			buildPhases = (
+				31D1098A9D84189963705D8D /* Sources */,
+				43939FF12CAC9B0E57479713 /* Resources */,
+				C33EE988FD5795E1F91DB657 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LinkMirror;
+			packageProductDependencies = (
+				EA2562F5704869008A9F2DAC /* LinkCore */,
+			);
+			productName = LinkMirror;
+			productReference = E42048F45982B2A68A9C19F3 /* LinkMirror.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EBFE3A70F68A709FE14175CF /* AirSendShare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A002276681AC54161C15C174 /* Build configuration list for PBXNativeTarget "AirSendShare" */;
+			buildPhases = (
+				B1CD4F5290150CE3776CE637 /* Sources */,
+				DFB5C027A4662DC68B664F82 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AirSendShare;
+			packageProductDependencies = (
+			);
+			productName = AirSendShare;
+			productReference = 5B443085F20006E568A71BEC /* AirSendShare.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -222,7 +441,19 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					2EEB5F2A25903B3A21FB4C2C = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
 					51010E86DD1B8BC0980700D5 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+					9F30573BBE047E34A2F171B9 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+					EBFE3A70F68A709FE14175CF = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Manual;
 					};
@@ -249,11 +480,39 @@
 			projectRoot = "";
 			targets = (
 				51010E86DD1B8BC0980700D5 /* LinkToMacOS */,
+				EBFE3A70F68A709FE14175CF /* AirSendShare */,
+				2EEB5F2A25903B3A21FB4C2C /* LinkWidget */,
+				9F30573BBE047E34A2F171B9 /* LinkMirror */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		43939FF12CAC9B0E57479713 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EF56470D4F099D6450A93F45 /* Assets.xcassets in Resources */,
+				EB72BA09500C62D114333AE8 /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		702B7B0896530010D4FB1BAE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0B67C3CC8C9149DFCC962BD /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DFB5C027A4662DC68B664F82 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4ABD07054CF4A7F64CFF655C /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FA0B61101CF9748C2126F8B1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -266,17 +525,98 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		0A46B99CF3FB2F3CD02121F9 /* Embed Mirror helper */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Mirror helper";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "HELPER=\"$BUILT_PRODUCTS_DIR/Link to macOS Mirror.app\"\nDEST=\"$CODESIGNING_FOLDER_PATH/Contents/Helpers\"\nmkdir -p \"$DEST\"\nrm -rf \"$DEST/Link to macOS Mirror.app\"\nditto \"$HELPER\" \"$DEST/Link to macOS Mirror.app\"\n";
+		};
+		0B60DAE48EBC1546F19319A4 /* Bundle adb */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle adb";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$SRCROOT/../scripts/bundle-adb.sh\" \"$CODESIGNING_FOLDER_PATH\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		31D1098A9D84189963705D8D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				05F37224DB4F9B54564C5668 /* AdbLauncher.swift in Sources */,
+				A05FDFB5134E7D706262D174 /* AppIconLoader.swift in Sources */,
+				9FDE8DCA8F327B9A05BEC79A /* AppLauncherView.swift in Sources */,
+				348BA7ED6D87F4DCD165F862 /* AsyncLimiter.swift in Sources */,
+				75D7A39E92E80163AE8CFE0B /* AudioPlayer.swift in Sources */,
+				DCB1B99F2849527F33219F0B /* MirrorHelperDelegate.swift in Sources */,
+				0BF3AAFCB6B6B8E5AA67BC32 /* MirrorSession.swift in Sources */,
+				A693B8C9CB149273FC2B60FC /* MirrorWindow.swift in Sources */,
+				33149370D701633C725AA7FB /* VideoDecoder.swift in Sources */,
+				DD5B3C339759C06745955F80 /* VideoView.swift in Sources */,
+				C9312530EAEC3EA754DD676A /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50BB163245853A84AB8E405C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5099FE4C015C6B996AD293A5 /* LinkWidget.swift in Sources */,
+				1147A19C3C72E318F9A4BDBB /* WidgetSnapshot.swift in Sources */,
+				8DE7CA45CCB9E5704B1E467C /* WidgetViews.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B1CD4F5290150CE3776CE637 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				047D73673001F3ABAD6CC890 /* ShareViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B911248A26E2E8F3C780C000 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				B5B1ED34F692A7591FA01ADE /* AdbLauncher.swift in Sources */,
+				950AFD4BFCB4E861463C9777 /* AirSendProgressWindow.swift in Sources */,
+				B40D1D3C2EF67C4B9B822912 /* AirSendService.swift in Sources */,
+				C51F2E75EC3B10A3922198F0 /* AirSendView.swift in Sources */,
 				57E4739436D3545E2B4AF9C0 /* AppCommands.swift in Sources */,
 				19CDE9BB0113A246FC59CE76 /* AppIconLoader.swift in Sources */,
 				57691892276A4DCF9550E2DC /* AppLauncherView.swift in Sources */,
 				A1EC946C25F585B470E36107 /* AppModel.swift in Sources */,
 				A55474D50A2AA641038AC2C5 /* AppsView.swift in Sources */,
+				EF16CFDE6AE18257DEE14044 /* AsyncLimiter.swift in Sources */,
 				15C0E57825F03EB724D04E57 /* AudioPlayer.swift in Sources */,
 				965160FAC8BAC158B9AB6D90 /* CallAlerter.swift in Sources */,
 				48418F1CBBE1894CC3590423 /* ChipCatalog.swift in Sources */,
@@ -288,6 +628,7 @@
 				7103CBA32DDC97F86E93E0DC /* MainWindow.swift in Sources */,
 				3DC167DFDCF86D89BEEFACA7 /* MediaListModel.swift in Sources */,
 				959CE4EBE7D4E715CDEB868B /* MenuView.swift in Sources */,
+				F2E5DD64F99C27BBBC8FEED0 /* MirrorHelper.swift in Sources */,
 				D5D096FEAC72444D1A0AB8EA /* MirrorPage.swift in Sources */,
 				AC05E61F39D88FD9803CDBB8 /* MirrorSession.swift in Sources */,
 				87DB2019C9D8523C1C911D3A /* MirrorWindow.swift in Sources */,
@@ -303,10 +644,31 @@
 				B68D5378C98004A2A36F74D2 /* SnapshotRenderer.swift in Sources */,
 				BC67320CE66125BD7982949D /* VideoDecoder.swift in Sources */,
 				D9A8485AC53393109728B2C4 /* VideoView.swift in Sources */,
+				57000FDDB50B01B26337397A /* WidgetPublisher.swift in Sources */,
+				4C85B02B5FBCC4AA6E1D715A /* WidgetSnapshot.swift in Sources */,
+				FF7585DCF657B258AE6A466D /* WidgetViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2E1F96EF8C6C877D420B59EE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EBFE3A70F68A709FE14175CF /* AirSendShare */;
+			targetProxy = 275B8ED6B9A4C3076F5FD4EE /* PBXContainerItemProxy */;
+		};
+		352F22EE2A83566E03DEA225 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9F30573BBE047E34A2F171B9 /* LinkMirror */;
+			targetProxy = 5EE861DE81A78E17DAB54DF4 /* PBXContainerItemProxy */;
+		};
+		D6A0B467D68D2B0403FE6341 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2EEB5F2A25903B3A21FB4C2C /* LinkWidget */;
+			targetProxy = 8CAC3E0613BBD64519613615 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		0DBAB6DAAB9907B1D1057141 /* Release */ = {
@@ -315,6 +677,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_APP_SANDBOX = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = LinkToMacOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -378,7 +741,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "Link to macOS";
@@ -389,12 +752,71 @@
 			};
 			name = Release;
 		};
+		2058D9881841958F4D986616 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = NO;
+				INFOPLIST_FILE = LinkMirror/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.linktomacos.mac.mirror;
+				PRODUCT_NAME = "Link to macOS Mirror";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Debug;
+		};
+		223F1776C1F8DD333AEEDA6C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = NO;
+				INFOPLIST_FILE = LinkMirror/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.linktomacos.mac.mirror;
+				PRODUCT_NAME = "Link to macOS Mirror";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Release;
+		};
+		234C9C2F7040F0567DE60D56 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LinkWidget/LinkWidget.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = YES;
+				INFOPLIST_FILE = LinkWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.linktomacos.mac.widget;
+				PRODUCT_NAME = LinkWidget;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Debug;
+		};
 		4280E8E7A56096BBE82D4851 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_APP_SANDBOX = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = LinkToMacOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -406,6 +828,46 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 			};
 			name = Debug;
+		};
+		56C79EA8EED301A512CA74DD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LinkWidget/LinkWidget.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = YES;
+				INFOPLIST_FILE = LinkWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.linktomacos.mac.widget;
+				PRODUCT_NAME = LinkWidget;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Release;
+		};
+		7AD75B7CAB6963456A1F801E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = AirSendShare/AirSendShare.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = YES;
+				INFOPLIST_FILE = AirSendShare/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.linktomacos.mac.share;
+				PRODUCT_NAME = AirSend;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Release;
 		};
 		7B0C17B709915FBAEDF285F0 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -464,7 +926,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -476,6 +938,26 @@
 			};
 			name = Debug;
 		};
+		A57D4CCB2105A308CF0ADE4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = AirSendShare/AirSendShare.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = YES;
+				INFOPLIST_FILE = AirSendShare/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.linktomacos.mac.share;
+				PRODUCT_NAME = AirSend;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -484,6 +966,33 @@
 			buildConfigurations = (
 				7B0C17B709915FBAEDF285F0 /* Debug */,
 				1ED4F59CAFB9DB9AC4779422 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		63444BA86EBA8FE5F75F0D6C /* Build configuration list for PBXNativeTarget "LinkMirror" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2058D9881841958F4D986616 /* Debug */,
+				223F1776C1F8DD333AEEDA6C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		917F837FF4C077AE60A95799 /* Build configuration list for PBXNativeTarget "LinkWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				234C9C2F7040F0567DE60D56 /* Debug */,
+				56C79EA8EED301A512CA74DD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A002276681AC54161C15C174 /* Build configuration list for PBXNativeTarget "AirSendShare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A57D4CCB2105A308CF0ADE4C /* Debug */,
+				7AD75B7CAB6963456A1F801E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -508,6 +1017,10 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		D4694ECA312A86FA63627D66 /* LinkCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LinkCore;
+		};
+		EA2562F5704869008A9F2DAC /* LinkCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LinkCore;
 		};
