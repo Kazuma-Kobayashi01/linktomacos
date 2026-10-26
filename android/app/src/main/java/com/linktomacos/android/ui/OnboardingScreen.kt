@@ -47,7 +47,7 @@ private val pages = listOf(
 fun OnboardingScreen(onScan: () -> Unit, onPaste: () -> Unit, modifier: Modifier = Modifier) {
     val pager = rememberPagerState { pages.size }
     Column(
-        modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).statusBarsPadding().navigationBarsPadding(),
+        modifier = modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         HorizontalPager(state = pager, modifier = Modifier.weight(1f)) { index ->
@@ -57,7 +57,7 @@ fun OnboardingScreen(onScan: () -> Unit, onPaste: () -> Unit, modifier: Modifier
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                HeroIllustration(page.badges, Modifier.fillMaxWidth())
+                HeroCard { HeroIllustration(page.badges, Modifier.fillMaxWidth(0.85f)) }
                 Spacer(Modifier.height(40.dp))
                 Text(
                     stringResource(page.title),

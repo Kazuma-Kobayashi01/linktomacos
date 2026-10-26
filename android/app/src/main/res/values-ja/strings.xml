@@ -92,6 +92,8 @@
     <string name="about_title">このアプリについて</string>
     <string name="about_summary">スマートフォンと Mac をつなぎます：通知、クリップボード、写真とファイル、画面ミラーリング。</string>
     <string name="about_version">バージョン</string>
+    <string name="about_colors">カラー</string>
+    <string name="about_colors_sub">システムのカラーパレットに追従し、壁紙やパレットを変えると自動で変わります</string>
     <string name="about_license">ライセンス</string>
     <string name="about_paired_mac">ペアリング済みの Mac</string>
     <string name="unpair_confirm_title">ペアリングを解除しますか？</string>
@@ -141,7 +143,31 @@
     <string name="dnd_calls_hint">着信時は Mac に通知が表示され、着信音が鳴ります。Mac の設定で調整できます。</string>
     <string name="keepalive_summary">One UI はバックグラウンドのアプリを積極的に停止します。接続を安定させるため、次の手順に従ってください。</string>
     <string name="battery_opt_title">バッテリー最適化</string>
+    <string name="airsend_name">AirSend</string>
+    <string name="airsend_channel">AirSend 受信</string>
+    <string name="airsend_channel_status">AirSend の進行状況</string>
+    <string name="airsend_not_connected">Mac に接続できず、送信できませんでした</string>
+    <string name="airsend_not_paired">先に Link to macOS で Mac をペアリングしてください</string>
+    <string name="airsend_nothing">送信できる内容がありません</string>
+    <string name="airsend_sending">“%1$s” に送信中…</string>
+    <string name="airsend_receive_failed">“%1$s” を受信できませんでした</string>
+    <string name="airsend_received_title">Mac からファイルを受信</string>
+    <string name="airsend_receiving">“%1$s” を受信中</string>
+    <string name="airsend_text_title">Mac からのテキスト（コピー済み）</string>
+    <string name="airsend_shortcut_long">AirSend で “%1$s” に送信</string>
+    <string name="airsend_summary">共有メニューでタップするだけで、ファイル、写真、テキストが Mac に届きます。Mac からも同じ操作で端末に送れます。</string>
+    <string name="airsend_howto_title">使い方</string>
+    <string name="airsend_howto">端末 → Mac：どのアプリでも「共有」をタップし、上段の Mac の名前、またはアプリ一覧の AirSend を選びます。
+Mac → 端末：Finder でファイルを右クリックして「共有 → AirSend」を選ぶか、Link to macOS の AirSend ページにファイルをドロップします。</string>
+    <string name="airsend_saved_to">Mac から受け取ったファイルは「Download/AirSend」に保存されます。テキストはそのままクリップボードに入ります。</string>
+    <string name="airsend_row_sub">共有メニューから直接 Mac へ</string>
+    <string name="tile_label">Link to macOS</string>
+    <string name="qs_add_title">クイック設定に追加</string>
+    <string name="qs_add_sub">通知パネルから Mac との接続状況を確認。タップするとアプリが開きます</string>
     <string name="keepalive_more">その他の設定</string>
+    <plurals name="airsend_sent">
+        <item quantity="other">%1$d 個のファイルを “%2$s” に送信しました</item>
+    </plurals>
     <plurals name="apps_forwarding">
         <item quantity="other">%1$d 個のアプリの通知を転送中</item>
     </plurals>

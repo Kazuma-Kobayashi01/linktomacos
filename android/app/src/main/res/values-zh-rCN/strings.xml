@@ -92,6 +92,8 @@
     <string name="about_title">关于</string>
     <string name="about_summary">连接手机和 Mac：通知、剪贴板、相册文件、屏幕镜像。</string>
     <string name="about_version">版本</string>
+    <string name="about_colors">颜色</string>
+    <string name="about_colors_sub">跟随系统调色盘，换壁纸或调色板后自动变化</string>
     <string name="about_license">开源许可</string>
     <string name="about_paired_mac">已配对的 Mac</string>
     <string name="unpair_confirm_title">取消配对？</string>
@@ -141,7 +143,31 @@
     <string name="dnd_calls_hint">来电时 Mac 会弹出提示并响铃，可以在 Mac 的“设置”里调整。</string>
     <string name="keepalive_summary">One UI 会清理后台应用，按下面的步骤让连接保持稳定。</string>
     <string name="battery_opt_title">电池优化</string>
+    <string name="airsend_name">AirSend</string>
+    <string name="airsend_channel">AirSend 收到的内容</string>
+    <string name="airsend_channel_status">AirSend 进度</string>
+    <string name="airsend_not_connected">没有连上 Mac，未能发送</string>
+    <string name="airsend_not_paired">请先在 Link to macOS 里配对一台 Mac</string>
+    <string name="airsend_nothing">没有可以发送的内容</string>
+    <string name="airsend_sending">正在发送到“%1$s”…</string>
+    <string name="airsend_receive_failed">没能接收“%1$s”</string>
+    <string name="airsend_received_title">从 Mac 收到文件</string>
+    <string name="airsend_receiving">正在接收“%1$s”</string>
+    <string name="airsend_text_title">来自 Mac 的文字（已复制）</string>
+    <string name="airsend_shortcut_long">用 AirSend 发给“%1$s”</string>
+    <string name="airsend_summary">在分享菜单里点一下，文件、照片和文字就到了 Mac；Mac 上也一样，右键分享给手机。</string>
+    <string name="airsend_howto_title">怎么用</string>
+    <string name="airsend_howto">手机 → Mac：在任何应用里点“分享”，选择最上面一排的 Mac 名字，或下面的 AirSend。
+Mac → 手机：在访达里右键文件，选“共享 → AirSend”，或把文件拖进 Mac 上 Link to macOS 的 AirSend 页面。</string>
+    <string name="airsend_saved_to">从 Mac 收到的文件保存在“下载/AirSend”文件夹；收到的文字会直接放进剪贴板。</string>
+    <string name="airsend_row_sub">在分享菜单里直接发给 Mac</string>
+    <string name="tile_label">Link to macOS</string>
+    <string name="qs_add_title">添加到下拉面板</string>
+    <string name="qs_add_sub">在下拉面板里随时查看和 Mac 的连接状态，点一下打开应用</string>
     <string name="keepalive_more">其他设置</string>
+    <plurals name="airsend_sent">
+        <item quantity="other">已发送 %1$d 个文件到“%2$s”</item>
+    </plurals>
     <plurals name="apps_forwarding">
         <item quantity="other">正在转发 %1$d 个应用的通知</item>
     </plurals>

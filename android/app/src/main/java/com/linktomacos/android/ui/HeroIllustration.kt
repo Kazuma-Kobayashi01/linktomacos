@@ -41,15 +41,15 @@ fun HeroIllustration(badges: List<ImageVector>, modifier: Modifier = Modifier) {
             val corner = CornerRadius(height * 0.05f)
             drawRoundRect(
                 brush = Brush.linearGradient(
-                    listOf(colors.primaryContainer, colors.tertiaryContainer),
+                    listOf(colors.primary, colors.tertiary),
                     start = screenTopLeft,
                     end = Offset(screenTopLeft.x + screenSize.width, screenTopLeft.y + screenSize.height),
                 ),
                 topLeft = screenTopLeft, size = screenSize, cornerRadius = corner,
             )
-            drawRoundRect(colors.onSurface, screenTopLeft, screenSize, corner, style = Stroke(height * 0.025f))
+            drawRoundRect(colors.surface, screenTopLeft, screenSize, corner, style = Stroke(height * 0.025f))
             drawRoundRect(
-                colors.outlineVariant,
+                colors.surface,
                 topLeft = Offset(0f, height * 0.77f), size = Size(width * 0.80f, height * 0.05f),
                 cornerRadius = CornerRadius(height * 0.025f),
             )
@@ -57,12 +57,12 @@ fun HeroIllustration(badges: List<ImageVector>, modifier: Modifier = Modifier) {
             val phoneTopLeft = Offset(width * 0.64f, height * 0.02f)
             val phoneSize = Size(width * 0.26f, height * 0.80f)
             val phoneCorner = CornerRadius(height * 0.07f)
-            drawRoundRect(colors.primary, phoneTopLeft, phoneSize, phoneCorner)
+            drawRoundRect(colors.inverseSurface, phoneTopLeft, phoneSize, phoneCorner)
             drawRoundRect(
-                colors.onSurface, phoneTopLeft, phoneSize, phoneCorner, style = Stroke(height * 0.025f),
+                colors.surface, phoneTopLeft, phoneSize, phoneCorner, style = Stroke(height * 0.025f),
             )
             drawRoundRect(
-                colors.primaryContainer,
+                Brush.verticalGradient(listOf(colors.primary, colors.tertiary)),
                 topLeft = Offset(phoneTopLeft.x + phoneSize.width * 0.12f, phoneTopLeft.y + phoneSize.height * 0.07f),
                 size = Size(phoneSize.width * 0.76f, phoneSize.height * 0.86f),
                 cornerRadius = CornerRadius(height * 0.04f),

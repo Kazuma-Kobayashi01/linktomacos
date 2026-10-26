@@ -92,6 +92,8 @@
     <string name="about_title">關於</string>
     <string name="about_summary">連線手機和 Mac：通知、剪貼簿、相簿檔案、螢幕映象。</string>
     <string name="about_version">版本</string>
+    <string name="about_colors">顏色</string>
+    <string name="about_colors_sub">跟隨系統調色盤，換桌布或調色盤後自動變化</string>
     <string name="about_license">開源許可</string>
     <string name="about_paired_mac">已配對的 Mac</string>
     <string name="unpair_confirm_title">取消配對？</string>
@@ -141,7 +143,31 @@
     <string name="dnd_calls_hint">來電時 Mac 會彈出提示並響鈴，可以在 Mac 的「設定」裡調整。</string>
     <string name="keepalive_summary">One UI 會清理背景應用程式，按下面的步驟讓連線保持穩定。</string>
     <string name="battery_opt_title">電池最佳化</string>
+    <string name="airsend_name">AirSend</string>
+    <string name="airsend_channel">AirSend 收到的內容</string>
+    <string name="airsend_channel_status">AirSend 進度</string>
+    <string name="airsend_not_connected">沒有連上 Mac，未能傳送</string>
+    <string name="airsend_not_paired">請先在 Link to macOS 裡配對一臺 Mac</string>
+    <string name="airsend_nothing">沒有可以傳送的內容</string>
+    <string name="airsend_sending">正在傳送到「%1$s」…</string>
+    <string name="airsend_receive_failed">沒能接收「%1$s」</string>
+    <string name="airsend_received_title">從 Mac 收到檔案</string>
+    <string name="airsend_receiving">正在接收「%1$s」</string>
+    <string name="airsend_text_title">來自 Mac 的文字（已拷貝）</string>
+    <string name="airsend_shortcut_long">用 AirSend 發給「%1$s」</string>
+    <string name="airsend_summary">在分享選單裡點一下，檔案、照片和文字就到了 Mac；Mac 上也一樣，右鍵分享給手機。</string>
+    <string name="airsend_howto_title">怎麼用</string>
+    <string name="airsend_howto">手機 → Mac：在任何應用程式裡點「分享」，選擇最上面一排的 Mac 名字，或下面的 AirSend。
+Mac → 手機：在Finder裡右鍵檔案，選「共享 → AirSend」，或把檔案拖進 Mac 上 Link to macOS 的 AirSend 頁面。</string>
+    <string name="airsend_saved_to">從 Mac 收到的檔案儲存在「下載/AirSend」資料夾；收到的文字會直接放進剪貼簿。</string>
+    <string name="airsend_row_sub">在分享選單裡直接發給 Mac</string>
+    <string name="tile_label">Link to macOS</string>
+    <string name="qs_add_title">新增到下拉麵板</string>
+    <string name="qs_add_sub">在下拉麵板裡隨時檢視和 Mac 的連線狀態，點一下打開應用程式</string>
     <string name="keepalive_more">其他設定</string>
+    <plurals name="airsend_sent">
+        <item quantity="other">已傳送 %1$d 個檔案到「%2$s」</item>
+    </plurals>
     <plurals name="apps_forwarding">
         <item quantity="other">正在轉發 %1$d 個應用程式的通知</item>
     </plurals>

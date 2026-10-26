@@ -26,6 +26,10 @@ class LinkSettings(context: Context) {
     /** 和 Mac 互通剪贴板文本。 */
     val clipboardSync: StateFlow<Boolean> = _clipboardSync.asStateFlow()
 
+    private val _tileAdded = MutableStateFlow(prefs.getBoolean(KEY_TILE, false))
+    /** 快速设置磁贴已经添加过（用来隐藏首页上的“添加”入口）。 */
+    val tileAdded: StateFlow<Boolean> = _tileAdded.asStateFlow()
+
     fun isAllowed(packageName: String) = packageName in _allowedApps.value
 
     fun setAllowed(packageName: String, allowed: Boolean) {
@@ -49,10 +53,16 @@ class LinkSettings(context: Context) {
         _clipboardSync.value = enabled
     }
 
+    fun setTileAdded(added: Boolean) {
+        prefs.edit { putBoolean(KEY_TILE, added) }
+        _tileAdded.value = added
+    }
+
     private companion object {
         const val KEY_APPS = "allowed_apps"
         const val KEY_DND = "dnd_on_connect"
         const val KEY_RING = "ring_calls"
         const val KEY_CLIPBOARD = "clipboard_sync"
+        const val KEY_TILE = "tile_added"
     }
 }

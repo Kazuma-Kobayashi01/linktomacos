@@ -189,6 +189,8 @@ STRINGS = {
     'about_title': ('关于', 'About', 'このアプリについて'),
     'about_summary': ('连接手机和 Mac：通知、剪贴板、相册文件、屏幕镜像。', 'Connect your phone and Mac: notifications, clipboard, photos and files, screen mirroring.', 'スマートフォンと Mac をつなぎます：通知、クリップボード、写真とファイル、画面ミラーリング。'),
     'about_version': ('版本', 'Version', 'バージョン'),
+    'about_colors': ('颜色', 'Colors', 'カラー'),
+    'about_colors_sub': ('跟随系统调色盘，换壁纸或调色板后自动变化', 'Follows the system palette and updates when you change wallpaper or palette', 'システムのカラーパレットに追従し、壁紙やパレットを変えると自動で変わります'),
     'about_license': ('开源许可', 'License', 'ライセンス'),
     'about_paired_mac': ('已配对的 Mac', 'Paired Mac', 'ペアリング済みの Mac'),
     'unpair_confirm_title': ('取消配对？', 'Unpair?', 'ペアリングを解除しますか？'),
@@ -247,10 +249,39 @@ STRINGS = {
     'dnd_calls_hint': ('来电时 Mac 会弹出提示并响铃，可以在 Mac 的“设置”里调整。', 'Your Mac shows an alert and rings for incoming calls. Adjust this in the Mac’s Settings.', '着信時は Mac に通知が表示され、着信音が鳴ります。Mac の設定で調整できます。'),
     'keepalive_summary': ('One UI 会清理后台应用，按下面的步骤让连接保持稳定。', 'One UI aggressively stops background apps. Follow these steps to keep the connection stable.', 'One UI はバックグラウンドのアプリを積極的に停止します。接続を安定させるため、次の手順に従ってください。'),
     'battery_opt_title': ('电池优化', 'Battery optimization', 'バッテリー最適化'),
+    # --- AirSend ---
+    'airsend_name': ('AirSend', 'AirSend', 'AirSend'),
+    'airsend_channel': ('AirSend 收到的内容', 'AirSend received', 'AirSend 受信'),
+    'airsend_channel_status': ('AirSend 进度', 'AirSend progress', 'AirSend の進行状況'),
+    'airsend_not_connected': ('没有连上 Mac，未能发送', 'Couldn’t reach your Mac, so nothing was sent', 'Mac に接続できず、送信できませんでした'),
+    'airsend_not_paired': ('请先在 Link to macOS 里配对一台 Mac', 'Pair a Mac in Link to macOS first', '先に Link to macOS で Mac をペアリングしてください'),
+    'airsend_nothing': ('没有可以发送的内容', 'Nothing to send', '送信できる内容がありません'),
+    'airsend_sending': ('正在发送到“%1$s”…', 'Sending to “%1$s”…', '“%1$s” に送信中…'),
+    'airsend_receive_failed': ('没能接收“%1$s”', 'Couldn’t receive “%1$s”', '“%1$s” を受信できませんでした'),
+    'airsend_received_title': ('从 Mac 收到文件', 'Received from your Mac', 'Mac からファイルを受信'),
+    'airsend_receiving': ('正在接收“%1$s”', 'Receiving “%1$s”', '“%1$s” を受信中'),
+    'airsend_text_title': ('来自 Mac 的文字（已复制）', 'Text from your Mac (copied)', 'Mac からのテキスト（コピー済み）'),
+    'airsend_shortcut_long': ('用 AirSend 发给“%1$s”', 'Send to “%1$s” with AirSend', 'AirSend で “%1$s” に送信'),
+    'airsend_summary': ('在分享菜单里点一下，文件、照片和文字就到了 Mac；Mac 上也一样，右键分享给手机。', 'Tap once in the share menu and files, photos and text land on your Mac. Do the same on your Mac to send to the phone.', '共有メニューでタップするだけで、ファイル、写真、テキストが Mac に届きます。Mac からも同じ操作で端末に送れます。'),
+    'airsend_howto_title': ('怎么用', 'How to use it', '使い方'),
+    'airsend_howto': (
+        '手机 → Mac：在任何应用里点“分享”，选择最上面一排的 Mac 名字，或下面的 AirSend。\nMac → 手机：在访达里右键文件，选“共享 → AirSend”，或把文件拖进 Mac 上 Link to macOS 的 AirSend 页面。',
+        'Phone → Mac: in any app tap Share, then pick your Mac’s name in the top row, or AirSend in the app list.\nMac → phone: in Finder right-click a file and choose Share → AirSend, or drop files on the AirSend page in Link to macOS.',
+        '端末 → Mac：どのアプリでも「共有」をタップし、上段の Mac の名前、またはアプリ一覧の AirSend を選びます。\nMac → 端末：Finder でファイルを右クリックして「共有 → AirSend」を選ぶか、Link to macOS の AirSend ページにファイルをドロップします。'),
+    'airsend_saved_to': ('从 Mac 收到的文件保存在“下载/AirSend”文件夹；收到的文字会直接放进剪贴板。', 'Files from your Mac are saved in Download/AirSend. Text goes straight to your clipboard.', 'Mac から受け取ったファイルは「Download/AirSend」に保存されます。テキストはそのままクリップボードに入ります。'),
+    'airsend_row_sub': ('在分享菜单里直接发给 Mac', 'Share straight to your Mac', '共有メニューから直接 Mac へ'),
+    'tile_label': ('Link to macOS', 'Link to macOS', 'Link to macOS'),
+    'qs_add_title': ('添加到下拉面板', 'Add to Quick Settings', 'クイック設定に追加'),
+    'qs_add_sub': ('在下拉面板里随时查看和 Mac 的连接状态，点一下打开应用', 'Check the connection to your Mac from the notification shade. Tap it to open the app', '通知パネルから Mac との接続状況を確認。タップするとアプリが開きます'),
     'keepalive_more': ('其他设置', 'More steps', 'その他の設定'),
 }
 
 PLURALS = {
+    'airsend_sent': {
+        'zh': '已发送 %1$d 个文件到“%2$s”',
+        'en': {'one': 'Sent %1$d file to “%2$s”', 'other': 'Sent %1$d files to “%2$s”'},
+        'ja': '%1$d 個のファイルを “%2$s” に送信しました',
+    },
     'apps_forwarding': {
         'zh': '正在转发 %1$d 个应用的通知',
         'en': {'one': 'Forwarding notifications from %1$d app', 'other': 'Forwarding notifications from %1$d apps'},

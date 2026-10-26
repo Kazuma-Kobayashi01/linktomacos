@@ -64,7 +64,7 @@ fun AppPickerScreen(
         value = withContext(Dispatchers.IO) { loadApps(context, initiallyAllowed) }
     }
 
-    Column(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).statusBarsPadding()) {
+    Column(modifier = modifier.fillMaxSize().statusBarsPadding()) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)) {
             IconButton(onClick = onBack) { Icon(LinkIcons.ArrowBack, contentDescription = stringResource(R.string.back)) }
             Text(stringResource(R.string.picker_title), style = MaterialTheme.typography.titleLarge)

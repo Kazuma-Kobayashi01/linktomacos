@@ -3,6 +3,9 @@ package com.linktomacos.android
 import androidx.compose.ui.res.stringResource
 import android.Manifest
 import android.content.pm.PackageManager
+import android.app.StatusBarManager
+import android.content.ComponentName
+import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.os.Environment
 import android.os.PowerManager
@@ -36,6 +39,7 @@ import com.linktomacos.android.link.DndController
 import com.linktomacos.android.link.DndStatus
 import com.linktomacos.android.link.LinkService
 import com.linktomacos.android.link.LinkStatus
+import com.linktomacos.android.link.LinkTileService
 import com.linktomacos.android.link.PhoneNotificationListener
 import com.linktomacos.android.protocol.PairingPayload
 import com.linktomacos.android.ui.AppPickerScreen
@@ -51,7 +55,9 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
+import com.linktomacos.android.ui.LinkTheme
 import com.linktomacos.android.ui.Page
+import com.linktomacos.android.ui.screenWash
 import com.linktomacos.android.ui.UiActions
 import com.linktomacos.android.ui.NotificationsPage
 import com.linktomacos.android.ui.ClipboardPage
@@ -60,6 +66,7 @@ import com.linktomacos.android.ui.MirrorPage
 import com.linktomacos.android.ui.DndPage
 import com.linktomacos.android.ui.KeepAlivePage
 import com.linktomacos.android.ui.AboutPage
+import com.linktomacos.android.ui.AirSendPage
 
 import com.linktomacos.android.ui.HomeScreen
 import com.linktomacos.android.ui.QrScanner
@@ -72,10 +79,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val context = LocalContext.current
-            val dark = isSystemInDarkTheme()
-            val colors = if (dark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-            MaterialTheme(colorScheme = colors) { App() }
+            LinkTheme { App() }
         }
     }
 
@@ -103,6 +107,20 @@ class MainActivity : ComponentActivity() {
         if (hasFocus) (application as LinkApp).clipboard.onForeground()
     }
 
+    /** 弹出系统对话框，问用户要不要把磁贴加到下拉面板。 */
+    private fun requestTile() {
+        getSystemService(StatusBarManager::class.java).requestAddTileService(
+            ComponentName(this, LinkTileService::class.java),
+            getString(R.string.tile_label),
+            Icon.createWithResource(this, R.drawable.ic_launcher_monochrome),
+            mainExecutor,
+        ) { result ->
+            if (result == StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ADDED ||
+                result == StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ALREADY_ADDED
+            ) settings.setTileAdded(true)
+        }
+    }
+
     private fun pair(text: String): Boolean {
         val payload = PairingPayload.parse(text) ?: return false
         store.pair(payload)
@@ -120,6 +138,7 @@ class MainActivity : ComponentActivity() {
         val dndOnConnect by settings.dndOnConnect.collectAsStateWithLifecycle()
         val ringCalls by settings.ringCalls.collectAsStateWithLifecycle()
         val clipboardSync by settings.clipboardSync.collectAsStateWithLifecycle()
+        val tileAdded by settings.tileAdded.collectAsStateWithLifecycle()
         val dndActive by DndStatus.active.collectAsStateWithLifecycle()
         val dndError by DndStatus.error.collectAsStateWithLifecycle()
         val enhancedReady by (application as LinkApp).bridge.ready.collectAsStateWithLifecycle()
@@ -150,6 +169,7 @@ class MainActivity : ComponentActivity() {
             clipboardSync = clipboardSync,
             batteryOptimizationIgnored = batteryIgnored,
             versionName = versionName,
+            tileAdded = tileAdded,
         )
         val actions = UiActions(
             onOpen = { page = it },
@@ -170,6 +190,7 @@ class MainActivity : ComponentActivity() {
             onRingCallsChange = settings::setRingCalls,
             onClipboardChange = settings::setClipboardSync,
             onToggleApp = settings::setAllowed,
+            onAddTile = ::requestTile,
         )
 
         if (scanning) {
@@ -201,7 +222,7 @@ class MainActivity : ComponentActivity() {
                         (slideOutHorizontally(slide) { if (deeper) -it / 4 else it / 4 } + fadeOut(tween(160)))
                 },
                 label = "page",
-                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+                modifier = Modifier.fillMaxSize().screenWash(),
             ) { target ->
                 val back = { page = target.parent ?: Page.Home }
                 when (target) {
@@ -209,6 +230,7 @@ class MainActivity : ComponentActivity() {
                     Page.Notifications -> NotificationsPage(ui, actions, back)
                     Page.Apps -> AppPickerScreen(allowedApps, settings::setAllowed, back)
                     Page.Clipboard -> ClipboardPage(ui, actions, back)
+                    Page.AirSend -> AirSendPage(back)
                     Page.Files -> FilesPage(ui, actions, back)
                     Page.Mirror -> MirrorPage(ui, back)
                     Page.Dnd -> DndPage(ui, actions, back)

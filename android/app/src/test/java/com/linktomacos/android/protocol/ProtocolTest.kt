@@ -124,6 +124,15 @@ class ProtocolTest {
     }
 
     @Test
+    fun airSendMessagesRoundTrip() {
+        val offer = AirOffer("abc", listOf(AirFile("照片 1.jpg", 1234, "image/jpeg"), AirFile("a.pdf", 5)))
+        assertEquals(offer, MessageCodec.decode(MessageCodec.encode(offer)))
+        val push = AirPush(AIR_STREAM_BASE + 3, "报告.pdf", 99, "application/pdf")
+        assertEquals(push, MessageCodec.decode(MessageCodec.encode(push)))
+        assertEquals(AirText("https://example.com"), MessageCodec.decode(MessageCodec.encode(AirText("https://example.com"))))
+    }
+
+    @Test
     fun unknownTypeIsTolerated() {
         assertEquals(Unknown("future"), MessageCodec.decode("""{"type":"future","x":1}"""))
     }

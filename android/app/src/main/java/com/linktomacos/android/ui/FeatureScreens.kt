@@ -3,7 +3,11 @@ package com.linktomacos.android.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.provider.Settings
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -68,6 +72,15 @@ fun ClipboardPage(ui: SettingsUiState, actions: UiActions, onBack: () -> Unit) {
             }
         }
         Hint(stringResource(R.string.clip_privacy))
+    }
+}
+
+@Composable
+fun AirSendPage(onBack: () -> Unit) {
+    FeaturePage(stringResource(R.string.airsend_name), listOf(LinkIcons.Phone2Mac, LinkIcons.Folder, LinkIcons.Clipboard), stringResource(R.string.airsend_summary), onBack) {
+        SectionLabel(stringResource(R.string.airsend_howto_title))
+        Hint(stringResource(R.string.airsend_howto))
+        Hint(stringResource(R.string.airsend_saved_to))
     }
 }
 
@@ -165,6 +178,8 @@ fun AboutPage(paired: PairedMac?, ui: SettingsUiState, actions: UiActions, onBac
         ListCard {
             InfoRow(stringResource(R.string.about_version), ui.versionName)
             RowDivider()
+            ColorsRow()
+            RowDivider()
             InfoRow(stringResource(R.string.about_license), "MIT")
             if (paired != null) {
                 RowDivider()
@@ -203,5 +218,30 @@ private fun InfoRow(label: String, value: String) {
     ) {
         Text(label, style = MaterialTheme.typography.titleMedium)
         Text(value, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+/** 显示当前取到的系统调色盘颜色。 */
+@Composable
+private fun ColorsRow() {
+    val colors = MaterialTheme.colorScheme
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(stringResource(R.string.about_colors), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.about_colors_sub), style = MaterialTheme.typography.bodyMedium, color = colors.onSurfaceVariant)
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy((-6).dp)) {
+            for (color in listOf(colors.primary, colors.secondary, colors.tertiary, colors.primaryContainer)) {
+                Box(
+                    Modifier.size(26.dp)
+                        .background(color, androidx.compose.foundation.shape.CircleShape)
+                        .border(2.dp, colors.surfaceContainerLow, androidx.compose.foundation.shape.CircleShape),
+                )
+            }
+        }
     }
 }

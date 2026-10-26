@@ -487,7 +487,11 @@ class RemoteApi(
 
     // MARK: 下载
 
-    private class Source(val stream: InputStream, val name: String, val mime: String, val size: Long, val modified: Long)
+    private class Source(
+        val stream: InputStream, val name: String, val mime: String, val size: Long, val modified: Long,
+        /** 整个文件发送成功后调用。 */
+        val onServed: (() -> Unit)? = null,
+    )
 
     private fun openSource(params: JsonObject): Source = when (params.string("source")) {
         "media" -> {
@@ -517,6 +521,13 @@ class RemoteApi(
             if (!file.isFile) throw FileNotFoundException(context.getString(R.string.err_not_a_file))
             Source(FileInputStream(file), file.name, "application/octet-stream", file.length(), file.lastModified())
         }
+        "airsend" -> {
+            val airSend = (context.applicationContext as com.linktomacos.android.LinkApp).airSend
+            val offer = params.string("offer") ?: throw IllegalArgumentException(context.getString(R.string.err_missing_id))
+            val index = params.int("index") ?: 0
+            val opened = airSend.open(offer, index) ?: throw FileNotFoundException(context.getString(R.string.err_file_gone))
+            Source(opened.stream, opened.name, opened.mime, opened.size, System.currentTimeMillis()) { airSend.served(offer, index) }
+        }
         else -> throw IllegalArgumentException(context.getString(R.string.err_unknown_source))
     }
 
@@ -541,6 +552,7 @@ class RemoteApi(
                 send(DataChunk(streamId, buffer, n))
             }
             send(StreamEnd(streamId, true))
+            source.onServed?.invoke()
         } catch (e: CancellationException) {
             runCatching { send(StreamEnd(streamId, false, context.getString(R.string.err_cancelled))) }
             throw e

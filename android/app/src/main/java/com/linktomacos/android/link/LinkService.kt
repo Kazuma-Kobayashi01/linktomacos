@@ -18,7 +18,10 @@ import com.linktomacos.android.MainActivity
 import com.linktomacos.android.R
 import com.linktomacos.android.data.PairedMac
 import com.linktomacos.android.data.isSamePairing
+import com.linktomacos.android.protocol.AirPush
+import com.linktomacos.android.protocol.AirText
 import com.linktomacos.android.protocol.ClipboardText
+import com.linktomacos.android.protocol.StreamEnd
 import com.linktomacos.android.protocol.DataChunk
 import com.linktomacos.android.protocol.DeviceStatus
 import com.linktomacos.android.protocol.Frames
@@ -117,6 +120,7 @@ class LinkService : Service() {
         // 握手成功后 onConnected 会更新地址并作废令牌，这不是重新配对，不能因此重启连接；
         // 只有换了 Mac（指纹变化）或重新扫码（拿到新令牌）才重启。
         store.paired.distinctUntilChanged(::isSamePairing).collectLatest { mac ->
+            (application as LinkApp).airSend.publishShortcut(mac?.name)
             if (mac == null) {
                 LinkStatus.set(LinkState.NotPaired)
                 return@collectLatest
@@ -218,6 +222,7 @@ class LinkService : Service() {
                     session.close()
                 }
             }
+            val airSendJob = launch(Dispatchers.IO) { (application as LinkApp).airSend.attach(session::send) }
             val remote = RemoteApi(this@LinkService, this, session::send, (application as LinkApp).bridge)
             val reader = async(Dispatchers.IO) { readLoop(session, remote) }
             try {
@@ -226,6 +231,7 @@ class LinkService : Service() {
                 statusJob.cancel()
                 notificationJob.cancel()
                 clipboardJob.cancel()
+                airSendJob.cancel()
                 remote.cancelAll()
             }
         } catch (e: IOException) {
@@ -249,7 +255,10 @@ class LinkService : Service() {
                 is Request -> remote.handle(message)
                 is MirrorInput -> remote.mirror.input(message)
                 is ClipboardText -> (application as LinkApp).clipboard.fromMac(message)
-                is DataChunk -> remote.mirror.onMicData(message)
+                is DataChunk -> if (!(application as LinkApp).airSend.onData(message)) remote.mirror.onMicData(message)
+                is AirPush -> (application as LinkApp).airSend.onPush(message)
+                is AirText -> (application as LinkApp).airSend.onText(message)
+                is StreamEnd -> (application as LinkApp).airSend.onEnd(message)
                 is Goodbye -> {
                     Log.i(TAG, "goodbye from Mac: ${message.reason}")
                     session.macLeft = true

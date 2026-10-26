@@ -8,6 +8,7 @@ enum class Page(val parent: Page?) {
     Notifications(Home),
     Apps(Notifications),
     Clipboard(Home),
+    AirSend(Home),
     Files(Home),
     Mirror(Home),
     Dnd(Home),
@@ -30,6 +31,7 @@ data class SettingsUiState(
     val clipboardSync: Boolean,
     val batteryOptimizationIgnored: Boolean,
     val versionName: String,
+    val tileAdded: Boolean,
 )
 
 /** 界面能触发的操作。 */
@@ -43,6 +45,7 @@ class UiActions(
     val onRingCallsChange: (Boolean) -> Unit,
     val onClipboardChange: (Boolean) -> Unit,
     val onToggleApp: (packageName: String, allowed: Boolean) -> Unit,
+    val onAddTile: () -> Unit,
 )
 
 /** 当前配对的 Mac，没配对为 null。 */

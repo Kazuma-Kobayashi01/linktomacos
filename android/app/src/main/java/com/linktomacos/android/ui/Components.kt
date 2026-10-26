@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +31,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -47,9 +49,10 @@ import com.linktomacos.android.R
 fun IconBadge(
     icon: ImageVector,
     modifier: Modifier = Modifier,
-    container: Color = MaterialTheme.colorScheme.secondaryContainer,
-    tint: Color = MaterialTheme.colorScheme.onSecondaryContainer,
-    size: Dp = 40.dp,
+    accent: Accent = Accent.Secondary,
+    container: Color = accent.container(),
+    tint: Color = accent.onContainer(),
+    size: Dp = 44.dp,
 ) {
     Box(modifier.size(size).clip(CircleShape).background(container), contentAlignment = Alignment.Center) {
         Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(size * 0.55f))
@@ -94,6 +97,7 @@ fun NavRow(
     subtitle: String,
     onClick: () -> Unit,
     attention: Boolean = false,
+    accent: Accent = Accent.Primary,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -102,8 +106,9 @@ fun NavRow(
     ) {
         IconBadge(
             icon,
-            container = if (attention) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.secondaryContainer,
-            tint = if (attention) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSecondaryContainer,
+            accent = accent,
+            container = if (attention) MaterialTheme.colorScheme.errorContainer else accent.container(),
+            tint = if (attention) MaterialTheme.colorScheme.onErrorContainer else accent.onContainer(),
         )
         Column(Modifier.weight(1f)) {
             Text(title, style = MaterialTheme.typography.titleMedium)
@@ -187,9 +192,10 @@ fun FeaturePage(
     val scroll = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = modifier.nestedScroll(scroll.nestedScrollConnection),
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = Color.Transparent,
         topBar = {
             LargeTopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, scrolledContainerColor = Color.Transparent),
                 title = { Text(title) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -204,7 +210,9 @@ fun FeaturePage(
             modifier = Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            HeroIllustration(badges, Modifier.fillMaxWidth().padding(horizontal = 48.dp))
+            HeroCard(Modifier.padding(horizontal = 16.dp)) {
+                HeroIllustration(badges, Modifier.fillMaxWidth(0.7f))
+            }
             Text(
                 summary,
                 style = MaterialTheme.typography.titleMedium,
@@ -220,4 +228,25 @@ fun FeaturePage(
     }
 }
 
-val ScreenPadding = PaddingValues(horizontal = 16.dp)
+/** 带渐变和几个半透明大圆的卡片，放插图或主要状态；颜色全部来自系统调色盘。 */
+@Composable
+fun HeroCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+    val colors = MaterialTheme.colorScheme
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(32.dp))
+            .background(Brush.linearGradient(listOf(colors.primaryContainer, colors.tertiaryContainer)))
+            .drawBehind {
+                drawCircle(colors.primary.copy(alpha = 0.10f), radius = size.minDimension * 0.55f, center = Offset(size.width * 0.95f, size.height * 0.05f))
+                drawCircle(colors.tertiary.copy(alpha = 0.10f), radius = size.minDimension * 0.45f, center = Offset(size.width * 0.05f, size.height * 0.95f))
+            },
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            content = content,
+        )
+    }
+}

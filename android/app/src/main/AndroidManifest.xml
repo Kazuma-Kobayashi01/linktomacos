@@ -56,10 +56,33 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- 声明分享面板最上面一排（直接分享）的 AirSend 目标 -->
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />
+            <!-- 长按下拉面板里的磁贴，打开本应用 -->
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+            </intent-filter>
             <!-- 系统“模式”里点“已连接 Mac”规则的设置时，打开本应用 -->
             <intent-filter>
                 <action android:name="android.app.action.AUTOMATIC_ZEN_RULE" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- AirSend：系统分享面板里的入口。没有界面，读完分享内容就关闭 -->
+        <activity
+            android:name=".AirSendShareActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:label="@string/airsend_name"
+            android:icon="@mipmap/ic_launcher"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
             </intent-filter>
         </activity>
 
@@ -75,6 +98,18 @@
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <!-- 下拉面板（快速设置）磁贴 -->
+        <service
+            android:name=".link.LinkTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_launcher_monochrome"
+            android:label="@string/tile_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
 

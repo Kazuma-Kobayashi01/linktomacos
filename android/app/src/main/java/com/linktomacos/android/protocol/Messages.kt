@@ -157,6 +157,30 @@ data class ClipboardText(val text: String, val timestamp: Long = 0) : LinkMessag
 
 const val CLIPBOARD_MAX_CHARS = 200_000
 
+/** AirSend 提供的一个文件。 */
+@Serializable
+data class AirFile(val name: String, val size: Long, val mime: String = "")
+
+/**
+ * AirSend：手机 → Mac 的文件。手机只先发“清单”，Mac 自己用 `download` 请求（`source = airsend`，带 [id] 和文件序号）逐个取，
+ * 这样沿用现有的下载流水线。
+ */
+@Serializable
+data class AirOffer(val id: String, val files: List<AirFile>) : LinkMessage
+
+/**
+ * AirSend：Mac → 手机的一个文件。紧跟着是 [streamId] 的若干数据帧，最后是同一个 streamId 的 streamEnd。
+ * Mac 分配的 streamId 从 [AIR_STREAM_BASE] 起，和手机分配的 streamId 不会冲突。
+ */
+@Serializable
+data class AirPush(val streamId: Int, val name: String, val size: Long, val mime: String = "") : LinkMessage
+
+/** AirSend：一段文字或链接（双向）。接收方放进剪贴板并提示。 */
+@Serializable
+data class AirText(val text: String) : LinkMessage
+
+const val AIR_STREAM_BASE = 0x4000_0000
+
 /** 本端版本不认识的消息类型，忽略即可。 */
 data class Unknown(val type: String) : LinkMessage
 
@@ -183,6 +207,9 @@ object MessageCodec {
             is MirrorEvent -> "mirrorEvent" to json.encodeToJsonElement(message)
             is CallState -> "callState" to json.encodeToJsonElement(message)
             is ClipboardText -> "clipboard" to json.encodeToJsonElement(message)
+            is AirOffer -> "airOffer" to json.encodeToJsonElement(message)
+            is AirPush -> "airPush" to json.encodeToJsonElement(message)
+            is AirText -> "airText" to json.encodeToJsonElement(message)
             is DataChunk -> error("data chunks are binary frames, see Frames")
             is Unknown -> error("cannot send unknown message ${message.type}")
         }
@@ -207,6 +234,9 @@ object MessageCodec {
             "mirrorEvent" -> json.decodeFromJsonElement<MirrorEvent>(obj)
             "callState" -> json.decodeFromJsonElement<CallState>(obj)
             "clipboard" -> json.decodeFromJsonElement<ClipboardText>(obj)
+            "airOffer" -> json.decodeFromJsonElement<AirOffer>(obj)
+            "airPush" -> json.decodeFromJsonElement<AirPush>(obj)
+            "airText" -> json.decodeFromJsonElement<AirText>(obj)
             else -> Unknown(type ?: "")
         }
     }

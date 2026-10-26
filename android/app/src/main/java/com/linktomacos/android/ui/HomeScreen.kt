@@ -28,6 +28,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -61,10 +63,11 @@ fun HomeScreen(
         var menuOpen by remember { mutableStateOf(false) }
         Scaffold(
             modifier = modifier,
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = Color.Transparent,
             topBar = {
                 TopAppBar(
-                    title = { Text("Link to macOS") },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, scrolledContainerColor = Color.Transparent),
+                    title = { Text("Link to macOS", style = MaterialTheme.typography.titleLarge) },
                     actions = {
                         IconButton(onClick = { menuOpen = true }) {
                             Icon(LinkIcons.MoreVert, contentDescription = stringResource(R.string.more))
@@ -109,43 +112,39 @@ private fun StatusHero(state: LinkState, macName: String) {
         is LinkState.Rejected -> Triple(stringResource(R.string.state_rejected_title), stringResource(R.string.state_rejected_detail, state.macName, state.reason), Tone.Bad)
     }
     val colors = MaterialTheme.colorScheme
-    val container = when (tone) {
-        Tone.Good -> colors.primaryContainer
-        Tone.Bad -> colors.errorContainer
-        else -> colors.surfaceContainerHigh
-    }
-    val onContainer = when (tone) {
-        Tone.Good -> colors.onPrimaryContainer
-        Tone.Bad -> colors.onErrorContainer
-        else -> colors.onSurface
-    }
-    Surface(shape = RoundedCornerShape(32.dp), color = container, contentColor = onContainer, modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+    val onContainer = if (tone == Tone.Bad) colors.onErrorContainer else colors.onPrimaryContainer
+    HeroCard {
+        HeroIllustration(listOf(LinkIcons.Bell, LinkIcons.Clipboard, LinkIcons.Monitor), Modifier.fillMaxWidth(0.78f))
+        Text(macName, style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center, color = onContainer)
+        // 状态胶囊：颜色随状态变
+        Surface(
+            shape = RoundedCornerShape(50),
+            color = when (tone) {
+                Tone.Good -> colors.primary
+                Tone.Bad -> colors.errorContainer
+                else -> colors.surface.copy(alpha = 0.7f)
+            },
+            contentColor = when (tone) {
+                Tone.Good -> colors.onPrimary
+                Tone.Bad -> colors.onErrorContainer
+                else -> colors.onSurface
+            },
         ) {
-            HeroIllustration(listOf(LinkIcons.Bell, LinkIcons.Clipboard, LinkIcons.Monitor), Modifier.fillMaxWidth(0.78f))
-            Text(macName, style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+            ) {
                 when (tone) {
-                    Tone.Busy -> CircularProgressIndicator(modifier = Modifier.size(14.dp), strokeWidth = 2.dp, color = onContainer)
-                    else -> Box(
-                        Modifier.size(10.dp).background(
-                            when (tone) {
-                                Tone.Good -> colors.primary
-                                Tone.Bad -> colors.error
-                                else -> colors.outline
-                            },
-                            CircleShape,
-                        ),
-                    )
+                    Tone.Busy -> CircularProgressIndicator(modifier = Modifier.size(14.dp), strokeWidth = 2.dp, color = LocalContentColor.current)
+                    Tone.Good -> Icon(LinkIcons.Check, contentDescription = null, modifier = Modifier.size(16.dp))
+                    else -> Box(Modifier.size(8.dp).background(LocalContentColor.current.copy(alpha = 0.6f), CircleShape))
                 }
-                Text(title, style = MaterialTheme.typography.titleMedium)
+                Text(title, style = MaterialTheme.typography.labelLarge)
             }
-            if (detail != null) {
-                Text(detail, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center, color = onContainer.copy(alpha = 0.8f))
-            }
+        }
+        if (detail != null) {
+            Text(detail, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center, color = onContainer.copy(alpha = 0.8f))
         }
     }
 }
@@ -159,6 +158,7 @@ private fun QuickTiles(ui: SettingsUiState, actions: UiActions) {
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
         QuickTile(
             icon = LinkIcons.Clipboard,
+            accent = Accent.Primary,
             label = stringResource(R.string.tile_clipboard),
             status = stringResource(if (ui.clipboardSync) R.string.switch_on else R.string.switch_off),
             active = ui.clipboardSync,
@@ -167,6 +167,7 @@ private fun QuickTiles(ui: SettingsUiState, actions: UiActions) {
         )
         QuickTile(
             icon = LinkIcons.Moon,
+            accent = Accent.Tertiary,
             label = stringResource(R.string.tile_dnd),
             status = stringResource(if (ui.dndOnConnect) R.string.switch_on else R.string.switch_off),
             active = ui.dndOnConnect,
@@ -175,6 +176,7 @@ private fun QuickTiles(ui: SettingsUiState, actions: UiActions) {
         )
         QuickTile(
             icon = LinkIcons.Monitor,
+            accent = Accent.Secondary,
             label = stringResource(R.string.tile_mirror),
             status = stringResource(if (ui.enhancedReady) R.string.tile_running else R.string.tile_stopped),
             active = ui.enhancedReady,
@@ -187,6 +189,7 @@ private fun QuickTiles(ui: SettingsUiState, actions: UiActions) {
 @Composable
 private fun QuickTile(
     icon: ImageVector,
+    accent: Accent,
     label: String,
     status: String,
     active: Boolean,
@@ -198,8 +201,8 @@ private fun QuickTile(
         onClick = onClick,
         modifier = modifier,
         shape = RoundedCornerShape(24.dp),
-        color = if (active) colors.primaryContainer else colors.surfaceContainerHigh,
-        contentColor = if (active) colors.onPrimaryContainer else colors.onSurfaceVariant,
+        color = if (active) accent.solid() else colors.surfaceContainerHigh,
+        contentColor = if (active) accent.onSolid() else colors.onSurfaceVariant,
     ) {
         Column(
             modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp).fillMaxWidth(),
@@ -226,6 +229,7 @@ private fun FeatureList(ui: SettingsUiState, actions: UiActions) {
                 else -> pluralStringResource(R.plurals.apps_forwarding, ui.allowedCount, ui.allowedCount)
             },
             onClick = { actions.onOpen(Page.Notifications) },
+            accent = Accent.Primary,
             attention = !ui.notificationAccess,
         )
         RowDivider()
@@ -236,6 +240,13 @@ private fun FeatureList(ui: SettingsUiState, actions: UiActions) {
                 else if (ui.enhancedReady) R.string.row_clip_realtime else R.string.row_clip_limited,
             ),
             onClick = { actions.onOpen(Page.Clipboard) },
+            accent = Accent.Tertiary,
+        )
+        RowDivider()
+        NavRow(
+            LinkIcons.Phone2Mac, stringResource(R.string.airsend_name), stringResource(R.string.airsend_row_sub),
+            onClick = { actions.onOpen(Page.AirSend) },
+            accent = Accent.Primary,
         )
         RowDivider()
         val missing = listOf(ui.mediaAccess, ui.allFilesAccess).count { !it }
@@ -243,6 +254,7 @@ private fun FeatureList(ui: SettingsUiState, actions: UiActions) {
             LinkIcons.Folder, stringResource(R.string.files_title),
             if (missing == 0) stringResource(R.string.row_files_ok) else stringResource(R.string.row_files_missing, missing),
             onClick = { actions.onOpen(Page.Files) },
+            accent = Accent.Secondary,
             attention = missing > 0,
         )
         RowDivider()
@@ -250,6 +262,7 @@ private fun FeatureList(ui: SettingsUiState, actions: UiActions) {
             LinkIcons.Monitor, stringResource(R.string.enhanced_title),
             stringResource(if (ui.enhancedReady) R.string.row_mirror_running else R.string.row_mirror_stopped),
             onClick = { actions.onOpen(Page.Mirror) },
+            accent = Accent.Primary,
         )
         RowDivider()
         val dndNeedsAccess = ui.dndOnConnect && !ui.dndAccess
@@ -261,6 +274,7 @@ private fun FeatureList(ui: SettingsUiState, actions: UiActions) {
                 else -> stringResource(R.string.switch_off)
             },
             onClick = { actions.onOpen(Page.Dnd) },
+            accent = Accent.Tertiary,
             attention = dndNeedsAccess,
         )
         RowDivider()
@@ -268,8 +282,14 @@ private fun FeatureList(ui: SettingsUiState, actions: UiActions) {
             LinkIcons.Bolt, stringResource(R.string.keepalive_title),
             stringResource(if (ui.batteryOptimizationIgnored) R.string.battery_opt_off else R.string.row_battery_suggest),
             onClick = { actions.onOpen(Page.KeepAlive) },
+            accent = Accent.Secondary,
             attention = !ui.batteryOptimizationIgnored,
         )
+    }
+    if (!ui.tileAdded) {
+        ListCard {
+            NavRow(LinkIcons.Link, stringResource(R.string.qs_add_title), stringResource(R.string.qs_add_sub), onClick = actions.onAddTile)
+        }
     }
 }
 
