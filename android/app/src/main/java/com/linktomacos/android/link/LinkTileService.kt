@@ -5,7 +5,8 @@ import android.content.Intent
 import android.graphics.drawable.Icon
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import com.linktomacos.android.LinkApp
+import com.linktomacos.android.UiApp
+import com.linktomacos.android.ipc.ServiceSnapshot
 import com.linktomacos.android.MainActivity
 import com.linktomacos.android.R
 import kotlinx.coroutines.CoroutineScope
@@ -26,12 +27,15 @@ class LinkTileService : TileService() {
     override fun onStartListening() {
         super.onStartListening()
         val scope = CoroutineScope(Dispatchers.Main).also { this.scope = it }
-        job = scope.launch { LinkStatus.state.collect { render(it) } }
+        val client = (application as UiApp).client
+        client.connect()
+        job = scope.launch { client.snapshot.collect { render(it) } }
     }
 
     override fun onStopListening() {
         job?.cancel()
         scope?.cancel()
+        (application as UiApp).client.disconnect()
         super.onStopListening()
     }
 
@@ -43,10 +47,11 @@ class LinkTileService : TileService() {
         startActivityAndCollapse(open)
     }
 
-    private fun render(state: LinkState) {
+    private fun render(snapshot: ServiceSnapshot?) {
         val tile = qsTile ?: return
-        // 磁贴可能比连接服务先启动：进程刚起来时状态还是“未配对”，以配对记录为准
-        val paired = (application as LinkApp).pairingStore.paired.value
+        if (snapshot == null) return
+        val state = snapshot.link
+        val paired = snapshot.paired
         val (active, subtitle) = when {
             state is LinkState.Connected -> true to state.macName
             paired == null -> false to getString(R.string.state_not_paired_title)
@@ -57,7 +62,7 @@ class LinkTileService : TileService() {
         tile.state = if (active) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
         tile.label = getString(R.string.tile_label)
         tile.subtitle = subtitle
-        tile.icon = Icon.createWithResource(this, R.drawable.ic_launcher_monochrome)
+        tile.icon = Icon.createWithResource(this, R.drawable.ic_tile)
         tile.updateTile()
     }
 }

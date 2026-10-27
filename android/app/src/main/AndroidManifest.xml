@@ -2,44 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-    <!-- connectedDevice 前台服务类型的前置权限之一 -->
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- 投屏期间保持 CPU 运行：手机屏幕灭了投屏也不会中断 -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <!-- 相册浏览：完整读取图片和视频，以及照片里的拍摄位置 -->
-    <uses-permission
-        android:name="android.permission.READ_MEDIA_IMAGES"
-        tools:ignore="SelectedPhotoAccess" />
-    <uses-permission
-        android:name="android.permission.READ_MEDIA_VIDEO"
-        tools:ignore="SelectedPhotoAccess" />
-    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
-    <!-- 文件浏览：浏览手机内部存储，自用安装，不上架 -->
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <!-- 连接 Mac 时自动开启免打扰（用户需在系统里授予“勿扰权限”） -->
-    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <!-- 读取通知来源应用的名称和图标；自用安装，不上架 -->
+    <!-- 通知转发的应用选择页要列出手机上所有应用；自用安装，不上架 -->
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
+    <!-- 启动服务 App 的前台服务 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-feature android:name="android.hardware.camera.any" android:required="false" />
 
     <application
-        android:name=".LinkApp"
+        android:name="com.linktomacos.android.UiApp"
         android:allowBackup="false"
         android:localeConfig="@xml/locales_config"
         android:icon="@mipmap/ic_launcher"
@@ -49,7 +23,7 @@
         android:theme="@android:style/Theme.Material.NoActionBar">
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.linktomacos.android.MainActivity"
             android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
@@ -62,16 +36,11 @@
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
-            <!-- 系统“模式”里点“已连接 Mac”规则的设置时，打开本应用 -->
-            <intent-filter>
-                <action android:name="android.app.action.AUTOMATIC_ZEN_RULE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
-        <!-- AirSend：系统分享面板里的入口。没有界面，读完分享内容就关闭 -->
+        <!-- AirSend：系统分享面板里的入口。没有界面，读完分享内容就交给服务 App 并关闭 -->
         <activity
-            android:name=".AirSendShareActivity"
+            android:name="com.linktomacos.android.AirSendShareActivity"
             android:exported="true"
             android:excludeFromRecents="true"
             android:label="@string/airsend_name"
@@ -86,40 +55,16 @@
             </intent-filter>
         </activity>
 
+        <!-- 下拉面板（快速设置）磁贴。requestAddTileService 只允许添加调用者自己包里的磁贴，所以它在界面 App 里 -->
         <service
-            android:name=".link.LinkService"
-            android:exported="false"
-            android:foregroundServiceType="connectedDevice" />
-
-        <service
-            android:name=".link.PhoneNotificationListener"
+            android:name="com.linktomacos.android.link.LinkTileService"
             android:exported="true"
-            android:label="Link to macOS"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-            <intent-filter>
-                <action android:name="android.service.notification.NotificationListenerService" />
-            </intent-filter>
-        </service>
-
-        <!-- 下拉面板（快速设置）磁贴 -->
-        <service
-            android:name=".link.LinkTileService"
-            android:exported="true"
-            android:icon="@drawable/ic_launcher_monochrome"
+            android:icon="@drawable/ic_tile"
             android:label="@string/tile_label"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
-
-        <receiver
-            android:name=".link.BootReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-            </intent-filter>
-        </receiver>
     </application>
 </manifest>

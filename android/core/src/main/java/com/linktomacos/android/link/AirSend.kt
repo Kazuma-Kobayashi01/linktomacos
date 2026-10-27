@@ -9,19 +9,15 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
-import android.provider.OpenableColumns
 import android.system.Os
 import android.system.OsConstants
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.content.pm.ShortcutInfoCompat
-import androidx.core.content.pm.ShortcutManagerCompat
-import androidx.core.graphics.drawable.IconCompat
-import androidx.core.graphics.drawable.toBitmap
 import com.linktomacos.android.LinkApp
-import com.linktomacos.android.MainActivity
+import com.linktomacos.android.ipc.Control
 import com.linktomacos.android.R
 import com.linktomacos.android.protocol.AirFile
 import com.linktomacos.android.protocol.AirOffer
@@ -48,8 +44,6 @@ import java.util.concurrent.ConcurrentHashMap
 
 private const val TAG = "AirSend"
 /** 分享目标的类别，要和 res/xml/shortcuts.xml 里的 share-target 一致。 */
-const val AIRSEND_SHORTCUT_CATEGORY = "com.linktomacos.android.category.AIRSEND"
-private const val SHORTCUT_ID = "airsend_mac"
 /** 清单发出后，Mac 多久还没取走就作废。 */
 private const val OFFER_TTL_MS = 10 * 60_000L
 /** 等待连上 Mac 的时间：分享时应用可能刚被唤醒，连接服务还没建好。 */
@@ -88,45 +82,29 @@ class AirSend(private val app: Application) {
 
     class Prepared(val files: List<OutFile>, val text: String?) {
         fun close() = files.forEach { runCatching { it.pfd.close() } }
+
+        /** 界面 App 读好分享内容后，把文件描述符一起经 Binder 交给服务 App。 */
+        fun toBundle() = Bundle().apply {
+            putString("text", text)
+            putParcelableArrayList("files", ArrayList(files.map {
+                Bundle().apply { putString("name", it.name); putLong("size", it.size); putString("mime", it.mime); putParcelable("pfd", it.pfd) }
+            }))
+        }
+
+        companion object {
+            fun fromBundle(bundle: Bundle): Prepared {
+                val files = bundle.getParcelableArrayList("files", Bundle::class.java).orEmpty().mapNotNull {
+                    val pfd = it.getParcelable("pfd", ParcelFileDescriptor::class.java) ?: return@mapNotNull null
+                    OutFile(it.getString("name").orEmpty(), it.getLong("size"), it.getString("mime").orEmpty(), pfd)
+                }
+                return Prepared(files, bundle.getString("text"))
+            }
+        }
     }
 
     private class Offer(val files: List<OutFile>)
 
     private val offers = ConcurrentHashMap<String, Offer>()
-
-    /** 读分享来的 Intent。必须在分享页面还在时（onCreate 里）调用。没有可发的内容返回 null。 */
-    fun prepare(intent: Intent): Prepared? {
-        val uris = buildList {
-            when (intent.action) {
-                Intent.ACTION_SEND -> intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)?.let(::add)
-                Intent.ACTION_SEND_MULTIPLE -> addAll(intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM, Uri::class.java).orEmpty())
-            }
-            val clip = intent.clipData
-            if (isEmpty() && clip != null) for (i in 0 until clip.itemCount) clip.getItemAt(i).uri?.let(::add)
-        }
-        val files = uris.mapNotNull { open(it, intent.type) }
-        if (files.isNotEmpty()) return Prepared(files, null)
-        val text = intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString()
-        return if (text.isNullOrBlank()) null else Prepared(emptyList(), text)
-    }
-
-    private fun open(uri: Uri, fallbackMime: String?): OutFile? = try {
-        val pfd = resolver.openFileDescriptor(uri, "r") ?: return null
-        var name: String? = null
-        var size = -1L
-        resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE), null, null, null)?.use { c ->
-            if (c.moveToFirst()) {
-                name = c.getString(0)
-                if (!c.isNull(1)) size = c.getLong(1)
-            }
-        }
-        if (size < 0) size = pfd.statSize.coerceAtLeast(0)
-        val mime = resolver.getType(uri) ?: fallbackMime?.takeIf { !it.contains('*') } ?: "application/octet-stream"
-        OutFile(name ?: uri.lastPathSegment ?: "file", size, mime, pfd)
-    } catch (e: Exception) {
-        Log.w(TAG, "cannot open shared item: $e")
-        null
-    }
 
     /** 把 [prepared] 发给 Mac。还没连上时最多等一会儿；等不到就放弃并通知。 */
     fun send(prepared: Prepared) {
@@ -240,7 +218,7 @@ class AirSend(private val app: Application) {
         notifications.notify(
             file.notificationId,
             NotificationCompat.Builder(app, LinkApp.CHANNEL_AIRSEND)
-                .setSmallIcon(R.drawable.ic_launcher_monochrome)
+                .setSmallIcon(R.drawable.ic_tile)
                 .setContentTitle(app.getString(R.string.airsend_received_title))
                 .setContentText(file.name)
                 .setContentIntent(open)
@@ -263,7 +241,7 @@ class AirSend(private val app: Application) {
     }
 
     private fun progressNotification(file: Incoming) = NotificationCompat.Builder(app, LinkApp.CHANNEL_AIRSEND_STATUS)
-        .setSmallIcon(R.drawable.ic_launcher_monochrome)
+        .setSmallIcon(R.drawable.ic_tile)
         .setContentTitle(app.getString(R.string.airsend_receiving, file.name))
         .setProgress(100, (file.written * 100 / file.size).toInt().coerceIn(0, 100), false)
         .setOngoing(true)
@@ -276,9 +254,9 @@ class AirSend(private val app: Application) {
         if (text.isBlank()) return
         runCatching { app.getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("AirSend", text)) }
         val isLink = text.trim().let { (it.startsWith("http://") || it.startsWith("https://")) && !it.contains(' ') }
-        val target = if (isLink) Intent(Intent.ACTION_VIEW, Uri.parse(text.trim())) else Intent(app, MainActivity::class.java)
+        val target = if (isLink) Intent(Intent.ACTION_VIEW, Uri.parse(text.trim())) else Control.uiIntent()
         val builder = NotificationCompat.Builder(app, LinkApp.CHANNEL_AIRSEND)
-            .setSmallIcon(R.drawable.ic_launcher_monochrome)
+            .setSmallIcon(R.drawable.ic_tile)
             .setContentTitle(app.getString(R.string.airsend_text_title))
             .setContentText(text)
             .setStyle(NotificationCompat.BigTextStyle().bigText(text))
@@ -295,36 +273,11 @@ class AirSend(private val app: Application) {
         notifications.notify(
             id,
             NotificationCompat.Builder(app, LinkApp.CHANNEL_AIRSEND_STATUS)
-                .setSmallIcon(R.drawable.ic_launcher_monochrome)
+                .setSmallIcon(R.drawable.ic_tile)
                 .setContentTitle(text)
                 .setTimeoutAfter(6_000)
                 .setAutoCancel(true)
                 .build(),
         )
     }
-
-    /**
-     * 在系统分享面板最上面一排（“直接分享”）放一个以 Mac 命名的目标；点它就是 AirSend 给这台 Mac。
-     * 需要配合 res/xml/shortcuts.xml 里的 share-target；没配对时去掉。
-     */
-    fun publishShortcut(macName: String?) {
-        if (macName == null) {
-            ShortcutManagerCompat.removeDynamicShortcuts(app, listOf(SHORTCUT_ID))
-            return
-        }
-        val icon = IconCompat.createWithAdaptiveBitmap(app.getDrawable(R.mipmap.ic_launcher)!!.toBitmap(432, 432))
-        val shortcut = ShortcutInfoCompat.Builder(app, SHORTCUT_ID)
-            .setShortLabel(macName)
-            .setLongLabel(app.getString(R.string.airsend_shortcut_long, macName))
-            .setIcon(icon)
-            .setCategories(setOf(AIRSEND_SHORTCUT_CATEGORY))
-            .setLongLived(true)
-            .setRank(0)
-            .setIntent(Intent(app, MainActivity::class.java).setAction(Intent.ACTION_VIEW))
-            .build()
-        ShortcutManagerCompat.pushDynamicShortcut(app, shortcut)
-    }
-
-    /** 用户通过“直接分享”目标发了东西，告诉系统这个目标有人用，排名会靠前。 */
-    fun reportShortcutUsed() = ShortcutManagerCompat.reportShortcutUsed(app, SHORTCUT_ID)
 }

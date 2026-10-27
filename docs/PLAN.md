@@ -276,3 +276,12 @@ C0 之后的决定：系统电话做成**通话提示**，由 Mac 播放提示�
 1. 磁贴点一下做什么（打开 App / 暂停转发 / 重新连接）。
 2. Xcode 里是否登录了免费 Apple ID（小组件签名验证需要）。
 3. 构建脚本联网下载 platform-tools 是否可以。
+
+
+## 1.1.0（分支 `release/1.1.0`）：Android 拆成两个 App
+
+- `:core` 库：连接、协议、增强服务、资源，不声明组件。
+- `:service`（`com.linktomacos.android.service`）：无桌面图标。前台服务 `LinkService`、通知监听、开机自启、`ControlService`（给界面绑定的 Messenger 入口）、`ActionActivity`（透明页，替界面申请运行时权限/忽略电池优化）。配对、证书、设置都归它。
+- `:app`（`com.linktomacos.android`）：界面、扫码、分享入口（Direct Share 的 share-target 必须挂在带 LAUNCHER 的活动上）、快速设置磁贴（`requestAddTileService` 只能加自己包里的磁贴）。经 `ServiceClient` 绑定服务，读 `ServiceSnapshot`、发命令；分享的文件描述符经 Binder 交给服务。
+- 两个 APK 同签名，绑定权限为 signature 级。服务 App 从未被启动时处于“已停止”状态，收不到开机广播，所以界面 App 每次可见都会拉起一次前台服务。
+- 升级需重新配对（配对数据在旧 App 私有存储里）。

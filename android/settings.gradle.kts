@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "LinkToMacOS"
-include(":app")
+include(":core", ":service", ":app")

@@ -3,7 +3,9 @@ package com.linktomacos.android.ui
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -44,7 +46,8 @@ fun LinkTheme(content: @Composable () -> Unit) {
             large = RoundedCornerShape(24.dp),
             extraLarge = RoundedCornerShape(32.dp),
         ),
-        content = content,
+        // 没套 Surface 的文字（标题等）默认是黑色，深色模式下看不见：整个应用统一用主题的前景色
+        content = { CompositionLocalProvider(LocalContentColor provides colors.onSurface, content = content) },
     )
 }
 

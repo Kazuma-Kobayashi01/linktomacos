@@ -2,6 +2,8 @@ package com.linktomacos.android.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import com.linktomacos.android.UiApp
+import com.linktomacos.android.ipc.Control
 import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -92,7 +94,7 @@ fun FilesPage(ui: SettingsUiState, actions: UiActions, onBack: () -> Unit) {
             PermissionRow(stringResource(R.string.files_media), ui.mediaAccess, actions.onGrantMedia)
             RowDivider()
             PermissionRow(stringResource(R.string.files_all), ui.allFilesAccess, onGrant = {
-                val packageUri = "package:${context.packageName}".toUri()
+                val packageUri = "package:${Control.SERVICE_PACKAGE}".toUri()
                 runCatching { context.startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, packageUri)) }
                     .onFailure { context.startActivity(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)) }
             })
@@ -156,7 +158,7 @@ fun KeepAlivePage(ui: SettingsUiState, onBack: () -> Unit) {
             PermissionRow(
                 stringResource(R.string.battery_opt_title), ui.batteryOptimizationIgnored,
                 onGrant = {
-                    context.startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, "package:${context.packageName}".toUri()))
+                    (context.applicationContext as UiApp).client.runAction(Control.KIND_BATTERY)
                 },
                 actionLabel = stringResource(R.string.battery_opt_turn_off),
             )
@@ -165,7 +167,7 @@ fun KeepAlivePage(ui: SettingsUiState, onBack: () -> Unit) {
         Hint(stringResource(R.string.keepalive_steps))
         Row(Modifier.padding(horizontal = 4.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedButton(onClick = {
-                context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:${context.packageName}".toUri()))
+                context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:${Control.SERVICE_PACKAGE}".toUri()))
             }) { Text(stringResource(R.string.app_info)) }
         }
     }

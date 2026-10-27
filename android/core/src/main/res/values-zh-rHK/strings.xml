@@ -161,6 +161,9 @@
 Mac → 手機：在Finder裡右鍵檔案，選「共享 → AirSend」，或把檔案拖進 Mac 上 Link to macOS 的 AirSend 頁面。</string>
     <string name="airsend_saved_to">從 Mac 收到的檔案儲存在「下載/AirSend」資料夾；收到的文字會直接放進剪貼簿。</string>
     <string name="airsend_row_sub">在分享選單裡直接發給 Mac</string>
+    <string name="service_name">Link to macOS 服務</string>
+    <string name="service_missing">沒有找到背景服務</string>
+    <string name="service_missing_detail">請先安裝「Link to macOS 服務」應用程式（Link-to-macOS-service-android-arm64-v8a.apk），再回到這裡。</string>
     <string name="tile_label">Link to macOS</string>
     <string name="qs_add_title">新增到下拉麵板</string>
     <string name="qs_add_sub">在下拉麵板裡隨時檢視和 Mac 的連線狀態，點一下打開應用程式</string>

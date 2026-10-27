@@ -11,7 +11,7 @@ import android.service.notification.ZenPolicy
 import android.util.Log
 import androidx.core.content.edit
 import androidx.core.net.toUri
-import com.linktomacos.android.MainActivity
+import com.linktomacos.android.ipc.ActionActivity
 import com.linktomacos.android.data.LinkSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -150,7 +150,7 @@ class DndController(
         return AutomaticZenRule(
             context.getString(R.string.dnd_rule_name),
             null,
-            ComponentName(context, MainActivity::class.java),
+            ComponentName(context, ActionActivity::class.java),
             CONDITION_URI,
             policy,
             NotificationManager.INTERRUPTION_FILTER_PRIORITY,

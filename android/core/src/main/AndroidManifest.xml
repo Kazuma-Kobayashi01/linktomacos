@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 界面 App 控制服务 App 的权限；两个 App 同一签名才能拿到 -->
+    <permission
+        android:name="com.linktomacos.android.permission.CONTROL"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.linktomacos.android.permission.CONTROL" />
+
+    <queries>
+        <package android:name="com.linktomacos.android" />
+        <package android:name="com.linktomacos.android.service" />
+    </queries>
+</manifest>

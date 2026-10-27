@@ -125,6 +125,7 @@ You get, in `output/`:
 |---|---|
 | `Link-to-macOS-macos-arm64.zip` | the Mac app (Apple silicon) |
 | `Link-to-macOS-android-arm64-v8a.apk` | the Android app (arm64-v8a) |
+| `Link-to-macOS-service-android-arm64-v8a.apk` | the background service app (no launcher icon; install it too) |
 | `SHA256SUMS.txt` | checksums |
 
 ### 2. Install
@@ -133,6 +134,7 @@ You get, in `output/`:
 # Mac: unzip, move "Link to macOS.app" to /Applications, then right-click → Open the first time
 # Android: with the phone connected over USB. It installs over a debug build too, because both use the debug key,
 # so pairing and permissions are kept. A build signed with a different key must be uninstalled first.
+adb install -r output/Link-to-macOS-service-android-arm64-v8a.apk
 adb install -r output/Link-to-macOS-android-arm64-v8a.apk
 ```
 

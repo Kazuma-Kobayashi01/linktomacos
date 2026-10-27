@@ -161,6 +161,9 @@ After that you can unplug; it keeps running until the phone restarts.</string>
 Mac → phone: in Finder right-click a file and choose Share → AirSend, or drop files on the AirSend page in Link to macOS.</string>
     <string name="airsend_saved_to">Files from your Mac are saved in Download/AirSend. Text goes straight to your clipboard.</string>
     <string name="airsend_row_sub">Share straight to your Mac</string>
+    <string name="service_name">Link to macOS Service</string>
+    <string name="service_missing">Background service not found</string>
+    <string name="service_missing_detail">Install the “Link to macOS Service” app (Link-to-macOS-service-android-arm64-v8a.apk) first, then come back.</string>
     <string name="tile_label">Link to macOS</string>
     <string name="qs_add_title">Add to Quick Settings</string>
     <string name="qs_add_sub">Check the connection to your Mac from the notification shade. Tap it to open the app</string>

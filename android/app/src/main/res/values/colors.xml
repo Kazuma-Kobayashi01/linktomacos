@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- 启动图标底色：跟随系统调色盘（Material You），随壁纸取色变化 -->
-    <color name="ic_launcher_background">@android:color/system_accent1_100</color>
-</resources>

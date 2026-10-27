@@ -4,12 +4,12 @@
 用法（需要 opencc：pip install opencc-python-reimplemented）：python3 tools/i18n/android_strings.py
 
 输出：
-    android/app/src/main/res/values/strings.xml          英文（默认）
-    android/app/src/main/res/values-zh-rCN/strings.xml   简体中文
-    android/app/src/main/res/values-zh-rTW/strings.xml   繁体中文（台湾）
-    android/app/src/main/res/values-zh-rHK/strings.xml   繁体中文（香港，内容同台湾）
-    android/app/src/main/res/values-ja/strings.xml       日文
-    android/app/src/main/res/xml/locales_config.xml      系统“按应用设置语言”用
+    android/core/src/main/res/values/strings.xml          英文（默认）
+    android/core/src/main/res/values-zh-rCN/strings.xml   简体中文
+    android/core/src/main/res/values-zh-rTW/strings.xml   繁体中文（台湾）
+    android/core/src/main/res/values-zh-rHK/strings.xml   繁体中文（香港，内容同台湾）
+    android/core/src/main/res/values-ja/strings.xml       日文
+    android/core/src/main/res/xml/locales_config.xml      系统“按应用设置语言”用
 
 每条是 (简体中文, 英文, 日文)。繁体由 OpenCC 转换，再用 FIXES / OVERRIDES 修正用词。
 """
@@ -27,7 +27,7 @@ except ImportError:
     sys.exit('缺少 opencc：pip install opencc-python-reimplemented')
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-RES = os.path.join(ROOT, 'android/app/src/main/res')
+RES = os.path.join(ROOT, 'android/core/src/main/res')
 
 STRINGS = {
     # --- 首页：配对 ---
@@ -270,6 +270,9 @@ STRINGS = {
         '端末 → Mac：どのアプリでも「共有」をタップし、上段の Mac の名前、またはアプリ一覧の AirSend を選びます。\nMac → 端末：Finder でファイルを右クリックして「共有 → AirSend」を選ぶか、Link to macOS の AirSend ページにファイルをドロップします。'),
     'airsend_saved_to': ('从 Mac 收到的文件保存在“下载/AirSend”文件夹；收到的文字会直接放进剪贴板。', 'Files from your Mac are saved in Download/AirSend. Text goes straight to your clipboard.', 'Mac から受け取ったファイルは「Download/AirSend」に保存されます。テキストはそのままクリップボードに入ります。'),
     'airsend_row_sub': ('在分享菜单里直接发给 Mac', 'Share straight to your Mac', '共有メニューから直接 Mac へ'),
+    'service_name': ('Link to macOS 服务', 'Link to macOS Service', 'Link to macOS サービス'),
+    'service_missing': ('没有找到后台服务', 'Background service not found', 'バックグラウンドサービスが見つかりません'),
+    'service_missing_detail': ('请先安装“Link to macOS 服务”应用（Link-to-macOS-service-android-arm64-v8a.apk），再回到这里。', 'Install the “Link to macOS Service” app (Link-to-macOS-service-android-arm64-v8a.apk) first, then come back.', '先に「Link to macOS サービス」アプリ（Link-to-macOS-service-android-arm64-v8a.apk）をインストールしてから戻ってください。'),
     'tile_label': ('Link to macOS', 'Link to macOS', 'Link to macOS'),
     'qs_add_title': ('添加到下拉面板', 'Add to Quick Settings', 'クイック設定に追加'),
     'qs_add_sub': ('在下拉面板里随时查看和 Mac 的连接状态，点一下打开应用', 'Check the connection to your Mac from the notification shade. Tap it to open the app', '通知パネルから Mac との接続状況を確認。タップするとアプリが開きます'),

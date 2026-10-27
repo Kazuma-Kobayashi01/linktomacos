@@ -7,8 +7,6 @@ import android.app.StatusBarManager
 import android.content.ComponentName
 import android.graphics.drawable.Icon
 import android.os.Bundle
-import android.os.Environment
-import android.os.PowerManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -35,13 +33,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.linktomacos.android.link.DndController
-import com.linktomacos.android.link.DndStatus
-import com.linktomacos.android.link.LinkService
-import com.linktomacos.android.link.LinkStatus
 import com.linktomacos.android.link.LinkTileService
-import com.linktomacos.android.link.PhoneNotificationListener
+import android.content.ClipDescription
+import android.content.ClipboardManager
+import android.os.Bundle as AndroidBundle
+import com.linktomacos.android.ipc.Control
+import com.linktomacos.android.link.LinkState
 import com.linktomacos.android.protocol.PairingPayload
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import com.linktomacos.android.ui.AppPickerScreen
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -73,7 +73,9 @@ import com.linktomacos.android.ui.QrScanner
 import com.linktomacos.android.ui.SettingsUiState
 
 class MainActivity : ComponentActivity() {
-    private val store by lazy { (application as LinkApp).pairingStore }
+    private val client by lazy { (application as UiApp).client }
+    /** 每次回到前台加一，让“已配对就拉起服务”的副作用重新跑一遍。 */
+    private var resumeTick by mutableStateOf(0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,28 +85,33 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private val settings by lazy { (application as LinkApp).settings }
-    private var listenerEnabled by mutableStateOf(false)
-    private var dndAccess by mutableStateOf(false)
-    private var mediaAccess by mutableStateOf(false)
-    private var allFilesAccess by mutableStateOf(false)
-    private var batteryIgnored by mutableStateOf(false)
     private val versionName by lazy { packageManager.getPackageInfo(packageName, 0).versionName ?: "" }
+
+    override fun onStart() {
+        super.onStart()
+        client.connect()
+    }
 
     override fun onResume() {
         super.onResume()
-        listenerEnabled = PhoneNotificationListener.isEnabled(this)
-        dndAccess = DndController.hasAccess(this)
-        allFilesAccess = Environment.isExternalStorageManager()
-        mediaAccess = checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
-        batteryIgnored = getSystemService(PowerManager::class.java).isIgnoringBatteryOptimizations(packageName)
-        if (store.paired.value != null) LinkService.start(this)
+        client.refresh() // 权限可能刚在系统设置里改过
+        resumeTick++
     }
 
-    /** 回到前台时读一次剪贴板：没有增强服务时，这是手机上复制的文字能传给 Mac 的唯一时机。 */
+    override fun onStop() {
+        client.disconnect()
+        super.onStop()
+    }
+
+    /** 回到前台时读一次剪贴板：没有增强服务时，这是手机上复制的文字能传给 Mac 的唯一时机。读到的交给服务 App 判断要不要用。 */
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) (application as LinkApp).clipboard.onForeground()
+        if (!hasFocus) return
+        val clip = runCatching { getSystemService(ClipboardManager::class.java).primaryClip }.getOrNull() ?: return
+        if (clip.itemCount == 0) return
+        if (clip.description?.extras?.getBoolean(ClipDescription.EXTRA_IS_SENSITIVE, false) == true) return
+        val text = clip.getItemAt(0).text?.toString() ?: return
+        client.send(Control.CLIPBOARD, AndroidBundle().apply { putString("text", text) })
     }
 
     /** 弹出系统对话框，问用户要不要把磁贴加到下拉面板。 */
@@ -112,43 +119,55 @@ class MainActivity : ComponentActivity() {
         getSystemService(StatusBarManager::class.java).requestAddTileService(
             ComponentName(this, LinkTileService::class.java),
             getString(R.string.tile_label),
-            Icon.createWithResource(this, R.drawable.ic_launcher_monochrome),
+            Icon.createWithResource(this, R.drawable.ic_tile),
             mainExecutor,
         ) { result ->
             if (result == StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ADDED ||
                 result == StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ALREADY_ADDED
-            ) settings.setTileAdded(true)
+            ) client.set(Control.SET_TILE_ADDED, true)
         }
     }
 
     private fun pair(text: String): Boolean {
-        val payload = PairingPayload.parse(text) ?: return false
-        store.pair(payload)
-        LinkService.start(this)
+        if (PairingPayload.parse(text) == null) return false
+        client.send(Control.PAIR, AndroidBundle().apply { putString("text", text) })
+        client.startLink()
         return true
     }
 
     @androidx.compose.runtime.Composable
     private fun App() {
-        val state by LinkStatus.state.collectAsStateWithLifecycle()
-        val paired by store.paired.collectAsStateWithLifecycle()
+        val snapshot by client.snapshot.collectAsStateWithLifecycle()
+        val missing by client.missing.collectAsStateWithLifecycle()
         var scanning by remember { mutableStateOf(false) }
         var page by rememberSaveable { mutableStateOf(Page.Home) }
-        val allowedApps by settings.allowedApps.collectAsStateWithLifecycle()
-        val dndOnConnect by settings.dndOnConnect.collectAsStateWithLifecycle()
-        val ringCalls by settings.ringCalls.collectAsStateWithLifecycle()
-        val clipboardSync by settings.clipboardSync.collectAsStateWithLifecycle()
-        val tileAdded by settings.tileAdded.collectAsStateWithLifecycle()
-        val dndActive by DndStatus.active.collectAsStateWithLifecycle()
-        val dndError by DndStatus.error.collectAsStateWithLifecycle()
-        val enhancedReady by (application as LinkApp).bridge.ready.collectAsStateWithLifecycle()
 
-        val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {}
-        LaunchedEffect(Unit) {
-            notificationPermission.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.READ_PHONE_STATE))
+        val snap = snapshot
+        if (snap == null) {
+            Column(
+                Modifier.fillMaxSize().screenWash().systemBarsPadding().padding(32.dp),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                if (missing) {
+                    Text(stringResource(R.string.service_missing), style = MaterialTheme.typography.titleLarge)
+                    Text(stringResource(R.string.service_missing_detail), modifier = Modifier.padding(top = 8.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+            return
         }
-        val mediaPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-            mediaAccess = checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+        val paired = snap.paired
+
+        // 已配对就把服务 App 的前台服务拉起来（它没有图标，用户不会自己去打开）；回到前台时再确认一次
+        LaunchedEffect(paired?.fingerprint, resumeTick) { if (paired != null) client.startLink() }
+        // 分享面板最上面一排的“直接分享”目标，跟着配对走
+        LaunchedEffect(paired?.name) { ShareShortcut.publish(this@MainActivity, paired?.name) }
+        // 首次打开时让服务 App 申请通知和电话状态权限（只问一次）
+        LaunchedEffect(Unit) {
+            val prefs = getSharedPreferences("ui", MODE_PRIVATE)
+            if (!prefs.getBoolean("asked_notify", false)) {
+                prefs.edit().putBoolean("asked_notify", true).apply()
+                client.runAction(Control.KIND_NOTIFY)
+            }
         }
         val cameraPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) scanning = true
@@ -156,42 +175,37 @@ class MainActivity : ComponentActivity() {
         }
 
         val ui = SettingsUiState(
-            notificationAccess = listenerEnabled,
-            allowedCount = allowedApps.size,
-            dndOnConnect = dndOnConnect,
-            ringCalls = ringCalls,
-            dndAccess = dndAccess,
-            dndActive = dndActive,
-            dndError = dndError,
-            mediaAccess = mediaAccess,
-            allFilesAccess = allFilesAccess,
-            enhancedReady = enhancedReady,
-            clipboardSync = clipboardSync,
-            batteryOptimizationIgnored = batteryIgnored,
+            notificationAccess = snap.notificationAccess,
+            allowedCount = snap.allowedApps.size,
+            dndOnConnect = snap.dndOnConnect,
+            ringCalls = snap.ringCalls,
+            dndAccess = snap.dndAccess,
+            dndActive = snap.dndActive,
+            dndError = snap.dndError,
+            mediaAccess = snap.mediaAccess,
+            allFilesAccess = snap.allFilesAccess,
+            enhancedReady = snap.enhancedReady,
+            clipboardSync = snap.clipboardSync,
+            batteryOptimizationIgnored = snap.batteryIgnored,
             versionName = versionName,
-            tileAdded = tileAdded,
+            tileAdded = snap.tileAdded,
         )
         val actions = UiActions(
             onOpen = { page = it },
             onScan = { cameraPermission.launch(Manifest.permission.CAMERA) },
             onPairLink = ::pair,
             onUnpair = {
-                store.unpair()
-                LinkService.stop(this)
+                client.send(Control.UNPAIR)
+                ShareShortcut.publish(this, null)
             },
-            onGrantMedia = {
-                mediaPermission.launch(arrayOf(
-                    Manifest.permission.READ_MEDIA_IMAGES,
-                    Manifest.permission.READ_MEDIA_VIDEO,
-                    Manifest.permission.ACCESS_MEDIA_LOCATION,
-                ))
-            },
-            onDndOnConnectChange = settings::setDndOnConnect,
-            onRingCallsChange = settings::setRingCalls,
-            onClipboardChange = settings::setClipboardSync,
-            onToggleApp = settings::setAllowed,
+            onGrantMedia = { client.runAction(Control.KIND_MEDIA) },
+            onDndOnConnectChange = { client.set(Control.SET_DND_ON_CONNECT, it) },
+            onRingCallsChange = { client.set(Control.SET_RING_CALLS, it) },
+            onClipboardChange = { client.set(Control.SET_CLIPBOARD, it) },
+            onToggleApp = client::setApp,
             onAddTile = ::requestTile,
         )
+        val state = snap.link
 
         if (scanning) {
             BackHandler { scanning = false }
@@ -228,7 +242,7 @@ class MainActivity : ComponentActivity() {
                 when (target) {
                     Page.Home -> HomeScreen(state, paired, ui, actions)
                     Page.Notifications -> NotificationsPage(ui, actions, back)
-                    Page.Apps -> AppPickerScreen(allowedApps, settings::setAllowed, back)
+                    Page.Apps -> AppPickerScreen(snap.allowedApps, client::setApp, back)
                     Page.Clipboard -> ClipboardPage(ui, actions, back)
                     Page.AirSend -> AirSendPage(back)
                     Page.Files -> FilesPage(ui, actions, back)

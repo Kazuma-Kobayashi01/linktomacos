@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # 构建 release 包，放进 output/，按“应用名-平台-架构”命名：
 #   output/Link-to-macOS-macos-arm64.zip
-#   output/Link-to-macOS-android-arm64-v8a.apk
+#   output/Link-to-macOS-android-arm64-v8a.apk          手机上的界面 App（有桌面图标）
+#   output/Link-to-macOS-service-android-arm64-v8a.apk  手机上的后台服务 App（没有图标，必须一起装）
 #   output/SHA256SUMS.txt
 #
 # 用法：scripts/build-release.sh [mac|android|all]   （默认 all）
@@ -34,8 +35,9 @@ build_android() {
   echo "==> Android release ($ANDROID_ABI)"
   cd "$ROOT/android"
   export JAVA_HOME="${JAVA_HOME:-/Applications/Android Studio.app/Contents/jbr/Contents/Home}"
-  ./gradlew --console=plain assembleRelease | tail -n 3
+  ./gradlew --console=plain :app:assembleRelease :service:assembleRelease | tail -n 3
   cp app/build/outputs/apk/release/app-release.apk "$OUT/$NAME-android-$ANDROID_ABI.apk"
+  cp service/build/outputs/apk/release/service-release.apk "$OUT/$NAME-service-android-$ANDROID_ABI.apk"
 }
 
 case "$TARGET" in

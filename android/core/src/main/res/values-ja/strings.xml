@@ -161,6 +161,9 @@
 Mac → 端末：Finder でファイルを右クリックして「共有 → AirSend」を選ぶか、Link to macOS の AirSend ページにファイルをドロップします。</string>
     <string name="airsend_saved_to">Mac から受け取ったファイルは「Download/AirSend」に保存されます。テキストはそのままクリップボードに入ります。</string>
     <string name="airsend_row_sub">共有メニューから直接 Mac へ</string>
+    <string name="service_name">Link to macOS サービス</string>
+    <string name="service_missing">バックグラウンドサービスが見つかりません</string>
+    <string name="service_missing_detail">先に「Link to macOS サービス」アプリ（Link-to-macOS-service-android-arm64-v8a.apk）をインストールしてから戻ってください。</string>
     <string name="tile_label">Link to macOS</string>
     <string name="qs_add_title">クイック設定に追加</string>
     <string name="qs_add_sub">通知パネルから Mac との接続状況を確認。タップするとアプリが開きます</string>

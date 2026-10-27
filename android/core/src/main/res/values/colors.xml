@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 启动图标底色：和 Mac 版图标的底板一致，近白色，固定不变 -->
+    <color name="ic_launcher_background">#FFF6F7FB</color>
+</resources>

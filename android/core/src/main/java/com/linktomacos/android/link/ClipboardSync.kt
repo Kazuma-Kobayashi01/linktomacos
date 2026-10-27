@@ -73,15 +73,11 @@ class ClipboardSync(
     }
 
     /**
-     * 本 App 刚回到前台：此时允许读剪贴板。没有增强服务时，这是手机复制的文字唯一能传给 Mac 的时机
+     * 界面 App 刚回到前台（读剪贴板只能在前台的界面 App 里做，读到的文字交给这里）：此时允许读剪贴板。没有增强服务时，这是手机复制的文字唯一能传给 Mac 的时机
      * （用户在别的 App 复制后，切回来看一眼状态就会同步）。有增强服务时它已经实时同步过了，这里什么也不做。
      */
-    fun onForeground() {
+    fun onForeground(text: String) {
         if (!settings.clipboardSync.value || bridge.ready.value || send == null) return
-        val clip = runCatching { manager.primaryClip }.getOrNull() ?: return
-        if (clip.itemCount == 0) return
-        if (clip.description?.extras?.getBoolean(ClipDescription.EXTRA_IS_SENSITIVE, false) == true) return
-        val text = clip.getItemAt(0).text?.toString() ?: return
         fromPhone(text)
     }
 }

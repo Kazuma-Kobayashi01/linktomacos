@@ -14,7 +14,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.linktomacos.android.LinkApp
-import com.linktomacos.android.MainActivity
+import com.linktomacos.android.ipc.Control
 import com.linktomacos.android.R
 import com.linktomacos.android.data.PairedMac
 import com.linktomacos.android.data.isSamePairing
@@ -120,7 +120,6 @@ class LinkService : Service() {
         // 握手成功后 onConnected 会更新地址并作废令牌，这不是重新配对，不能因此重启连接；
         // 只有换了 Mac（指纹变化）或重新扫码（拿到新令牌）才重启。
         store.paired.distinctUntilChanged(::isSamePairing).collectLatest { mac ->
-            (application as LinkApp).airSend.publishShortcut(mac?.name)
             if (mac == null) {
                 LinkStatus.set(LinkState.NotPaired)
                 return@collectLatest
@@ -311,7 +310,7 @@ class LinkService : Service() {
 
     private fun buildNotification(text: String): Notification {
         val open = PendingIntent.getActivity(
-            this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE,
+            this, 0, Control.uiIntent(), PendingIntent.FLAG_IMMUTABLE,
         )
         return NotificationCompat.Builder(this, LinkApp.CHANNEL_LINK)
             .setSmallIcon(R.drawable.ic_link)

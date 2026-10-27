@@ -161,6 +161,9 @@
 Mac → 手机：在访达里右键文件，选“共享 → AirSend”，或把文件拖进 Mac 上 Link to macOS 的 AirSend 页面。</string>
     <string name="airsend_saved_to">从 Mac 收到的文件保存在“下载/AirSend”文件夹；收到的文字会直接放进剪贴板。</string>
     <string name="airsend_row_sub">在分享菜单里直接发给 Mac</string>
+    <string name="service_name">Link to macOS 服务</string>
+    <string name="service_missing">没有找到后台服务</string>
+    <string name="service_missing_detail">请先安装“Link to macOS 服务”应用（Link-to-macOS-service-android-arm64-v8a.apk），再回到这里。</string>
     <string name="tile_label">Link to macOS</string>
     <string name="qs_add_title">添加到下拉面板</string>
     <string name="qs_add_sub">在下拉面板里随时查看和 Mac 的连接状态，点一下打开应用</string>

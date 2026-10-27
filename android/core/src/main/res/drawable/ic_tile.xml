@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 下拉面板磁贴和通知用的小图标：同一套线稿，内容铺满画布（启动图标那一层要留安全区，用在这里会显得很小）。 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="60"
+    android:viewportHeight="60">
+
+    <group
+        android:translateX="-24"
+        android:translateY="-26">
+        <!-- 笔记本：屏幕盖外框（手机所在位置留出缺口）、刘海、底座 -->
+        <path
+            android:fillColor="#000000"
+            android:pathData="M28,32h52v1.8h-52z M28,32h1.8v33h-1.8z M78.2,32h1.8v33h-1.8z M28,63.2h23.5v1.8h-23.5z M76.5,63.2h3.5v1.8h-3.5z M49,33.8h10v1.6h-10z M24,66.4h27.5v2.6h-27.5z M76.5,66.4h7.5v2.6h-7.5z" />
+
+        <!-- 手机：外框挖空屏幕，屏幕里保留卡片和按钮 -->
+        <path
+            android:fillColor="#000000"
+            android:fillType="evenOdd"
+            android:pathData="M58,44h16a4,4 0 0,1 4,4v28a4,4 0 0,1 -4,4h-16a4,4 0 0,1 -4,-4v-28a4,4 0 0,1 4,-4z M58.6,45.6h14.8a2.6,2.6 0 0,1 2.6,2.6v27.6a2.6,2.6 0 0,1 -2.6,2.6h-14.8a2.6,2.6 0 0,1 -2.6,-2.6v-27.6a2.6,2.6 0 0,1 2.6,-2.6z" />
+        <path
+            android:fillColor="#000000"
+            android:pathData="M57.6,50.4h8.4v1.6h-8.4z M58,55.4h16v8h-16z M58,65h16v6h-16z M68.6,72.4h4v3.6h-4z" />
+    </group>
+</vector>

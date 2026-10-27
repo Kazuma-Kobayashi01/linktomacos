@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 和 Mac 版图标同款：笔记本 + 前面一部 Material 风格的手机，固定配色，不随壁纸变化。
+     只有用户在系统里打开“主题图标”时，才会改用 ic_launcher_monochrome 那一层。 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:pivotX="54"
+        android:pivotY="56"
+        android:scaleX="0.78"
+        android:scaleY="0.78">
+        <!-- 笔记本底座（先画，屏幕盖住它的上沿） -->
+        <path android:pathData="M25.5,66.4h57a1.5,1.5 0 0,1 1.5,1.5v0.1a1.5,1.5 0 0,1 -1.5,1.5h-55.5a2.6,2.6 0 0,1 -2.6,-2.6z">
+            <aapt:attr name="android:fillColor">
+                <gradient android:startX="0" android:startY="66.4" android:endX="0" android:endY="69" android:type="linear">
+                    <item android:offset="0" android:color="#FFD6D7DD" />
+                    <item android:offset="1" android:color="#FFB0B2BC" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <path android:fillColor="#FF8E909A" android:pathData="M45,66.4h14v1.2a0.8,0.8 0 0,1 -0.8,0.8h-12.4a0.8,0.8 0 0,1 -0.8,-0.8z" />
+
+        <!-- 屏幕盖：深色边框 + 蓝色屏幕 + 刘海 -->
+        <path android:pathData="M30.2,32h47.6a2.2,2.2 0 0,1 2.2,2.2v28.6a2.2,2.2 0 0,1 -2.2,2.2h-47.6a2.2,2.2 0 0,1 -2.2,-2.2v-28.6a2.2,2.2 0 0,1 2.2,-2.2z">
+            <aapt:attr name="android:fillColor">
+                <gradient android:startX="0" android:startY="32" android:endX="0" android:endY="65" android:type="linear">
+                    <item android:offset="0" android:color="#FF36373D" />
+                    <item android:offset="1" android:color="#FF111214" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <path android:pathData="M31.2,33.8h45.6a1.2,1.2 0 0,1 1.2,1.2v26.6a1.2,1.2 0 0,1 -1.2,1.2h-45.6a1.2,1.2 0 0,1 -1.2,-1.2v-26.6a1.2,1.2 0 0,1 1.2,-1.2z">
+            <aapt:attr name="android:fillColor">
+                <gradient android:startX="0" android:startY="33.8" android:endX="0" android:endY="62.8" android:type="linear">
+                    <item android:offset="0" android:color="#FF4580DA" />
+                    <item android:offset="0.55" android:color="#FF5B96E2" />
+                    <item android:offset="1" android:color="#FF92C0F5" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <path android:fillColor="#FF111214" android:pathData="M49,33.8h10v0.6a1.4,1.4 0 0,1 -1.4,1.4h-7.2a1.4,1.4 0 0,1 -1.4,-1.4z" />
+
+        <!-- 手机：蓝色边框、浅色屏幕、卡片和按钮 -->
+        <path android:fillColor="#FF3E5C93" android:pathData="M58,44h16a4,4 0 0,1 4,4v28a4,4 0 0,1 -4,4h-16a4,4 0 0,1 -4,-4v-28a4,4 0 0,1 4,-4z" />
+        <path android:fillColor="#FFF9F9FF" android:pathData="M58.6,45.6h14.8a2.6,2.6 0 0,1 2.6,2.6v27.6a2.6,2.6 0 0,1 -2.6,2.6h-14.8a2.6,2.6 0 0,1 -2.6,-2.6v-27.6a2.6,2.6 0 0,1 2.6,-2.6z" />
+        <path android:fillColor="#FF415F91" android:pathData="M57.6,50.4h8.4v1.6h-8.4z" />
+        <path android:fillColor="#FFD6E3FF" android:pathData="M59,54.6h14a1.4,1.4 0 0,1 1.4,1.4v5.4a1.4,1.4 0 0,1 -1.4,1.4h-14a1.4,1.4 0 0,1 -1.4,-1.4v-5.4a1.4,1.4 0 0,1 1.4,-1.4z M59,65h14a1.4,1.4 0 0,1 1.4,1.4v3.2a1.4,1.4 0 0,1 -1.4,1.4h-14a1.4,1.4 0 0,1 -1.4,-1.4v-3.2a1.4,1.4 0 0,1 1.4,-1.4z" />
+        <path android:fillColor="#FF415F91" android:pathData="M60.2,57.6a1.4,1.4 0 1,0 2.8,0a1.4,1.4 0 1,0 -2.8,0z M60.2,67.2a1.4,1.4 0 1,0 2.8,0a1.4,1.4 0 1,0 -2.8,0z" />
+        <path android:fillColor="#FFFAD8FD" android:pathData="M68.4,72.2h4.4a1.2,1.2 0 0,1 1.2,1.2v2.4a1.2,1.2 0 0,1 -1.2,1.2h-4.4a1.2,1.2 0 0,1 -1.2,-1.2v-2.4a1.2,1.2 0 0,1 1.2,-1.2z" />
+        <path android:fillColor="#FF8A8D97" android:pathData="M62.5,78.4h7v0.8h-7z" />
+        <path android:fillColor="#FF1B1B1F" android:pathData="M65.2,46.6a0.8,0.8 0 1,0 1.6,0a0.8,0.8 0 1,0 -1.6,0z" />
+    </group>
+</vector>
