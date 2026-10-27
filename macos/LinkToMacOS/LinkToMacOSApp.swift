@@ -24,7 +24,8 @@ struct LinkToMacOSApp: App {
             MainWindow()
                 .environment(appDelegate.model)
         }
-        .defaultSize(width: 1120, height: 720)
+        .windowResizability(.contentSize)
+        .defaultSize(width: MainWindow.windowWidth, height: 720)
         .defaultLaunchBehavior(Prefs.bool(Prefs.openMainWindowAtLaunch, default: true) ? .presented : .suppressed)
         .commands { AppCommands(model: appDelegate.model) }
 

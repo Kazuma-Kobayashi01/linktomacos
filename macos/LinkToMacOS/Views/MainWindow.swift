@@ -1,3 +1,4 @@
+import AppKit
 import LinkCore
 import SwiftUI
 
@@ -17,17 +18,22 @@ enum SidebarItem: Hashable {
 struct MainWindow: View {
     @Environment(AppModel.self) private var model
 
+    /// 窗口宽度固定（像系统设置那样只能调高度）：侧边栏 230 + 内容 770。
+    static let windowWidth: CGFloat = 1000
+    static let sidebarWidth: CGFloat = 230
+
     var body: some View {
         @Bindable var model = model
         let selection = model.sidebarSelection
         NavigationSplitView {
             SidebarView(selection: $model.sidebarSelection)
-                .navigationSplitViewColumnWidth(min: 200, ideal: 230, max: 320)
+                .navigationSplitViewColumnWidth(Self.sidebarWidth)
         } detail: {
             DetailRouter(item: selection ?? .overview)
                 .id(selection)
         }
-        .frame(minWidth: 1000, minHeight: 600)
+        .frame(minWidth: Self.windowWidth, maxWidth: Self.windowWidth, minHeight: 600)
+        .background(FixedWidthWindow())
         .onAppear {
             // 菜单栏常驻程序：打开窗口时才出现在 Dock 里
             model.setMainWindowVisible(true)
@@ -223,6 +229,25 @@ private struct TransferHUD: View {
             .shadow(radius: 8, y: 2)
             .padding(.bottom, 16)
             .transition(.move(edge: .bottom).combined(with: .opacity))
+        }
+    }
+}
+
+
+/// 去掉全屏和缩放按钮的功能，并把窗口宽度钉死（SwiftUI 的 frame 约束之外再加一道，防止拖边框时闪动）。
+private struct FixedWidthWindow: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSView { Anchor() }
+    func updateNSView(_ nsView: NSView, context: Context) {}
+
+    private final class Anchor: NSView {
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            guard let window else { return }
+            window.collectionBehavior.remove(.fullScreenPrimary)
+            window.collectionBehavior.insert(.fullScreenNone)
+            window.standardWindowButton(.zoomButton)?.isEnabled = false
+            window.contentMinSize = NSSize(width: MainWindow.windowWidth, height: 600)
+            window.contentMaxSize = NSSize(width: MainWindow.windowWidth, height: .greatestFiniteMagnitude)
         }
     }
 }

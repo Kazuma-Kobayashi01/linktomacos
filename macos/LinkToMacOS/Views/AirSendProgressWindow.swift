@@ -14,6 +14,8 @@ final class AirSendProgressWindow: NSObject {
     private var revealing: URL?
     private var autoClose: Task<Void, Never>?
     private var closed = false
+    /// 接收任务一结束就不再持有这个对象，可按钮的 target 是弱引用、自动收起也靠它：显示期间自己拉住自己，关窗时再放手。
+    private var keepAlive: AirSendProgressWindow?
 
     init(device: String, files: [AirFile], onCancel: @escaping () -> Void) {
         super.init()
@@ -49,6 +51,7 @@ final class AirSendProgressWindow: NSObject {
     var snapshotWindow: NSWindow { alert.window }
 
     func show() {
+        keepAlive = self
         let window = alert.window
         window.level = .floating
         window.center()
@@ -95,6 +98,10 @@ final class AirSendProgressWindow: NSObject {
         ok.target = self
         ok.action = #selector(closePressed)
         swap(to: failed)
+        autoClose = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(15))
+            self?.close()
+        }
     }
 
     private func makeAlert(style: NSAlert.Style, title: String, text: String) -> NSAlert {
@@ -123,6 +130,7 @@ final class AirSendProgressWindow: NSObject {
         closed = true
         autoClose?.cancel()
         alert.window.orderOut(nil)
+        keepAlive = nil
     }
 
     @objc private func cancelPressed() {
