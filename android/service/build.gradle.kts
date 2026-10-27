@@ -17,8 +17,10 @@ android {
 
     buildTypes {
         release {
-            // 不混淆：增强服务（shell 包）靠反射调用系统内部接口，混淆会把它们改名
-            isMinifyEnabled = false
+            // 开启压缩和优化。增强服务（shell 包）由 app_process 按类名启动、还靠反射调用系统内部接口，规则见 proguard-rules.pro
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("debug")
             ndk { abiFilters += "arm64-v8a" }
         }
